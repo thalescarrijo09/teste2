@@ -1,0 +1,708 @@
+/* ==========================================================================
+   1. RESET & VARIÁVEIS DO SISTEMA
+   ========================================================================== */
+:root {
+  /* Cores - Identidade Visual Premium */
+  --color-primary: #0e4f55;       /* Azul-petróleo profundo */
+  --color-primary-hover: #0a3a3f;
+  --color-secondary: #3fa394;     /* Verde suave médico */
+  --color-accent: #c86446;        /* Terracota discreta */
+  --color-text-main: #1e293b;     /* Cinza chumbo claro (alta legibilidade) */
+  --color-text-muted: #64748b;    /* Cinza neutro */
+  --color-bg-light: #f8fafc;      /* Branco gelo de fundo */
+  --color-bg-white: #ffffff;
+  --color-border: #e2e8f0;
+  
+  /* Tipografia */
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  
+  /* Espaçamento e Layout */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 3rem;
+  --space-xl: 5rem;
+  
+  /* Efeitos e Bordas */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 10px 15px -3px rgba(14, 79, 85, 0.08);
+  
+  /* Transições */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-family: var(--font-sans);
+  color: var(--color-text-main);
+  background-color: var(--color-bg-light);
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px; /* Offset para o header fixo */
+}
+
+body {
+  line-height: 1.6;
+  font-size: 1rem;
+  overflow-x: hidden;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+ul {
+  list-style: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Utilitários */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-md);
+}
+
+.text-center { text-align: center; }
+.section { padding: var(--space-xl) 0; }
+
+.section-tag {
+  display: inline-block;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-secondary);
+  margin-bottom: var(--space-xs);
+}
+
+.section-header {
+  max-width: 700px;
+  margin: 0 auto var(--space-lg) auto;
+}
+
+.section-header h2 {
+  font-size: 2.25rem;
+  line-height: 1.25;
+  color: var(--color-primary);
+  margin-bottom: var(--space-xs);
+}
+
+.section-header p {
+  color: var(--color-text-muted);
+  font-size: 1.125rem;
+}
+
+/* ==========================================================================
+   2. COMPONENTES DE BOTÕES
+   ========================================================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border: 2px solid transparent;
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: var(--color-bg-white);
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-hover);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.btn-secondary:hover {
+  background-color: rgba(14, 79, 85, 0.05);
+}
+
+.btn-lg {
+  padding: 1rem 2rem;
+  font-size: 1.05rem;
+}
+
+.btn-xl {
+  padding: 1.25rem 2.5rem;
+  font-size: 1.15rem;
+  border-radius: var(--radius-md);
+}
+
+/* ==========================================================================
+   3. CABEÇALHO (HEADER)
+   ========================================================================== */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 80px;
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--color-border);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+}
+
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-size: 1.25rem;
+  color: var(--color-primary);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.nav-list {
+  display: flex;
+  gap: var(--space-md);
+}
+
+.nav-link {
+  font-weight: 500;
+  color: var(--color-text-main);
+  transition: color var(--transition-fast);
+}
+
+.nav-link:hover {
+  color: var(--color-secondary);
+}
+
+.mobile-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.hamburger {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background-color: var(--color-primary);
+  position: relative;
+  transition: background-color var(--transition-fast);
+}
+
+.hamburger::before,
+.hamburger::after {
+  content: '';
+  position: absolute;
+  width: 24px;
+  height: 2px;
+  background-color: var(--color-primary);
+  left: 0;
+  transition: transform var(--transition-fast), top var(--transition-fast);
+}
+
+.hamburger::before { top: -6px; }
+.hamburger::after { top: 6px; }
+
+/* ==========================================================================
+   4. HERO SECTION
+   ========================================================================== */
+.hero {
+  padding: calc(80px + var(--space-xl)) 0 var(--space-xl) 0;
+  background: linear-gradient(180deg, var(--color-bg-white) 0%, var(--color-bg-light) 100%);
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.badge {
+  display: inline-block;
+  background-color: rgba(63, 163, 148, 0.1);
+  color: var(--color-primary);
+  padding: 0.35rem 0.85rem;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: var(--space-sm);
+}
+
+.hero h1 {
+  font-size: 3rem;
+  line-height: 1.15;
+  color: var(--color-primary);
+  margin-bottom: var(--space-sm);
+  letter-spacing: -0.02em;
+}
+
+.hero-subtitle {
+  font-size: 1.2rem;
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-md);
+  max-width: 540px;
+}
+
+.hero-actions {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.hero-visual {
+  display: flex;
+  justify-content: center;
+}
+
+.image-frame {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  background-color: var(--color-border);
+}
+
+.hero-img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 6/7;
+  object-fit: cover;
+}
+
+/* ==========================================================================
+   5. SEÇÕES: SOBRE, BENEFÍCIOS, PROCESSO E CLÍNICA
+   ========================================================================== */
+.about { background-color: var(--color-bg-white); }
+
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  align-items: center;
+  gap: var(--space-xl);
+}
+
+.about-img {
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  width: 100%;
+  aspect-ratio: 1/1;
+  object-fit: cover;
+}
+
+.about-content h2 {
+  font-size: 2.25rem;
+  color: var(--color-primary);
+  margin-bottom: var(--space-sm);
+}
+
+.about-content p {
+  margin-bottom: var(--space-sm);
+  color: var(--color-text-muted);
+}
+
+.placeholder-text {
+  background-color: rgba(200, 100, 70, 0.08);
+  padding: var(--space-sm);
+  border-left: 3px solid var(--color-accent);
+  border-radius: 4px;
+  font-size: 0.9rem;
+  color: var(--color-text-main);
+}
+
+/* Cards de Benefícios */
+.benefits { background-color: var(--color-bg-light); }
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--space-md);
+}
+
+.card {
+  background-color: var(--color-bg-white);
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.card-icon {
+  font-size: 2rem;
+  margin-bottom: var(--space-sm);
+}
+
+.card h3 {
+  font-size: 1.25rem;
+  color: var(--color-primary);
+  margin-bottom: var(--space-xs);
+}
+
+.card p {
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+}
+
+/* Processo (Passo a Passo) */
+.process { background-color: var(--color-bg-white); }
+
+.process-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-lg);
+  margin-bottom: var(--space-lg);
+}
+
+.process-step {
+  position: relative;
+  padding: var(--space-md);
+  background-color: var(--color-bg-light);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+}
+
+.step-number {
+  display: inline-block;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-secondary);
+  opacity: 0.5;
+  margin-bottom: var(--space-xs);
+}
+
+.process-step h3 {
+  font-size: 1.25rem;
+  color: var(--color-primary);
+  margin-bottom: var(--space-xs);
+}
+
+.process-step p {
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+}
+
+/* Clínica */
+.clinic { background-color: var(--color-bg-light); }
+
+.clinic-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-lg);
+  align-items: center;
+}
+
+.clinic-content h2 {
+  font-size: 2.25rem;
+  color: var(--color-primary);
+  margin-bottom: var(--space-sm);
+}
+
+.clinic-content p {
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-md);
+}
+
+.clinic-info-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.info-item dt {
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.info-item dd {
+  color: var(--color-text-muted);
+  margin-left: 0;
+}
+
+.map-placeholder {
+  width: 100%;
+  height: 350px;
+  background-color: #e2e8f0;
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-muted);
+  font-weight: 600;
+  border: 2px dashed #cbd5e1;
+}
+
+/* ==========================================================================
+   6. PERGUNTAS FREQUENTES (ACORDEÃO FAQ)
+   ========================================================================== */
+.faq { background-color: var(--color-bg-white); }
+
+.faq-container {
+  max-width: 800px;
+}
+
+.accordion {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.accordion-item {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.accordion-header { margin: 0; }
+
+.accordion-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-md);
+  background-color: var(--color-bg-white);
+  border: none;
+  font-family: var(--font-sans);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.accordion-trigger:hover {
+  background-color: var(--color-bg-light);
+}
+
+.accordion-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--color-secondary);
+  transition: transform var(--transition-fast);
+}
+
+.accordion-trigger[aria-expanded="true"] .accordion-icon {
+  transform: rotate(45deg);
+}
+
+.accordion-panel {
+  padding: 0 var(--space-md) var(--space-md) var(--space-md);
+  background-color: var(--color-bg-white);
+  color: var(--color-text-muted);
+}
+
+.accordion-panel[hidden] {
+  display: none;
+}
+
+/* ==========================================================================
+   7. CTA FINAL & RODAPÉ
+   ========================================================================== */
+.final-cta {
+  background-color: var(--color-primary);
+  color: var(--color-bg-white);
+}
+
+.cta-box {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.cta-box h2 {
+  font-size: 2.5rem;
+  line-height: 1.2;
+  margin-bottom: var(--space-sm);
+}
+
+.cta-box p {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: var(--space-lg);
+}
+
+.final-cta .btn-primary {
+  background-color: var(--color-secondary);
+  color: var(--color-bg-white);
+}
+
+.final-cta .btn-primary:hover {
+  background-color: #358f81;
+}
+
+/* Rodapé */
+.footer {
+  background-color: var(--color-text-main);
+  color: var(--color-bg-white);
+  padding: var(--space-lg) 0 var(--space-md) 0;
+  font-size: 0.9rem;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.5fr;
+  gap: var(--space-lg);
+  padding-bottom: var(--space-lg);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer-logo {
+  font-size: 1.2rem;
+  color: var(--color-bg-white);
+  margin-bottom: var(--space-xs);
+}
+
+.footer-subtext { color: #94a3b8; }
+
+.footer-col h4 {
+  font-size: 1rem;
+  color: var(--color-secondary);
+  margin-bottom: var(--space-sm);
+}
+
+.footer-col p {
+  color: #cbd5e1;
+  margin-bottom: 0.5rem;
+}
+
+.footer-col a:hover { color: var(--color-bg-white); text-decoration: underline; }
+
+.disclaimer {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  line-height: 1.5;
+}
+
+.footer-bottom {
+  padding-top: var(--space-md);
+  color: #64748b;
+  font-size: 0.85rem;
+}
+
+/* ==========================================================================
+   8. BOTÃO FLUTUANTE DO WHATSAPP
+   ========================================================================== */
+.floating-whatsapp {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 60px;
+  height: 60px;
+  background-color: #25d366;
+  color: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+  z-index: 900;
+  transition: transform var(--transition-fast), background-color var(--transition-fast);
+}
+
+.floating-whatsapp:hover {
+  background-color: #20bd5a;
+  transform: scale(1.08);
+}
+
+/* ==========================================================================
+   9. RESPONSIVIDADE & ACESSIBILIDADE
+   ========================================================================== */
+@media (max-width: 992px) {
+  .hero-grid, .about-grid, .clinic-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+  }
+  
+  .hero-visual { order: -1; }
+  .about-image-wrapper { order: -1; }
+  
+  .process-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+  }
+}
+
+@media (max-width: 768px) {
+  .mobile-toggle { display: block; }
+  
+  .nav {
+    position: absolute;
+    top: 80px;
+    left: 0;
+    width: 100%;
+    background-color: var(--color-bg-white);
+    flex-direction: column;
+    padding: var(--space-md);
+    border-bottom: 1px solid var(--color-border);
+    box-shadow: var(--shadow-md);
+    display: none;
+  }
+  
+  .nav.is-open { display: flex; }
+  
+  .nav-list {
+    flex-direction: column;
+    width: 100%;
+    text-align: center;
+  }
+  
+  .nav-cta { width: 100%; }
+  
+  .hero h1 { font-size: 2.25rem; }
+  .cta-box h2 { font-size: 1.85rem; }
+}
+
+/* Acessibilidade: Redução de movimento */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
