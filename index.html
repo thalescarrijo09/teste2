@@ -1,9 +1,20 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <title>Meu Plano Diário</title>
+
+<!-- PWA / Ícone na tela inicial -->
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.png" type="image/png">
+<link rel="apple-touch-icon" href="icon.png">
+<meta name="theme-color" content="#0a1230">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Plano Diário">
+
 <style>
   :root{
     --bg:#0a1230;
@@ -117,8 +128,7 @@
   .ring-text .small{font-size:.72rem;color:var(--muted);}
 
   .hist-item{
-    display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:.85rem;
-  }
+    display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:.85rem;}
   .hist-item:last-child{border-bottom:none;}
 
   input[type=number], input[type=time]{
@@ -205,7 +215,7 @@
 
 <header>
   <div class="header-title">
-    <img src="icon.png" alt="Ícone do app" onerror="this.style.display='none'">
+    <img src="icon.png" alt="Ícone" onerror="this.style.display='none'" />
     <h1>Meu Plano Diário</h1>
   </div>
   <div class="sub"><span id="dateLabel">--/--/----</span><span id="miniStatus"></span></div>
@@ -226,22 +236,18 @@
       <div class="row"><h3>💧 Água</h3><span class="badge blue" id="hojeWaterBadge">0 / 5500 ml</span></div>
       <div class="progress-wrap"><div class="progress-bar" id="hojeWaterBar" style="background:var(--blue);"></div></div>
     </div>
-
     <div class="card">
       <div class="row"><h3>💊 Creatina</h3><span class="badge pending" id="hojeCreatinaBadge">Pendente</span></div>
     </div>
-
     <div class="card">
       <div class="row"><h3>🌙 Magnésio</h3><span class="badge pending" id="hojeMagnesioBadge">Pendente</span></div>
     </div>
-
     <div class="card">
       <div class="row"><h3>🍽️ Refeição 1 — Almoço</h3><span class="badge pending" id="hojeR1Badge">Pendente</span></div>
     </div>
     <div class="card">
       <div class="row"><h3>🍽️ Refeição 2 — Jantar</h3><span class="badge pending" id="hojeR2Badge">Pendente</span></div>
     </div>
-
     <div class="shortcuts">
       <button class="btn primary" onclick="addWater(250);toast('+250 ml registrado')">+250 ml</button>
       <button class="btn green" onclick="markCreatina()">Registrar creatina</button>
@@ -250,7 +256,7 @@
     </div>
   </section>
 
-  <!-- AGUA -->
+  <!-- ÁGUA -->
   <section class="view" id="view-agua">
     <div class="card">
       <h2>💧 Hidratação</h2>
@@ -269,9 +275,8 @@
         <div class="meta-box"><div class="v" id="waterLeft">5,5 L</div><div class="l">Restante</div></div>
         <div class="meta-box"><div class="v" id="waterPct">0%</div><div class="l">Concluído</div></div>
       </div>
-      <div id="waterMsg" class="footnote" style="color:var(--green);display:none;">🎉 Meta diária atingida! Continue se hidratando com equilíbrio, sem necessidade de exceder a meta.</div>
+      <div id="waterMsg" class="footnote" style="display:none;">🎉 Meta diária atingida! Continue se hidratando sem necessidade de exceder a meta.</div>
     </div>
-
     <div class="card">
       <h3>Adicionar</h3>
       <div class="grid4">
@@ -282,34 +287,31 @@
       </div>
       <button class="btn ghost block" style="margin-top:8px;" onclick="undoWater()">↩️ Desfazer último registro</button>
     </div>
-
     <div class="card">
       <div class="row"><h3>Histórico de hoje</h3><button class="btn red" style="padding:8px 10px;font-size:.75rem;" onclick="clearWaterHistory()">Apagar histórico</button></div>
       <div id="waterHistory"><p class="muted">Nenhum registro ainda.</p></div>
     </div>
-
     <div class="card">
       <h3>🔔 Lembretes de água</h3>
       <div class="row" style="margin-bottom:10px;">
         <span>Ativar lembretes</span>
-        <label class="switch"><input type="checkbox" id="waterRemindEnabled"><span class="knob"></span></label>
+        <label class="switch"><input type="checkbox" id="waterRemindEnabled" /><span class="knob"></span></label>
       </div>
-      <label class="field">Intervalo (minutos)</label>
-      <input type="number" id="waterInterval" min="10" max="240" value="60">
+      <label class="field">Intervalo (min)</label>
+      <input type="number" id="waterInterval" min="10" max="240" value="60" />
       <div class="grid2">
-        <div><label class="field">Início</label><input type="time" id="waterStart" value="05:00"></div>
-        <div><label class="field">Término</label><input type="time" id="waterEnd" value="22:00"></div>
+        <div><label class="field">Início</label><input type="time" id="waterStart" value="05:00" /></div>
+        <div><label class="field">Término</label><input type="time" id="waterEnd" value="22:00" /></div>
       </div>
       <button class="btn ghost block" style="margin-top:10px;" onclick="saveSettings();toast('Configurações salvas')">Salvar</button>
       <p class="muted" style="margin-top:10px;font-size:.75rem;">Lembretes funcionam apenas enquanto o app estiver aberto no navegador. Fechar o app pode interromper os avisos.</p>
       <div id="notifStatusLine" class="status-line"><span class="dot" id="notifDot"></span><span id="notifText">Verificando suporte...</span></div>
       <button class="btn primary block" style="margin-top:8px;" onclick="requestNotifPermission()">Ativar notificações do navegador</button>
     </div>
-
-    <p class="footnote">A necessidade de água varia conforme clima, saúde, alimentação e orientação profissional. Ajuste a meta se necessário.</p>
+    <p class="footnote">A necessidade de água varia conforme clima, saúde, alimentação, orientação profissional. Ajuste a meta se necessário.</p>
   </section>
 
-  <!-- REFEICOES -->
+  <!-- REFEIÇÕES -->
   <section class="view" id="view-refeicoes">
     <div class="card">
       <h2>🎯 Metas diárias</h2>
@@ -320,7 +322,6 @@
         <div class="meta-box"><div class="v">205 g</div><div class="l">Carboidrato</div></div>
       </div>
     </div>
-
     <div class="card">
       <div class="row"><h2 style="margin:0;">🍽️ Refeição 1 — Almoço</h2><span class="badge pending" id="r1Badge">Pendente</span></div>
       <p class="muted" style="margin:4px 0 0;">Horário recomendado: 12:00</p>
@@ -350,7 +351,6 @@
       <button class="btn green block" style="margin-top:10px;" id="r1Btn" onclick="toggleMeal('r1')">Marcar como realizada</button>
       <div class="muted" id="r1Time" style="margin-top:6px;"></div>
     </div>
-
     <div class="card">
       <div class="row"><h2 style="margin:0;">🍽️ Refeição 2 — Jantar</h2><span class="badge pending" id="r2Badge">Pendente</span></div>
       <p class="muted" style="margin:4px 0 0;">Horário recomendado: 19:30</p>
@@ -362,7 +362,7 @@
         <strong>Foco em volume</strong>
         <ul>
           <li>250 g de peito de frango desfiado ou coxão mole</li>
-          <li>300 g de batata inglesa assada ou purê</li>
+          <li>300 g de batata assada ou purê</li>
           <li>Salada completa</li>
           <li>1 fruta cítrica: laranja ou abacaxi</li>
         </ul>
@@ -370,20 +370,19 @@
       <div class="opt" id="r2OptB" style="display:none;">
         <strong>Ovos e pão</strong>
         <ul>
-          <li>Omelete com 4 ovos inteiros e 4 claras</li>
-          <li>Recheio de espinafre e tomate</li>
-          <li>3 fatias de pão de forma integral</li>
+          <li>Omelete com 4 ovos + 4 claras</li>
+          <li>Recheio: espinafre e tomate</li>
+          <li>3 fatias de pão integral</li>
           <li>1 porção de mamão</li>
         </ul>
       </div>
       <button class="btn green block" style="margin-top:10px;" id="r2Btn" onclick="toggleMeal('r2')">Marcar como realizada</button>
       <div class="muted" id="r2Time" style="margin-top:6px;"></div>
     </div>
-
     <div class="card">
       <h2>💊 Suplementação</h2>
       <div class="row" style="margin-bottom:8px;">
-        <div><strong>Creatina monohidratada</strong><div class="muted">5 g todos os dias, misturada em água</div></div>
+        <div><strong>Creatina</strong><div class="muted">5 g diária em água</div></div>
       </div>
       <div class="row">
         <span class="badge pending" id="creatinaBadge2">Pendente</span>
@@ -392,7 +391,7 @@
       <div class="muted" id="creatinaTime2" style="margin-top:4px;"></div>
       <hr style="border-color:var(--border);margin:14px 0;">
       <div class="row" style="margin-bottom:8px;">
-        <div><strong>Magnésio</strong><div class="muted">Dose habitual antes de dormir</div></div>
+        <div><strong>Magnésio</strong><div class="muted">Antes de dormir</div></div>
       </div>
       <div class="row">
         <span class="badge pending" id="magnesioBadge2">Pendente</span>
@@ -407,48 +406,39 @@
     <div class="card">
       <h2>⚙️ Metas e horários</h2>
       <label class="field">Meta diária de água (ml)</label>
-      <input type="number" id="cfgWaterGoal" value="5500" step="50">
-
-      <label class="field">Intervalo lembretes de água (min)</label>
-      <input type="number" id="cfgWaterInterval" value="60">
-
+      <input type="number" id="cfgWaterGoal" value="5500" step="50" />
+      <label class="field">Intervalo lembretes (min)</label>
+      <input type="number" id="cfgWaterInterval" value="60" />
       <div class="grid2">
-        <div><label class="field">Início lembretes</label><input type="time" id="cfgWaterStart" value="05:00"></div>
-        <div><label class="field">Término lembretes</label><input type="time" id="cfgWaterEnd" value="22:00"></div>
+        <div><label class="field">Início</label><input type="time" id="cfgWaterStart" value="05:00" /></div>
+        <div><label class="field">Término</label><input type="time" id="cfgWaterEnd" value="22:00" /></div>
       </div>
-
-      <label class="field">Horário da creatina</label>
-      <input type="time" id="cfgCreatinaTime" value="12:00">
-
-      <label class="field">Horário do magnésio</label>
-      <input type="time" id="cfgMagnesioTime" value="21:30">
+      <label class="field">Horário creatina</label>
+      <input type="time" id="cfgCreatinaTime" value="12:00" />
+      <label class="field">Horário magnésio</label>
+      <input type="time" id="cfgMagnesioTime" value="21:30" />
     </div>
-
     <div class="card">
       <h2>🔔 Ativar lembretes</h2>
-      <div class="row" style="margin-bottom:10px;"><span>Água</span><label class="switch"><input type="checkbox" id="cfgWaterEnabled"><span class="knob"></span></label></div>
-      <div class="row" style="margin-bottom:10px;"><span>Creatina</span><label class="switch"><input type="checkbox" id="cfgCreatinaEnabled"><span class="knob"></span></label></div>
-      <div class="row"><span>Magnésio</span><label class="switch"><input type="checkbox" id="cfgMagnesioEnabled"><span class="knob"></span></label></div>
+      <div class="row"><span>Água</span><label class="switch"><input type="checkbox" id="cfgWaterEnabled" /><span class="knob"></span></label></div>
+      <div class="row"><span>Creatina</span><label class="switch"><input type="checkbox" id="cfgCreatinaEnabled" /><span class="knob"></span></label></div>
+      <div class="row"><span>Magnésio</span><label class="switch"><input type="checkbox" id="cfgMagnesioEnabled" /><span class="knob"></span></label></div>
       <button class="btn primary block" style="margin-top:12px;" onclick="saveSettings();toast('Configurações salvas')">Salvar configurações</button>
     </div>
-
     <div class="card">
       <h2>🔔 Notificações do navegador</h2>
       <div class="status-line"><span class="dot" id="notifDot2"></span><span id="notifText2">Verificando suporte...</span></div>
       <button class="btn primary block" style="margin-top:10px;" onclick="requestNotifPermission()">Solicitar permissão</button>
     </div>
-
     <div class="card">
       <h2>🧹 Dados</h2>
       <button class="btn red block" onclick="clearDayData()">Limpar dados do dia</button>
-      <button class="btn ghost block" style="margin-top:8px;" onclick="restoreDefaults()">Restaurar configurações padrão</button>
+      <button class="btn ghost block" style="margin-top:8px;" onclick="restoreDefaults()">Restaurar padrão</button>
     </div>
-
     <div class="card">
-      <h2>ℹ️ Como os lembretes funcionam</h2>
+      <h2>ℹ️ Como funcionam os lembretes</h2>
       <p class="muted" style="font-size:.78rem;line-height:1.5;">
-        Os lembretes são verificados enquanto este app está aberto na tela do navegador. Eles usam alertas visuais dentro do app e, se você permitir, notificações do sistema.
-        Navegadores móveis costumam pausar ou impedir esse funcionamento quando o app está em segundo plano, a tela está bloqueada ou o navegador é fechado. Não há garantia de lembretes com o app fechado — trate-os como um apoio, não como única fonte de aviso.
+        Os lembretes verificam enquanto o app estiver aberto na tela. Utilizam alertas visuais e notificações (se concedido). Fechar o navegador ou bloquear notificações interrompe o funcionamento.
       </p>
     </div>
   </section>
@@ -466,7 +456,7 @@
   <div class="modal">
     <h3>Quantidade personalizada</h3>
     <label class="field">Quantidade em ml</label>
-    <input type="number" id="customWaterInput" min="1" placeholder="Ex: 300">
+    <input type="number" id="customWaterInput" min="1" placeholder="Ex: 300" />
     <div class="actions">
       <button class="btn ghost" onclick="closeModal('customWaterModal')">Cancelar</button>
       <button class="btn primary" onclick="confirmCustomWater()">Adicionar</button>
@@ -477,7 +467,7 @@
 <div class="toast" id="toast"></div>
 
 <script>
-/* ===================== ESTADO ===================== */
+// ===================== ESTADO =====================
 const DEFAULT_SETTINGS = {
   waterGoal: 5500,
   waterInterval: 60,
@@ -524,7 +514,6 @@ function pad(n){ return n.toString().padStart(2,'0'); }
 function formatDateBR(d){ return pad(d.getDate())+"/"+pad(d.getMonth()+1)+"/"+d.getFullYear(); }
 function formatTimeBR(d){ return pad(d.getHours())+":"+pad(d.getMinutes()); }
 
-/* checa mudança de dia */
 function checkDayChange(){
   if(data.date !== todayStr()){
     data = freshDailyData();
@@ -534,17 +523,15 @@ function checkDayChange(){
 }
 checkDayChange();
 
-/* ===================== NAVEGAÇÃO ===================== */
 function goTo(view){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.getElementById('view-'+view).classList.add('active');
   document.querySelectorAll('nav.bottom button').forEach(b=>{
     b.classList.toggle('active', b.dataset.view===view);
   });
-  window.scrollTo(0,0);
+  window.scrollTo(0, 0);
 }
 
-/* ===================== TOAST ===================== */
 let toastTimer;
 function toast(msg, isAlert){
   const t = document.getElementById('toast');
@@ -555,7 +542,6 @@ function toast(msg, isAlert){
   toastTimer = setTimeout(()=>t.classList.remove('show'), 3200);
 }
 
-/* ===================== ÁGUA ===================== */
 function addWater(ml){
   checkDayChange();
   data.water += ml;
@@ -576,11 +562,8 @@ function undoWater(){
 }
 function clearWaterHistory(){
   if(!confirm('Apagar todo o histórico de água de hoje? A quantidade total também será zerada.')) return;
-  data.water = 0;
-  data.waterHistory = [];
-  saveAll();
-  renderAll();
-  toast('Histórico de água apagado');
+  data.water=0; data.waterHistory=[];
+  saveAll(); renderAll(); toast('Histórico de água apagado');
 }
 function openCustomWater(){
   document.getElementById('customWaterInput').value='';
@@ -588,261 +571,246 @@ function openCustomWater(){
 }
 function closeModal(id){ document.getElementById(id).classList.remove('show'); }
 function confirmCustomWater(){
-  const v = parseInt(document.getElementById('customWaterInput').value);
-  if(!v || v<=0){ toast('Informe uma quantidade válida', true); return; }
+  const v=parseInt(document.getElementById('customWaterInput').value);
+  if(!v||v<=0){ toast('Informe uma quantidade válida', true); return; }
   addWater(v);
   closeModal('customWaterModal');
   toast(`+${v} ml registrado`);
 }
 
-/* ===================== SUPLEMENTOS ===================== */
 function markCreatina(){
   checkDayChange();
-  data.creatina.done = !data.creatina.done;
-  data.creatina.time = data.creatina.done ? formatTimeBR(new Date()) : null;
+  data.creatina.done= !data.creatina.done;
+  data.creatina.time= data.creatina.done ? formatTimeBR(new Date()) : null;
   saveAll(); renderAll();
   toast(data.creatina.done ? 'Creatina registrada ✅' : 'Creatina desmarcada');
 }
 function markMagnesio(){
   checkDayChange();
-  data.magnesio.done = !data.magnesio.done;
-  data.magnesio.time = data.magnesio.done ? formatTimeBR(new Date()) : null;
+  data.magnesio.done= !data.magnesio.done;
+  data.magnesio.time= data.magnesio.done ? formatTimeBR(new Date()) : null;
   saveAll(); renderAll();
   toast(data.magnesio.done ? 'Magnésio registrado ✅' : 'Magnésio desmarcado');
 }
 
-/* ===================== REFEIÇÕES ===================== */
 function setMealOption(key, opt){
-  data[key].option = opt;
-  saveAll(); renderAll();
+  data[key].option= opt; saveAll(); renderAll();
 }
 function toggleMeal(key){
-  data[key].done = !data[key].done;
-  data[key].time = data[key].done ? formatTimeBR(new Date()) : null;
+  data[key].done= !data[key].done;
+  data[key].time= data[key].done ? formatTimeBR(new Date()) : null;
   saveAll(); renderAll();
-  toast(data[key].done ? 'Refeição marcada como realizada' : 'Marcação desfeita');
+  toast(data[key].done ? 'Refeição marcada' : 'Marcação desfeita');
 }
 
-/* ===================== RENDER ===================== */
 function renderAll(){
   checkDayChange();
-  const now = new Date();
-  document.getElementById('dateLabel').textContent = formatDateBR(now);
+  const now= new Date();
+  document.getElementById('dateLabel').textContent= formatDateBR(now);
 
-  let goals = 0, total = 5;
+  let goals=0, total=5;
   if(data.water >= settings.waterGoal) goals++;
   if(data.creatina.done) goals++;
   if(data.magnesio.done) goals++;
   if(data.r1.done) goals++;
   if(data.r2.done) goals++;
-  document.getElementById('dayProgressBar').style.width = (goals/total*100)+'%';
-  document.getElementById('dayProgressText').textContent = `${goals} de ${total} metas concluídas`;
+  document.getElementById('dayProgressBar').style.width= (goals/total*100)+'%';
+  document.getElementById('dayProgressText').textContent= `${goals} de ${total} metas concluídas`;
 
-  const pct = Math.min(100, Math.round((data.water/settings.waterGoal)*100));
-  document.getElementById('waterRing').style.background = `conic-gradient(var(--blue) ${pct*3.6}deg, var(--card2) 0deg)`;
-  document.getElementById('waterBig').textContent = data.water+' ml';
-  document.getElementById('waterSmall').textContent = 'de '+settings.waterGoal+' ml';
-  document.getElementById('waterConsumed').textContent = (data.water/1000).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})+' L';
-  document.getElementById('waterGoal').textContent = (settings.waterGoal/1000).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})+' L';
-  const left = Math.max(0, settings.waterGoal-data.water);
-  document.getElementById('waterLeft').textContent = (left/1000).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})+' L';
-  document.getElementById('waterPct').textContent = pct+'%';
-  document.getElementById('waterMsg').style.display = data.water>=settings.waterGoal ? 'block':'none';
+  const pct= Math.min(100, Math.round((data.water/settings.waterGoal)*100));
+  document.getElementById('waterRing').style.background= `conic-gradient(var(--blue) ${pct*3.6}deg, var(--card2) 0deg)`;
+  document.getElementById('waterBig').textContent= data.water+' ml';
+  document.getElementById('waterSmall').textContent= 'de '+settings.waterGoal+' ml';
+  document.getElementById('waterConsumed').textContent= (data.water/1000).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})+' L';
+  document.getElementById('waterGoal').textContent= (settings.waterGoal/1000).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})+' L';
+  const left= Math.max(0, settings.waterGoal-data.water);
+  document.getElementById('waterLeft').textContent= (left/1000).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})+' L';
+  document.getElementById('waterPct').textContent= pct+'%';
+  document.getElementById('waterMsg').style.display= data.water >= settings.waterGoal ? 'block':'none';
 
-  document.getElementById('hojeWaterBadge').textContent = data.water+' / '+settings.waterGoal+' ml';
-  document.getElementById('hojeWaterBar').style.width = pct+'%';
+  document.getElementById('hojeWaterBadge').textContent= data.water+' / '+settings.waterGoal+' ml';
+  document.getElementById('hojeWaterBar').style.width= pct+'%';
 
-  const histEl = document.getElementById('waterHistory');
+  const histEl= document.getElementById('waterHistory');
   if(data.waterHistory.length===0){
-    histEl.innerHTML = '<p class="muted">Nenhum registro ainda.</p>';
+    histEl.innerHTML= '<p class="muted">Nenhum registro ainda.</p>';
   } else {
-    histEl.innerHTML = data.waterHistory.slice().reverse().map(h=>
+    histEl.innerHTML= data.waterHistory.slice().reverse().map(h=>
       `<div class="hist-item"><span>${h.time}</span><span>+${h.amount} ml</span></div>`
     ).join('');
   }
 
   setBadge('hojeCreatinaBadge', data.creatina.done, 'Tomada', 'Pendente');
   setBadge('creatinaBadge2', data.creatina.done, 'Tomada', 'Pendente');
-  document.getElementById('creatinaTime2').textContent = data.creatina.done ? 'Registrada às '+data.creatina.time : '';
+  document.getElementById('creatinaTime2').textContent= data.creatina.done ? 'Registrada às '+data.creatina.time : '';
 
   setBadge('hojeMagnesioBadge', data.magnesio.done, 'Tomado', 'Pendente');
   setBadge('magnesioBadge2', data.magnesio.done, 'Tomado', 'Pendente');
-  document.getElementById('magnesioTime2').textContent = data.magnesio.done ? 'Registrado às '+data.magnesio.time : '';
+  document.getElementById('magnesioTime2').textContent= data.magnesio.done ? 'Registrado às '+data.magnesio.time : '';
 
   setBadge('hojeR1Badge', data.r1.done, 'Realizada', 'Pendente');
   setBadge('r1Badge', data.r1.done, 'Realizada', 'Pendente');
-  document.getElementById('r1Btn').textContent = data.r1.done ? 'Desfazer marcação' : 'Marcar como realizada';
-  document.getElementById('r1Time').textContent = data.r1.done ? 'Concluída às '+data.r1.time : '';
+  document.getElementById('r1Btn').textContent= data.r1.done ? 'Desfazer marcação' : 'Marcar como realizada';
+  document.getElementById('r1Time').textContent= data.r1.done ? 'Concluída às '+data.r1.time : '';
   document.getElementById('r1TabA').classList.toggle('active', data.r1.option==='A');
   document.getElementById('r1TabB').classList.toggle('active', data.r1.option==='B');
-  document.getElementById('r1OptA').style.display = data.r1.option==='A' ? 'block':'none';
-  document.getElementById('r1OptB').style.display = data.r1.option==='B' ? 'block':'none';
+  document.getElementById('r1OptA').style.display= data.r1.option==='A' ? 'block':'none';
+  document.getElementById('r1OptB').style.display= data.r1.option==='B' ? 'block':'none';
 
   setBadge('hojeR2Badge', data.r2.done, 'Realizada', 'Pendente');
   setBadge('r2Badge', data.r2.done, 'Realizada', 'Pendente');
-  document.getElementById('r2Btn').textContent = data.r2.done ? 'Desfazer marcação' : 'Marcar como realizada';
-  document.getElementById('r2Time').textContent = data.r2.done ? 'Concluída às '+data.r2.time : '';
+  document.getElementById('r2Btn').textContent= data.r2.done ? 'Desfazer marcação' : 'Marcar como realizada';
+  document.getElementById('r2Time').textContent= data.r2.done ? 'Concluída às '+data.r2.time : '';
   document.getElementById('r2TabA').classList.toggle('active', data.r2.option==='A');
   document.getElementById('r2TabB').classList.toggle('active', data.r2.option==='B');
-  document.getElementById('r2OptA').style.display = data.r2.option==='A' ? 'block':'none';
-  document.getElementById('r2OptB').style.display = data.r2.option==='B' ? 'block':'none';
+  document.getElementById('r2OptA').style.display= data.r2.option==='A' ? 'block':'none';
+  document.getElementById('r2OptB').style.display= data.r2.option==='B' ? 'block':'none';
 
-  document.getElementById('nextAction').textContent = computeNextAction();
+  document.getElementById('nextAction').textContent= computeNextAction();
 
-  document.getElementById('waterRemindEnabled').checked = settings.waterEnabled;
-  document.getElementById('waterInterval').value = settings.waterInterval;
-  document.getElementById('waterStart').value = settings.waterStart;
-  document.getElementById('waterEnd').value = settings.waterEnd;
+  document.getElementById('waterRemindEnabled').checked= settings.waterEnabled;
+  document.getElementById('waterInterval').value= settings.waterInterval;
+  document.getElementById('waterStart').value= settings.waterStart;
+  document.getElementById('waterEnd').value= settings.waterEnd;
 
-  document.getElementById('cfgWaterGoal').value = settings.waterGoal;
-  document.getElementById('cfgWaterInterval').value = settings.waterInterval;
-  document.getElementById('cfgWaterStart').value = settings.waterStart;
-  document.getElementById('cfgWaterEnd').value = settings.waterEnd;
-  document.getElementById('cfgCreatinaTime').value = settings.creatinaTime;
-  document.getElementById('cfgMagnesioTime').value = settings.magnesioTime;
-  document.getElementById('cfgWaterEnabled').checked = settings.waterEnabled;
-  document.getElementById('cfgCreatinaEnabled').checked = settings.creatinaEnabled;
-  document.getElementById('cfgMagnesioEnabled').checked = settings.magnesioEnabled;
+  document.getElementById('cfgWaterGoal').value= settings.waterGoal;
+  document.getElementById('cfgWaterInterval').value= settings.waterInterval;
+  document.getElementById('cfgWaterStart').value= settings.waterStart;
+  document.getElementById('cfgWaterEnd').value= settings.waterEnd;
+  document.getElementById('cfgCreatinaTime').value= settings.creatinaTime;
+  document.getElementById('cfgMagnesioTime').value= settings.magnesioTime;
+  document.getElementById('cfgWaterEnabled').checked= settings.waterEnabled;
+  document.getElementById('cfgCreatinaEnabled').checked= settings.creatinaEnabled;
+  document.getElementById('cfgMagnesioEnabled').checked= settings.magnesioEnabled;
 
   renderNotifStatus();
 }
 
 function setBadge(id, done, doneText, pendingText){
-  const el = document.getElementById(id);
-  el.textContent = done ? doneText : pendingText;
-  el.className = 'badge ' + (done ? 'done' : 'pending');
+  const el= document.getElementById(id);
+  el.textContent= done ? doneText : pendingText;
+  el.className= 'badge ' + (done ? 'done':'pending');
 }
 
 function computeNextAction(){
-  const now = new Date();
-  const items = [];
-  if(!data.r1.done) items.push({t:'12:00', label:'Almoço (Refeição 1) às 12:00'});
+  const now= new Date();
+  const items= [];
+  if(!data.r1.done) items.push({t:'12:00', label:'Almoço às 12:00'});
   if(!data.creatina.done) items.push({t:settings.creatinaTime, label:'Tomar creatina às '+settings.creatinaTime});
-  if(!data.r2.done) items.push({t:'19:30', label:'Jantar (Refeição 2) às 19:30'});
+  if(!data.r2.done) items.push({t:'19:30', label:'Jantar às 19:30'});
   if(!data.magnesio.done) items.push({t:settings.magnesioTime, label:'Tomar magnésio às '+settings.magnesioTime});
-  if(items.length===0) return '✅ Todas as metas principais concluídas por hoje!';
-  const nowMin = now.getHours()*60+now.getMinutes();
+  if(items.length===0) return '✅ Todas as metas concluídas!';
+  const nowMin= now.getHours()*60+now.getMinutes();
   items.forEach(i=>{
-    const [h,m] = i.t.split(':').map(Number);
-    i.diff = (h*60+m) - nowMin;
+    const [h,m]= i.t.split(':').map(Number);
+    i.diff= (h*60+m)-nowMin;
   });
-  const future = items.filter(i=>i.diff>=0).sort((a,b)=>a.diff-b.diff);
-  return future.length ? future[0].label : items.sort((a,b)=>a.diff-b.diff)[0].label;
+  const future= items.filter(i=>i.diff>=0).sort((a,b)=>a.diff - b.diff);
+  return future.length ? future[0].label : (items.sort((a,b)=>a.diff - b.diff)[0].label);
 }
 
-/* ===================== AJUSTES ===================== */
 function saveSettings(){
-  settings.waterInterval = parseInt(document.getElementById('waterInterval').value)||60;
-  settings.waterStart = document.getElementById('waterStart').value || "05:00";
-  settings.waterEnd = document.getElementById('waterEnd').value || "22:00";
-
-  settings.waterGoal = parseInt(document.getElementById('cfgWaterGoal').value)||5500;
-  settings.creatinaTime = document.getElementById('cfgCreatinaTime').value || "12:00";
-  settings.magnesioTime = document.getElementById('cfgMagnesioTime').value || "21:30";
-  settings.waterEnabled = document.getElementById('cfgWaterEnabled').checked;
-  settings.creatinaEnabled = document.getElementById('cfgCreatinaEnabled').checked;
-  settings.magnesioEnabled = document.getElementById('cfgMagnesioEnabled').checked;
-
+  settings.waterGoal= parseInt(document.getElementById('cfgWaterGoal').value)||5500;
+  settings.waterInterval= parseInt(document.getElementById('cfgWaterInterval').value)||60;
+  settings.waterStart= document.getElementById('cfgWaterStart').value||'05:00';
+  settings.waterEnd= document.getElementById('cfgWaterEnd').value||'22:00';
+  settings.creatinaTime= document.getElementById('cfgCreatinaTime').value||'12:00';
+  settings.magnesioTime= document.getElementById('cfgMagnesioTime').value||'21:30';
+  settings.waterEnabled= document.getElementById('cfgWaterEnabled').checked;
+  settings.creatinaEnabled= document.getElementById('cfgCreatinaEnabled').checked;
+  settings.magnesioEnabled= document.getElementById('cfgMagnesioEnabled').checked;
   saveAll();
   renderAll();
 }
 
 function clearDayData(){
-  if(!confirm('Isso vai apagar os registros de hoje (água, creatina, magnésio e refeições). Continuar?')) return;
-  data = freshDailyData();
-  notifSentToday = {};
+  if(!confirm('Isso apagará os dados de hoje. Continuar?')) return;
+  data= freshDailyData();
+  notifSentToday= {};
   saveAll();
   renderAll();
   toast('Dados do dia limpos');
 }
 function restoreDefaults(){
-  if(!confirm('Restaurar todas as configurações para os valores padrão?')) return;
-  settings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
+  if(!confirm('Restaurar configurações padrão?')) return;
+  Object.assign(settings, DEFAULT_SETTINGS);
   saveAll();
   renderAll();
   toast('Configurações padrão restauradas');
 }
 
-/* ===================== NOTIFICAÇÕES ===================== */
 function notifSupported(){ return 'Notification' in window; }
 function requestNotifPermission(){
-  if(!notifSupported()){ toast('Notificações não são suportadas neste navegador', true); return; }
-  Notification.requestPermission().then(()=>{ renderNotifStatus(); toast('Status de permissão atualizado'); });
+  if(!notifSupported()){ toast('Sem suporte a notificações', true); return; }
+  Notification.requestPermission().then(()=>{ renderNotifStatus(); toast('Permissão atualizada'); });
 }
 function renderNotifStatus(){
-  let dotClass='warn', text='Lembretes ativos apenas dentro do app';
+  let dotClass='warn', text='Lembretes ativos somente enquanto o app estiver aberto';
   if(!notifSupported()){
-    dotClass='no'; text='Notificações não suportadas neste navegador';
+    dotClass='no'; text='Sem suporte a notificações';
   } else if(Notification.permission==='granted'){
-    dotClass='ok'; text='Notificações permitidas';
+    dotClass='ok'; text='Permissões concedidas';
   } else if(Notification.permission==='denied'){
-    dotClass='no'; text='Notificações bloqueadas';
+    dotClass='no'; text='Permissões negadas';
   } else {
-    dotClass='warn'; text='Permissão de notificações não concedida ainda';
+    dotClass='warn'; text='Permissão não concedida';
   }
-  document.getElementById('notifDot').className='dot '+dotClass;
-  document.getElementById('notifText').textContent=text;
-  document.getElementById('notifDot2').className='dot '+dotClass;
-  document.getElementById('notifText2').textContent=text;
+  document.getElementById('notifDot').className= 'dot '+dotClass;
+  document.getElementById('notifText').textContent= text;
+  document.getElementById('notifDot2').className= 'dot '+dotClass;
+  document.getElementById('notifText2').textContent= text;
 }
-
 function fireNotification(title, body){
   if(notifSupported() && Notification.permission==='granted'){
     try{ new Notification(title, {body}); }catch(e){}
   }
   toast(body, true);
 }
-
-/* ===================== VERIFICAÇÃO PERIÓDICA DE LEMBRETES ===================== */
-function timeToMinutes(t){ const [h,m]=t.split(':').map(Number); return h*60+m; }
-
+function timeToMinutes(t){const [h,m]=t.split(':').map(Number); return h*60+m;}
 function checkReminders(){
   checkDayChange();
-  const now = new Date();
-  const nowMin = now.getHours()*60+now.getMinutes();
-  const key = todayStr()+'_'+now.getHours()+':'+now.getMinutes();
-
+  const now= new Date();
+  const nowMin= now.getHours()*60+ now.getMinutes();
+  const key= todayStr()+'_'+ now.getHours()+':'+ now.getMinutes();
   if(settings.waterEnabled){
-    const start = timeToMinutes(settings.waterStart);
-    const end = timeToMinutes(settings.waterEnd);
-    const interval = settings.waterInterval || 60;
-    if(nowMin>=start && nowMin<=end){
-      if((nowMin-start) % interval === 0){
-        const k = 'water_'+key;
+    const start= timeToMinutes(settings.waterStart);
+    const end= timeToMinutes(settings.waterEnd);
+    const interval= settings.waterInterval ||60;
+    if(nowMin >= start && nowMin <= end){
+      if((nowMin - start)%interval===0){
+        const k= 'water_'+key;
         if(!notifSentToday[k]){
           notifSentToday[k]=true;
-          fireNotification('Hora da água 💧','Hora de beber água. Registre seu copo no app.');
-          save('notifSent', notifSentToday);
+          fireNotification('Hora da água 💧','Hora de beber água.');
+          save('notifSent',notifSentToday);
         }
       }
     }
   }
   if(settings.creatinaEnabled && !data.creatina.done){
-    if(nowMin === timeToMinutes(settings.creatinaTime)){
-      const k = 'creatina_'+key;
+    if(nowMin=== timeToMinutes(settings.creatinaTime)){
+      const k= 'creatina_'+key;
       if(!notifSentToday[k]){
-        notifSentToday[k]=true;
-        fireNotification('Creatina 💊','Hora de tomar sua creatina (5 g em água).');
-        save('notifSent', notifSentToday);
+        notifSentToday[k]= true;
+        fireNotification('Creatina 💊','Hora de tomar sua creatina.');
+        save('notifSent',notifSentToday);
       }
     }
   }
   if(settings.magnesioEnabled && !data.magnesio.done){
-    if(nowMin === timeToMinutes(settings.magnesioTime)){
-      const k = 'magnesio_'+key;
+    if(nowMin=== timeToMinutes(settings.magnesioTime)){
+      const k= 'magnesio_'+key;
       if(!notifSentToday[k]){
-        notifSentToday[k]=true;
-        fireNotification('Magnésio 🌙','Hora de tomar magnésio antes de dormir.');
-        save('notifSent', notifSentToday);
+        notifSentToday[k]= true;
+        fireNotification('Magnésio 🌙','Hora de tomar magnésio.');
+        save('notifSent',notifSentToday);
       }
     }
   }
   renderAll();
 }
+setInterval(checkReminders,20000);
 
-setInterval(checkReminders, 20000);
-
-/* ===================== INIT ===================== */
 renderAll();
 renderNotifStatus();
 </script>
