@@ -744,14 +744,14 @@
       });
     }
 
-    function updateTabletTeamLabels() {
+ function updateTabletTeamLabels() {
       const info = getActiveMatchInfo();
       const nameA = info ? info.teamA : 'Mesa A';
       const nameB = info ? info.teamB : 'Mesa B';
-      document.getElementById('connTeamA').textContent = nameA;
-      document.getElementById('connTeamB').textContent = nameB;
-      document.getElementById('ansNameA').textContent = nameA;
-      document.getElementById('ansNameB').textContent = nameB;
+      const elA = document.getElementById('connTeamA');
+      const elB = document.getElementById('connTeamB');
+      if (elA) elA.textContent = nameA;
+      if (elB) elB.textContent = nameB;
     }
 
     function sendStateToTablet(side) {
