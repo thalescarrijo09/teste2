@@ -31,7 +31,7 @@
       flex-direction: column;
     }
 
-    /* Overlay inicial para liberar som e voz no navegador */
+    /* Overlay inicial para liberar som e voz */
     #unlockOverlay {
       position: fixed;
       inset: 0;
@@ -60,6 +60,36 @@
       transition: transform 0.15s;
     }
     #btnUnlock:hover { transform: scale(1.04); }
+
+    /* Overlay da contagem regressiva de 3 segundos */
+    #countdownOverlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(11, 18, 33, 0.95);
+      z-index: 8000;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 18px;
+    }
+    #countdownOverlay.active { display: flex; }
+    .cd-match-info {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    .cd-big-num {
+      font-size: clamp(10rem, 28vw, 18rem);
+      font-weight: 900;
+      line-height: 1;
+      color: var(--gold);
+      text-shadow: 0 0 60px rgba(251, 191, 36, 0.55);
+      animation: popIn 0.35s ease;
+    }
 
     /* Cabeçalho fixo do telão */
     header {
@@ -103,60 +133,182 @@
     .screen { display: none; flex: 1; flex-direction: column; min-height: 0; }
     .screen.active { display: flex; }
 
-    /* === TELA 1: ESPERA / CONFRONTO === */
+    /* === TELA 1: ESPERA / CHAMADA DO PRÓXIMO CONFRONTO === */
     #screen-espera {
       align-items: center;
       justify-content: center;
       text-align: center;
-      gap: 28px;
+      gap: 22px;
     }
-    .espera-logo { max-height: 150px; border-radius: 16px; }
+    .last-win-banner {
+      display: none;
+      background: rgba(34, 197, 94, 0.2);
+      border: 2px solid var(--green);
+      color: #86efac;
+      padding: 12px 28px;
+      border-radius: 16px;
+      font-size: 1.5rem;
+      font-weight: 900;
+    }
+    .last-win-banner.visible { display: block; }
+    .espera-logo { max-height: 110px; border-radius: 16px; }
     .espera-title {
-      font-size: 3.4rem;
+      font-size: clamp(2rem, 4vw, 3.2rem);
       font-weight: 900;
       color: var(--gold);
-      text-shadow: 0 4px 20px rgba(251, 191, 36, 0.25);
     }
     .match-spotlight {
       background: var(--bg-card);
-      border: 2px solid rgba(56, 189, 248, 0.35);
-      border-radius: 24px;
+      border: 3px solid rgba(56, 189, 248, 0.45);
+      border-radius: 26px;
       padding: 28px 48px;
-      min-width: 65%;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+      min-width: 72%;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.45);
     }
     .match-spotlight .match-tag {
       display: inline-block;
       background: var(--accent);
       color: #082f49;
-      font-weight: 800;
-      font-size: 1.1rem;
-      padding: 6px 18px;
+      font-weight: 900;
+      font-size: 1.15rem;
+      padding: 6px 22px;
       border-radius: 999px;
       margin-bottom: 18px;
       text-transform: uppercase;
     }
     .spotlight-teams {
-      display: flex;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
       align-items: center;
-      justify-content: center;
-      gap: 32px;
-      font-size: 2.6rem;
-      font-weight: 900;
+      gap: 28px;
     }
+    .spot-team-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .spot-mesa {
+      font-size: 0.95rem;
+      font-weight: 800;
+      padding: 3px 12px;
+      border-radius: 999px;
+      text-transform: uppercase;
+    }
+    .mesa-a { background: rgba(56,189,248,0.2); color: #7dd3fc; }
+    .mesa-b { background: rgba(251,191,36,0.2); color: #fde047; }
+    .spot-name { font-size: clamp(2rem, 4vw, 3.1rem); font-weight: 900; }
+    .spot-ready { font-size: 1rem; font-weight: 700; color: var(--muted); }
+    .spot-ready.ok { color: #86efac; }
     .spotlight-vs {
-      font-size: 1.6rem;
+      font-size: 1.8rem;
+      font-weight: 900;
       color: var(--gold);
       background: var(--bg-soft);
-      padding: 8px 18px;
-      border-radius: 12px;
+      padding: 10px 20px;
+      border-radius: 14px;
     }
 
-    /* === TELA 2: QUIZ / PERGUNTA === */
+    /* === TELA 2: QUIZ (MODO AGUARDANDO + MODO PERGUNTA) === */
     #screen-quiz {
       justify-content: space-between;
       gap: 12px;
     }
+
+    /* Sub-modo: Aguardando próxima pergunta */
+    #quizWaitingView {
+      display: none;
+      flex: 1;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 22px;
+    }
+    #quizWaitingView.active { display: flex; }
+
+    .big-scoreboard-card {
+      background: var(--bg-card);
+      border: 2px solid rgba(255,255,255,0.12);
+      border-radius: 24px;
+      padding: 24px 44px;
+      min-width: 72%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+    .big-sb-tag {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .big-sb-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 26px;
+      font-size: clamp(1.8rem, 3.6vw, 2.8rem);
+      font-weight: 900;
+      flex-wrap: wrap;
+    }
+    .big-sb-pts {
+      background: var(--bg-soft);
+      color: var(--gold);
+      padding: 8px 26px;
+      border-radius: 16px;
+      font-size: clamp(2.8rem, 5.5vw, 4.2rem);
+      min-width: 90px;
+    }
+
+    .telao-sudden-badge {
+      display: none;
+      background: var(--red);
+      color: #fff;
+      padding: 10px 26px;
+      border-radius: 999px;
+      font-size: 1.35rem;
+      font-weight: 900;
+      animation: pulse 0.65s infinite alternate;
+    }
+    .telao-sudden-badge.visible { display: inline-block; }
+
+    .round-summary-box {
+      display: none;
+      width: 76%;
+      border-radius: 20px;
+      padding: 20px 30px;
+      background: var(--bg-card);
+      border: 3px solid var(--green);
+      flex-direction: column;
+      gap: 8px;
+    }
+    .round-summary-box.visible { display: flex; }
+    .round-summary-box.cancelled { border-color: var(--orange); background: rgba(249, 115, 22, 0.14); }
+    .rs-headline { font-size: clamp(1.5rem, 2.8vw, 2.2rem); font-weight: 900; color: #86efac; }
+    .round-summary-box.cancelled .rs-headline { color: #fdba74; }
+    .rs-correct { font-size: clamp(1.2rem, 2.2vw, 1.65rem); font-weight: 800; color: #fff; }
+    .rs-details { font-size: 1.15rem; color: var(--muted); font-weight: 600; }
+
+    .waiting-next-text {
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      font-weight: 900;
+      color: var(--accent);
+    }
+
+    /* Sub-modo: Pergunta ativa */
+    #quizActiveView {
+      display: none;
+      flex: 1;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 0;
+    }
+    #quizActiveView.active { display: flex; }
+
     .quiz-top-bar {
       display: flex;
       align-items: center;
@@ -168,7 +320,7 @@
     .block-badge {
       padding: 8px 20px;
       border-radius: 999px;
-      font-size: 1.15rem;
+      font-size: 1.1rem;
       font-weight: 800;
       color: #0b1221;
       background: var(--gold);
@@ -204,12 +356,12 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 120px;
+      min-height: 115px;
       box-shadow: 0 12px 30px rgba(0,0,0,0.35);
       flex-shrink: 0;
     }
     .question-text {
-      font-size: clamp(1.7rem, 3.3vw, 2.9rem);
+      font-size: clamp(1.7rem, 3.3vw, 2.85rem);
       font-weight: 800;
       line-height: 1.25;
     }
@@ -232,7 +384,6 @@
       gap: 18px;
       font-size: clamp(1.35rem, 2.4vw, 2.15rem);
       font-weight: 700;
-      transition: all 0.3s ease;
     }
     .option-letter {
       background: var(--accent);
@@ -247,29 +398,8 @@
       font-size: 1.6rem;
       flex-shrink: 0;
     }
-    .option-card.correct {
-      background: rgba(34, 197, 94, 0.25);
-      border-color: var(--green);
-      box-shadow: 0 0 28px rgba(34, 197, 94, 0.45);
-      transform: scale(1.015);
-    }
-    .option-card.correct .option-letter { background: var(--green); color: #052e16; }
-    .option-card.dimmed { opacity: 0.35; }
 
-    .open-answer-box {
-      display: none;
-      text-align: center;
-      padding: 20px;
-      border-radius: 18px;
-      background: rgba(34, 197, 94, 0.2);
-      border: 3px solid var(--green);
-      font-size: 2.3rem;
-      font-weight: 900;
-      color: #86efac;
-    }
-    .open-answer-box.visible { display: block; }
-
-    /* Faixa ao vivo das respostas dos 2 tablets */
+    /* Faixa ao vivo dos 2 tablets */
     .tablets-strip {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -295,15 +425,6 @@
       border-color: var(--gold);
       box-shadow: 0 0 18px rgba(251, 191, 36, 0.25);
     }
-    .tablet-card.reveal-win {
-      border-color: var(--green);
-      background: rgba(34, 197, 94, 0.22);
-      box-shadow: 0 0 22px rgba(34, 197, 94, 0.35);
-    }
-    .tablet-card.reveal-lose {
-      border-color: var(--red);
-      background: rgba(239, 68, 68, 0.18);
-    }
     .tc-team {
       font-size: clamp(1.05rem, 1.8vw, 1.45rem);
       font-weight: 900;
@@ -319,8 +440,6 @@
       color: var(--muted);
     }
     .tc-status.locked { color: #fde047; }
-    .tc-status.win { color: #86efac; }
-    .tc-status.lose { color: #fca5a5; }
     .tc-order-pill {
       display: inline-block;
       padding: 2px 10px;
@@ -332,7 +451,7 @@
     .ord-1 { background: var(--gold); color: #451a03; }
     .ord-2 { background: #38bdf8; color: #082f49; }
 
-    /* Barra do cronômetro de 15s */
+    /* Barra do cronômetro */
     .timer-bar-container {
       background: var(--bg-card);
       border: 1px solid rgba(255,255,255,0.1);
@@ -344,14 +463,14 @@
       flex-shrink: 0;
     }
     .timer-digits {
-      font-size: 2.7rem;
+      font-size: 2.6rem;
       font-weight: 900;
       font-variant-numeric: tabular-nums;
-      min-width: 115px;
+      min-width: 120px;
       text-align: center;
       color: var(--accent);
     }
-    .timer-digits.reading { font-size: 1.5rem; color: #7dd3fc; }
+    .timer-digits.reading { font-size: 1.45rem; color: #7dd3fc; }
     .timer-digits.warning { color: var(--orange); }
     .timer-digits.danger { color: var(--red); animation: pulse 0.6s infinite alternate; }
     .timer-track {
@@ -370,11 +489,6 @@
     }
     .timer-fill.warning { background: linear-gradient(90deg, var(--orange), var(--gold)); }
     .timer-fill.danger { background: var(--red); }
-
-    @keyframes pulse {
-      from { transform: scale(1); }
-      to { transform: scale(1.1); }
-    }
 
     /* === TELA 3: CHAVEAMENTO 9 EQUIPES === */
     #screen-chaveamento { gap: 10px; min-height: 0; }
@@ -483,6 +597,15 @@
     .podium-item.pos-2 { border-color: #cbd5e1; font-size: 1.65rem; }
     .podium-item.pos-3 { border-color: #d97706; font-size: 1.65rem; }
     .podium-pos { color: var(--gold); }
+
+    @keyframes pulse {
+      from { transform: scale(1); }
+      to { transform: scale(1.07); }
+    }
+    @keyframes popIn {
+      from { transform: scale(0.55); opacity: 0.4; }
+      to { transform: scale(1); opacity: 1; }
+    }
   </style>
 </head>
 <body>
@@ -491,6 +614,12 @@
     <h1>🏆 Telão do Campeonato</h1>
     <p>Clique no botão abaixo para liberar o áudio (narração em Português e efeitos sonoros). Depois aperte <strong>F11</strong> para colocar em tela cheia no Datashow.</p>
     <button id="btnUnlock">🔊 Iniciar Telão e Ativar Áudio</button>
+  </div>
+
+  <!-- Overlay da contagem de 3 segundos -->
+  <div id="countdownOverlay">
+    <div class="cd-match-info" id="cdMatchInfo">Preparem-se! Próxima pergunta em...</div>
+    <div class="cd-big-num" id="cdBigNum">3</div>
   </div>
 
   <header>
@@ -502,59 +631,94 @@
   </header>
 
   <main>
-    <!-- TELA 1: ESPERA -->
+    <!-- TELA 1: CHAMADA DO PRÓXIMO CONFRONTO -->
     <section id="screen-espera" class="screen active">
+      <div class="last-win-banner" id="lastWinBanner"></div>
       <img src="logo.png" alt="Logo" class="espera-logo" onerror="this.style.display='none'">
       <div class="espera-title" id="esperaTitle">Campeonato de Perguntas</div>
       <div class="match-spotlight" id="esperaMatchBox" style="display:none;">
-        <div class="match-tag" id="esperaMatchLabel">Jogo 1</div>
+        <div class="match-tag" id="esperaMatchLabel">PRÓXIMO CONFRONTO — JOGO 1</div>
         <div class="spotlight-teams">
-          <span id="esperaTeamA">Equipe A</span>
+          <div class="spot-team-box">
+            <span class="spot-mesa mesa-a">Tablet A</span>
+            <span class="spot-name" id="esperaTeamA">Escola A</span>
+            <span class="spot-ready" id="esperaReadyA">Aguardando entrada no tablet...</span>
+          </div>
           <span class="spotlight-vs">VS</span>
-          <span id="esperaTeamB">Equipe B</span>
+          <div class="spot-team-box">
+            <span class="spot-mesa mesa-b">Tablet B</span>
+            <span class="spot-name" id="esperaTeamB">Escola B</span>
+            <span class="spot-ready" id="esperaReadyB">Aguardando entrada no tablet...</span>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- TELA 2: QUIZ -->
+    <!-- TELA 2: QUIZ (AGUARDANDO + PERGUNTA ATIVA) -->
     <section id="screen-quiz" class="screen">
-      <div class="quiz-top-bar">
-        <div class="block-badge" id="quizBlockBadge">Bloco</div>
-        <div class="live-scoreboard" id="quizScoreboard" style="display:none;">
-          <span id="quizMatchLabel" style="color:var(--accent); font-size:1rem;">Jogo 1</span>
-          <span id="quizTeamA">Equipe A</span>
-          <span class="pts" id="quizPtsA">0</span>
-          <span class="vs-small">X</span>
-          <span class="pts" id="quizPtsB">0</span>
-          <span id="quizTeamB">Equipe B</span>
+
+      <!-- Sub-tela: Aguardando próxima pergunta + Placar + Resumo -->
+      <div id="quizWaitingView" class="active">
+        <div class="telao-sudden-badge" id="telaoSuddenBadge">⚡ MORTE SÚBITA!</div>
+        <div class="big-scoreboard-card" id="bigScoreCard">
+          <div class="big-sb-tag" id="bigSbTag">Jogo 1 — Melhor de 3</div>
+          <div class="big-sb-row">
+            <span id="bigSbNameA">Escola A</span>
+            <span class="big-sb-pts" id="bigSbPtsA">0</span>
+            <span style="color:var(--muted);">×</span>
+            <span class="big-sb-pts" id="bigSbPtsB">0</span>
+            <span id="bigSbNameB">Escola B</span>
+          </div>
+        </div>
+
+        <div class="round-summary-box" id="roundSummaryBox">
+          <div class="rs-headline" id="rsHeadline"></div>
+          <div class="rs-correct" id="rsCorrect"></div>
+          <div class="rs-details" id="rsDetails"></div>
+        </div>
+
+        <div class="waiting-next-text">⏳ Aguardando a próxima pergunta...</div>
+      </div>
+
+      <!-- Sub-tela: Pergunta em andamento -->
+      <div id="quizActiveView">
+        <div class="quiz-top-bar">
+          <div class="block-badge" id="quizBlockBadge">Bloco</div>
+          <div class="live-scoreboard" id="quizScoreboard" style="display:none;">
+            <span id="quizMatchLabel" style="color:var(--accent); font-size:1rem;">Jogo 1</span>
+            <span id="quizTeamA">Equipe A</span>
+            <span class="pts" id="quizPtsA">0</span>
+            <span class="vs-small">×</span>
+            <span class="pts" id="quizPtsB">0</span>
+            <span id="quizTeamB">Equipe B</span>
+          </div>
+        </div>
+
+        <div class="question-box">
+          <div class="question-text" id="questionText">...</div>
+        </div>
+
+        <div class="options-grid" id="optionsGrid"></div>
+
+        <div class="tablets-strip" id="tabletsStrip">
+          <div class="tablet-card" id="tabletCardA">
+            <div class="tc-team" id="tcTeamA">Equipe A</div>
+            <div class="tc-status" id="tcStatusA">Aguardando...</div>
+          </div>
+          <div class="tablet-card" id="tabletCardB">
+            <div class="tc-team" id="tcTeamB">Equipe B</div>
+            <div class="tc-status" id="tcStatusB">Aguardando...</div>
+          </div>
+        </div>
+
+        <div class="timer-bar-container">
+          <div class="timer-digits" id="timerDigits">15s</div>
+          <div class="timer-track">
+            <div class="timer-fill" id="timerFill"></div>
+          </div>
         </div>
       </div>
 
-      <div class="question-box">
-        <div class="question-text" id="questionText">Aguardando sorteio da pergunta...</div>
-      </div>
-
-      <div class="options-grid" id="optionsGrid"></div>
-      <div class="open-answer-box" id="openAnswerBox"></div>
-
-      <!-- Placar ao vivo dos 2 tablets -->
-      <div class="tablets-strip" id="tabletsStrip">
-        <div class="tablet-card" id="tabletCardA">
-          <div class="tc-team" id="tcTeamA">Equipe A</div>
-          <div class="tc-status" id="tcStatusA">Aguardando...</div>
-        </div>
-        <div class="tablet-card" id="tabletCardB">
-          <div class="tc-team" id="tcTeamB">Equipe B</div>
-          <div class="tc-status" id="tcStatusB">Aguardando...</div>
-        </div>
-      </div>
-
-      <div class="timer-bar-container">
-        <div class="timer-digits" id="timerDigits">15s</div>
-        <div class="timer-track">
-          <div class="timer-fill" id="timerFill"></div>
-        </div>
-      </div>
     </section>
 
     <!-- TELA 3: CHAVEAMENTO -->
@@ -585,6 +749,10 @@
     let timerDuration = 15;
     let lastTickSecond = null;
 
+    let cdInterval = null;
+    let cdEndsAt = null;
+    let lastCdSecond = null;
+
     let activeSpeechToken = 0;
     window._activeUtterance = null;
 
@@ -593,13 +761,17 @@
       view: 'espera',
       teams: Bracket9.defaultTeams(),
       results: {},
-      activeMatchId: null,
+      activeMatchId: 1,
       matchPoints: { a: 0, b: 0 },
+      schoolConfirmed: { a: false, b: false },
       currentQuestion: null,
       currentBlock: null,
-      revealed: false,
       roundStatus: 'idle',
-      tabletAnswers: { a: null, b: null }
+      tabletAnswers: { a: null, b: null },
+      lastRoundSummary: null,
+      lastMatchResult: null,
+      isSuddenDeath: false,
+      isDecisive: false
     };
 
     // === ÁUDIO SINTETIZADO ===
@@ -628,6 +800,8 @@
       if (kind === 'sino') {
         playTone(1046, 180, 'triangle', 0.35, 0);
         playTone(1318, 300, 'triangle', 0.3, 120);
+      } else if (kind === 'cd_tick') {
+        playTone(740, 110, 'triangle', 0.28, 0);
       } else if (kind === 'resposta') {
         playTone(660, 100, 'sine', 0.22, 0);
         playTone(990, 140, 'sine', 0.22, 80);
@@ -641,10 +815,59 @@
         playTone(659.25, 140, 'triangle', 0.3, 120);
         playTone(783.99, 140, 'triangle', 0.3, 240);
         playTone(1046.5, 420, 'triangle', 0.35, 360);
+      } else if (kind === 'vitoria') {
+        playTone(523.25, 130, 'triangle', 0.32, 0);
+        playTone(659.25, 130, 'triangle', 0.32, 130);
+        playTone(783.99, 130, 'triangle', 0.32, 260);
+        playTone(1046.5, 220, 'triangle', 0.35, 390);
+        playTone(1318.5, 500, 'triangle', 0.38, 560);
       } else if (kind === 'erro') {
         playTone(300, 220, 'sawtooth', 0.25, 0);
         playTone(210, 480, 'sawtooth', 0.25, 200);
       }
+    }
+
+    // === CONTAGEM REGRESSIVA DE 3 SEGUNDOS ===
+    function stopCountdownOverlay() {
+      if (cdInterval) {
+        clearInterval(cdInterval);
+        cdInterval = null;
+      }
+      lastCdSecond = null;
+      document.getElementById('countdownOverlay').classList.remove('active');
+    }
+
+    function startCountdownOverlay(durationSec = 3, startedAt = Date.now(), labelText = '') {
+      stopSpeech();
+      stopTimer(true);
+      stopCountdownOverlay();
+
+      const overlay = document.getElementById('countdownOverlay');
+      const numEl = document.getElementById('cdBigNum');
+      const infoEl = document.getElementById('cdMatchInfo');
+
+      infoEl.textContent = labelText || 'Preparem-se! Próxima pergunta em...';
+      overlay.classList.add('active');
+      cdEndsAt = startedAt + durationSec * 1000;
+
+      function tick() {
+        const rem = Math.max(0, cdEndsAt - Date.now());
+        const sec = Math.ceil(rem / 1000);
+        if (sec > 0 && sec !== lastCdSecond) {
+          lastCdSecond = sec;
+          numEl.textContent = sec;
+          numEl.style.animation = 'none';
+          void numEl.offsetWidth;
+          numEl.style.animation = 'popIn 0.35s ease';
+          playSfx('cd_tick');
+        }
+        if (rem <= 0) {
+          stopCountdownOverlay();
+        }
+      }
+
+      tick();
+      cdInterval = setInterval(tick, 60);
     }
 
     // === NARRAÇÃO EM PORTUGUÊS DO BRASIL ===
@@ -668,7 +891,6 @@
       const voices = getPtBrVoices().map(v => ({ name: v.name, lang: v.lang }));
       channel.postMessage({ type: 'VOICES_LIST', voices });
     }
-
     window.speechSynthesis.onvoiceschanged = sendVoicesToOperator;
 
     function stopSpeech() {
@@ -685,7 +907,7 @@
       if (!text) return;
 
       const utter = new SpeechSynthesisUtterance(text);
-      window._activeUtterance = utter; // Evita coleta de lixo no Chrome/Edge
+      window._activeUtterance = utter;
       utter.lang = 'pt-BR';
       utter.rate = Number(rate) || 1.0;
 
@@ -794,23 +1016,7 @@
       timerInterval = setInterval(update, 80);
     }
 
-    // === RENDERIZAÇÃO DAS TELAS ===
-    function renderAll() {
-      const s = currentState;
-      document.getElementById('headerTitle').textContent = s.title || 'Campeonato de Perguntas';
-      document.getElementById('esperaTitle').textContent = s.title || 'Campeonato de Perguntas';
-
-      document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
-      const activeScreen = document.getElementById('screen-' + (s.view || 'espera'));
-      if (activeScreen) activeScreen.classList.add('active');
-
-      renderActiveMatchInfo();
-      renderQuiz();
-      renderTabletStrip();
-      renderBracket();
-      renderPodium();
-    }
-
+    // === RENDERIZAÇÃO ===
     function getActiveMatchTeams() {
       const s = currentState;
       if (!s.activeMatchId) return null;
@@ -822,132 +1028,179 @@
       return { label: m.label, teamA: a.name, teamB: b.name };
     }
 
-    function renderActiveMatchInfo() {
-      const info = getActiveMatchTeams();
-      const esperaBox = document.getElementById('esperaMatchBox');
-      const quizBoard = document.getElementById('quizScoreboard');
-
-      if (info) {
-        esperaBox.style.display = 'block';
-        document.getElementById('esperaMatchLabel').textContent = info.label;
-        document.getElementById('esperaTeamA').textContent = info.teamA;
-        document.getElementById('esperaTeamB').textContent = info.teamB;
-
-        quizBoard.style.display = 'flex';
-        document.getElementById('quizMatchLabel').textContent = info.label;
-        document.getElementById('quizTeamA').textContent = info.teamA;
-        document.getElementById('quizTeamB').textContent = info.teamB;
-        document.getElementById('quizPtsA').textContent = currentState.matchPoints?.a ?? 0;
-        document.getElementById('quizPtsB').textContent = currentState.matchPoints?.b ?? 0;
-      } else {
-        esperaBox.style.display = 'none';
-        quizBoard.style.display = 'none';
-      }
-    }
-
     function formatSec(ms) {
       return (ms / 1000).toFixed(1).replace('.', ',') + 's';
     }
 
-    function renderTabletStrip() {
-      const info = getActiveMatchTeams();
-      const teamAName = info ? info.teamA : 'Mesa A';
-      const teamBName = info ? info.teamB : 'Mesa B';
-      document.getElementById('tcTeamA').textContent = teamAName;
-      document.getElementById('tcTeamB').textContent = teamBName;
+    function renderAll() {
+      const s = currentState;
+      document.getElementById('headerTitle').textContent = s.title || 'Campeonato de Perguntas';
+      document.getElementById('esperaTitle').textContent = s.title || 'Campeonato de Perguntas';
 
+      if (s.roundStatus !== 'countdown') stopCountdownOverlay();
+
+      document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+      const activeScreen = document.getElementById('screen-' + (s.view || 'espera'));
+      if (activeScreen) activeScreen.classList.add('active');
+
+      renderEspera();
+      renderQuiz();
+      renderBracket();
+      renderPodium();
+    }
+
+    function renderEspera() {
+      const s = currentState;
+      const info = getActiveMatchTeams();
+      const box = document.getElementById('esperaMatchBox');
+      const winBanner = document.getElementById('lastWinBanner');
+
+      if (s.lastMatchResult) {
+        const r = s.lastMatchResult;
+        winBanner.textContent = `🏆 ${r.winnerName} venceu o ${r.matchLabel} (${r.scoreA} × ${r.scoreB})!`;
+        winBanner.className = 'last-win-banner visible';
+      } else {
+        winBanner.className = 'last-win-banner';
+      }
+
+      if (info) {
+        box.style.display = 'block';
+        document.getElementById('esperaMatchLabel').textContent = `📢 PRÓXIMO CONFRONTO — ${info.label}`;
+        document.getElementById('esperaTeamA').textContent = info.teamA;
+        document.getElementById('esperaTeamB').textContent = info.teamB;
+
+        const readyA = !!(s.schoolConfirmed && s.schoolConfirmed.a);
+        const readyB = !!(s.schoolConfirmed && s.schoolConfirmed.b);
+        const elRA = document.getElementById('esperaReadyA');
+        const elRB = document.getElementById('esperaReadyB');
+        elRA.textContent = readyA ? '✅ Escola pronta no Tablet A' : '👆 Aguardando clique no Tablet A...';
+        elRA.className = readyA ? 'spot-ready ok' : 'spot-ready';
+        elRB.textContent = readyB ? '✅ Escola pronta no Tablet B' : '👆 Aguardando clique no Tablet B...';
+        elRB.className = readyB ? 'spot-ready ok' : 'spot-ready';
+      } else {
+        box.style.display = 'none';
+      }
+    }
+
+    function renderQuiz() {
+      const s = currentState;
+      const info = getActiveMatchTeams();
+      const waitingView = document.getElementById('quizWaitingView');
+      const activeView = document.getElementById('quizActiveView');
+
+      const showWaiting = !s.currentQuestion || s.roundStatus === 'idle';
+
+      if (showWaiting) {
+        waitingView.classList.add('active');
+        activeView.classList.remove('active');
+
+        const sbCard = document.getElementById('bigScoreCard');
+        if (info) {
+          sbCard.style.display = 'flex';
+          document.getElementById('bigSbTag').textContent = `${info.label} — Melhor de 3`;
+          document.getElementById('bigSbNameA').textContent = info.teamA;
+          document.getElementById('bigSbNameB').textContent = info.teamB;
+          document.getElementById('bigSbPtsA').textContent = s.matchPoints?.a ?? 0;
+          document.getElementById('bigSbPtsB').textContent = s.matchPoints?.b ?? 0;
+        } else {
+          sbCard.style.display = 'none';
+        }
+
+        const suddenBadge = document.getElementById('telaoSuddenBadge');
+        if (s.isSuddenDeath) {
+          suddenBadge.textContent = '⚡ MORTE SÚBITA — QUEM ACERTAR PASSA À FRENTE!';
+          suddenBadge.className = 'telao-sudden-badge visible';
+        } else if (s.isDecisive) {
+          suddenBadge.textContent = '🔥 PERGUNTA DECISIVA (1 × 1) — QUEM PONTUAR VENCE!';
+          suddenBadge.className = 'telao-sudden-badge visible';
+        } else {
+          suddenBadge.className = 'telao-sudden-badge';
+        }
+
+        const sumBox = document.getElementById('roundSummaryBox');
+        if (s.lastRoundSummary) {
+          const sum = s.lastRoundSummary;
+          sumBox.className = sum.cancelled ? 'round-summary-box visible cancelled' : 'round-summary-box visible';
+          document.getElementById('rsHeadline').textContent = sum.headline;
+          document.getElementById('rsCorrect').textContent = `Gabarito: ${sum.correctLabel}`;
+          document.getElementById('rsDetails').textContent = sum.detailsLine || '';
+        } else {
+          sumBox.className = 'round-summary-box';
+        }
+        return;
+      }
+
+      // Pergunta ativa
+      waitingView.classList.remove('active');
+      activeView.classList.add('active');
+
+      const badge = document.getElementById('quizBlockBadge');
+      if (s.currentBlock) {
+        badge.textContent = s.isSuddenDeath
+          ? `⚡ MORTE SÚBITA · ${s.currentBlock.nome}`
+          : s.currentBlock.nome;
+        badge.style.background = s.isSuddenDeath ? '#ef4444' : (s.currentBlock.cor || '#fbbf24');
+        badge.style.color = s.isSuddenDeath ? '#fff' : '#0b1221';
+        badge.style.display = 'inline-block';
+      } else {
+        badge.style.display = 'none';
+      }
+
+      const quizBoard = document.getElementById('quizScoreboard');
+      if (info) {
+        quizBoard.style.display = 'flex';
+        document.getElementById('quizMatchLabel').textContent = info.label;
+        document.getElementById('quizTeamA').textContent = info.teamA;
+        document.getElementById('quizTeamB').textContent = info.teamB;
+        document.getElementById('quizPtsA').textContent = s.matchPoints?.a ?? 0;
+        document.getElementById('quizPtsB').textContent = s.matchPoints?.b ?? 0;
+      } else {
+        quizBoard.style.display = 'none';
+      }
+
+      const q = s.currentQuestion;
+      document.getElementById('questionText').textContent = q.pergunta;
+
+      const grid = document.getElementById('optionsGrid');
       const letters = ['A', 'B', 'C', 'D', 'E'];
-      const ans = currentState.tabletAnswers || { a: null, b: null };
+      if (Array.isArray(q.alternativas) && q.alternativas.length > 0) {
+        grid.style.display = 'grid';
+        grid.innerHTML = q.alternativas.map((alt, i) => `
+          <div class="option-card">
+            <div class="option-letter">${letters[i] || i + 1}</div>
+            <div>${Bracket9.escapeHTML(alt)}</div>
+          </div>`).join('');
+      } else {
+        grid.innerHTML = '';
+        grid.style.display = 'none';
+      }
+
+      // Faixa dos 2 tablets (sem vazar a letra!)
+      document.getElementById('tcTeamA').textContent = info ? info.teamA : 'Mesa A';
+      document.getElementById('tcTeamB').textContent = info ? info.teamB : 'Mesa B';
+      const ans = s.tabletAnswers || { a: null, b: null };
 
       ['a', 'b'].forEach(side => {
         const card = document.getElementById(side === 'a' ? 'tabletCardA' : 'tabletCardB');
         const st = document.getElementById(side === 'a' ? 'tcStatusA' : 'tcStatusB');
         const myAns = ans[side];
-
         card.className = 'tablet-card';
         st.className = 'tc-status';
 
-        if (!currentState.currentQuestion) {
-          st.textContent = 'Aguardando pergunta...';
-          return;
-        }
-
-        if (currentState.revealed) {
-          if (myAns) {
-            const ordCls = myAns.order === 1 ? 'ord-1' : 'ord-2';
-            const letter = letters[myAns.choiceIndex] || '?';
-            card.classList.add(myAns.isCorrect ? 'reveal-win' : 'reveal-lose');
-            st.classList.add(myAns.isCorrect ? 'win' : 'lose');
-            st.innerHTML = `<span class="tc-order-pill ${ordCls}">${myAns.order}º (${formatSec(myAns.elapsedMs)})</span> Letra ${letter} · ${myAns.isCorrect ? '✅ ACERTOU' : '❌ ERROU'}`;
-          } else {
-            st.textContent = '⏰ Não respondeu';
-          }
-          return;
-        }
-
-        // Antes de revelar o gabarito (sem vazar a letra!)
         if (myAns) {
           const ordCls = myAns.order === 1 ? 'ord-1' : 'ord-2';
           card.classList.add('answered');
           if (myAns.order === 1) card.classList.add('first-place');
           st.classList.add('locked');
           st.innerHTML = `<span class="tc-order-pill ${ordCls}">${myAns.order}º</span> Respondeu em ${formatSec(myAns.elapsedMs)} 🔒`;
-        } else if (currentState.roundStatus === 'reading') {
+        } else if (s.roundStatus === 'reading') {
           st.textContent = '🔊 Aguardando leitura...';
-        } else if (currentState.roundStatus === 'open') {
+        } else if (s.roundStatus === 'open') {
           st.textContent = '⏳ Escolhendo...';
         } else {
           st.textContent = '⏰ Sem resposta';
         }
       });
-    }
-
-    function renderQuiz() {
-      const s = currentState;
-      const badge = document.getElementById('quizBlockBadge');
-      const qText = document.getElementById('questionText');
-      const grid = document.getElementById('optionsGrid');
-      const openBox = document.getElementById('openAnswerBox');
-
-      if (s.currentBlock) {
-        badge.textContent = s.currentBlock.nome;
-        badge.style.background = s.currentBlock.cor || '#fbbf24';
-        badge.style.display = 'inline-block';
-      } else {
-        badge.style.display = 'none';
-      }
-
-      const q = s.currentQuestion;
-      if (!q) {
-        qText.textContent = 'Aguardando a próxima pergunta...';
-        grid.innerHTML = '';
-        openBox.className = 'open-answer-box';
-        return;
-      }
-
-      qText.textContent = q.pergunta;
-      const letters = ['A', 'B', 'C', 'D', 'E'];
-
-      if (Array.isArray(q.alternativas) && q.alternativas.length > 0) {
-        openBox.className = 'open-answer-box';
-        grid.style.display = 'grid';
-        grid.innerHTML = q.alternativas.map((alt, i) => {
-          let cls = 'option-card';
-          if (s.revealed) {
-            cls += (i === q.correta) ? ' correct' : ' dimmed';
-          }
-          return `
-            <div class="${cls}">
-              <div class="option-letter">${letters[i] || i + 1}</div>
-              <div>${Bracket9.escapeHTML(alt)}</div>
-            </div>`;
-        }).join('');
-      } else {
-        grid.innerHTML = '';
-        grid.style.display = 'none';
-        openBox.textContent = `Resposta: ${q.resposta || ''}`;
-        openBox.className = s.revealed ? 'open-answer-box visible' : 'open-answer-box';
-      }
     }
 
     function renderBracket() {
@@ -1003,6 +1256,12 @@
           currentState = { ...currentState, ...msg.state };
           if (msg.resetTimer) stopTimer(true);
           renderAll();
+          break;
+        case 'COUNTDOWN_START':
+          startCountdownOverlay(msg.duration || 3, msg.startedAt || Date.now(), msg.labelText);
+          break;
+        case 'COUNTDOWN_STOP':
+          stopCountdownOverlay();
           break;
         case 'SPEAK':
           speakText(msg.text, msg.voiceName, msg.rate, msg.questionId, msg.autoRelease);
