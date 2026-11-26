@@ -2,6 +2,18 @@
 window.Bracket9 = (function () {
   const SEEDS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
 
+  const DEFAULT_SCHOOLS = [
+    'D. Bosco',
+    'Elias',
+    'Juarez',
+    'Mª Eduarda',
+    'Otalécio',
+    'Paniago',
+    'Salviano',
+    'Sto Antônio',
+    'Tonico Corredeira'
+  ];
+
   // Mapa exato para 9 equipes (Chave dos Vencedores e Repescagem)
   const MAP = {
     winners: [
@@ -41,7 +53,7 @@ window.Bracket9 = (function () {
         { id: 13, label: 'Jogo 13', s: [{ win: 12 }, { win: 11 }] }
       ],
       [
-        { id: 15, label: 'Final perd.', s: [{ lose: 14 }, { win: 13 }] }
+        { id: 15, label: 'Final Repesc.', s: [{ lose: 14 }, { win: 13 }] }
       ]
     ]
   };
@@ -49,7 +61,7 @@ window.Bracket9 = (function () {
   function defaultTeams() {
     const t = {};
     SEEDS.forEach((s, i) => {
-      t[s] = `Equipe ${i + 1}`;
+      t[s] = DEFAULT_SCHOOLS[i] || `Equipe ${i + 1}`;
     });
     return t;
   }
@@ -97,7 +109,6 @@ window.Bracket9 = (function () {
     return { name: null, decided: false, feedLabel: '?' };
   }
 
-  // Encontra todos os jogos que dependem (direta ou indiretamente) de um jogo
   function getDependentMatchIds(matchId) {
     const deps = new Set();
     const queue = [Number(matchId)];
@@ -120,7 +131,6 @@ window.Bracket9 = (function () {
     return results && results[16] !== undefined && results[16] !== null;
   }
 
-  // Classificação final (1º ao 9º lugar)
   function calculateStandings(teams, results) {
     if (!isFinished(results)) return [];
 
@@ -178,7 +188,6 @@ window.Bracket9 = (function () {
     return standings;
   }
 
-  // Converte símbolos matemáticos para leitura natural em português
   function formatForSpeech(text) {
     if (!text) return '';
     return String(text)
@@ -195,7 +204,7 @@ window.Bracket9 = (function () {
 
   return {
     CHANNEL_NAME: 'campeonato_quiz_9eq_v1',
-    STORAGE_KEY: 'campeonato_quiz_9eq_state_v1',
+    STORAGE_KEY: 'campeonato_quiz_9eq_state_v2',
     SEEDS,
     MAP,
     defaultTeams,
