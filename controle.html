@@ -4,34 +4,49 @@
   <meta charset="UTF-8">
   <meta name="google" content="notranslate">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Painel do Operador — Campeonato</title>
+  <title>Painel do Operador — Desafio da Tabuada</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
   <style>
     :root {
-      --bg: #f1f5f9;
-      --card: #ffffff;
-      --border: #e2e8f0;
-      --text: #0f172a;
-      --muted: #64748b;
-      --primary: #2563eb;
-      --green: #16a34a;
-      --red: #dc2626;
-      --orange: #ea580c;
-      --gold: #d97706;
+      --navy: #122B59;
+      --navy-deep: #0B1B3B;
+      --sky: #2E7BBF;
+      --sky-light: #5BB2E6;
+      --crimson: #C62032;
+      --crimson-dark: #971524;
+      --gold: #F7C948;
+      --gold-deep: #E09900;
+      --cream: #FFFDF5;
+      --chalk: #1E5A38;
+      --chalk-dark: #143F27;
+      --wood: #C47F35;
+      --bg: #EBF3FB;
+      --card: #FFFFFF;
+      --border: #CBD9EC;
+      --text: #0F2347;
+      --muted: #5A6F8E;
+      --green: #1E7E46;
+      --orange: #EA580C;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      background: var(--bg);
+      font-family: 'Nunito', 'Segoe UI', system-ui, sans-serif;
+      background-color: var(--bg);
+      background-image: radial-gradient(rgba(18, 43, 89, 0.08) 1px, transparent 1px);
+      background-size: 22px 22px;
       color: var(--text);
       padding-bottom: 40px;
     }
 
+    /* Barra superior com a identidade da logo */
     .topbar {
-      background: #0f172a;
+      background: linear-gradient(90deg, var(--navy-deep) 0%, var(--navy) 45%, var(--crimson) 100%);
       color: #fff;
-      padding: 12px 20px;
+      padding: 10px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -40,48 +55,80 @@
       position: sticky;
       top: 0;
       z-index: 100;
+      border-bottom: 4px solid var(--gold);
+      box-shadow: 0 4px 14px rgba(11, 27, 59, 0.25);
     }
     .topbar-left { display: flex; align-items: center; gap: 12px; }
-    .topbar h1 { font-size: 1.15rem; color: #fbbf24; }
-    .view-switcher { display: flex; gap: 6px; flex-wrap: wrap; }
-    .view-switcher button {
-      background: #1e293b;
-      color: #cbd5e1;
-      border: 1px solid #334155;
-      padding: 7px 12px;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
-      font-size: 0.85rem;
+    .topbar-logo {
+      height: 40px;
+      width: auto;
+      filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.4));
     }
+    .topbar h1 {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.25rem;
+      color: var(--gold);
+      text-shadow: 0 2px 0 var(--navy-deep);
+    }
+    .view-switcher { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+    .view-switcher button {
+      background: rgba(11, 27, 59, 0.72);
+      color: #E2EEF9;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      padding: 6px 12px;
+      border-radius: 10px;
+      font-weight: 800;
+      cursor: pointer;
+      font-size: 0.84rem;
+      transition: all 0.15s ease;
+    }
+    .view-switcher button:hover { border-color: var(--gold); color: #fff; }
     .view-switcher button.active-view {
-      background: #38bdf8;
-      color: #082f49;
-      border-color: #38bdf8;
+      background: linear-gradient(180deg, #FFE17D, var(--gold));
+      color: var(--navy-deep);
+      border-color: var(--navy-deep);
+      box-shadow: 0 2px 0 var(--navy-deep);
     }
 
+    /* Abas do painel */
     .tabs {
       display: flex;
       gap: 8px;
-      background: #fff;
-      border-bottom: 1px solid var(--border);
+      background: var(--cream);
+      border-bottom: 2px solid var(--border);
       padding: 10px 20px;
+      flex-wrap: wrap;
     }
     .tab-btn {
-      padding: 10px 18px;
-      border: none;
+      padding: 9px 18px;
+      border: 2px solid transparent;
       background: transparent;
+      font-family: 'Fredoka', sans-serif;
       font-weight: 700;
       color: var(--muted);
-      border-radius: 8px;
+      border-radius: 10px;
       cursor: pointer;
-      font-size: 0.95rem;
+      font-size: 0.96rem;
+      transition: all 0.15s ease;
     }
-    .tab-btn.active { background: #eff6ff; color: var(--primary); }
+    .tab-btn:hover { background: #E3EFFB; color: var(--navy); }
+    .tab-btn.active {
+      background: var(--navy);
+      color: var(--gold);
+      border-color: var(--navy-deep);
+      box-shadow: 0 3px 0 var(--navy-deep);
+    }
 
     .container { max-width: 1340px; margin: 18px auto; padding: 0 18px; }
     .tab-panel { display: none; }
-    .tab-panel.active { display: block; }
+    .tab-panel.active {
+      display: block;
+      animation: fadeSlide 0.28s ease;
+    }
+    @keyframes fadeSlide {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
     .grid-live {
       display: grid;
@@ -92,16 +139,17 @@
 
     .card {
       background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
+      border: 2px solid var(--border);
+      border-radius: 16px;
       padding: 16px 18px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      box-shadow: 0 4px 12px rgba(18, 43, 89, 0.06);
       margin-bottom: 16px;
     }
     .card h2 {
-      font-size: 0.98rem;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.05rem;
       margin-bottom: 12px;
-      color: #334155;
+      color: var(--navy);
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -113,28 +161,32 @@
       font-family: inherit;
       cursor: pointer;
       border: none;
-      border-radius: 9px;
+      border-radius: 10px;
       padding: 9px 14px;
-      font-weight: 700;
+      font-weight: 800;
       font-size: 0.88rem;
-      transition: filter 0.12s;
+      transition: transform 0.1s, filter 0.12s;
     }
-    button:hover:not(:disabled) { filter: brightness(0.95); }
+    button:hover:not(:disabled) { filter: brightness(1.04); }
+    button:active:not(:disabled) { transform: translateY(1px); }
     button:disabled { opacity: 0.45; cursor: not-allowed; }
-    .btn-primary { background: var(--primary); color: #fff; }
-    .btn-green { background: var(--green); color: #fff; }
-    .btn-red { background: var(--red); color: #fff; }
-    .btn-orange { background: var(--orange); color: #fff; }
-    .btn-slate { background: #e2e8f0; color: #1e293b; }
-    .btn-dark { background: #0f172a; color: #fff; }
 
-    /* Banner da Disputa Atual no topo */
+    .btn-primary { background: var(--sky); color: #fff; box-shadow: 0 3px 0 #1C568C; }
+    .btn-green { background: var(--green); color: #fff; box-shadow: 0 3px 0 var(--chalk-dark); }
+    .btn-red { background: var(--crimson); color: #fff; box-shadow: 0 3px 0 var(--crimson-dark); }
+    .btn-orange { background: var(--gold); color: var(--navy-deep); box-shadow: 0 3px 0 var(--gold-deep); }
+    .btn-slate { background: #DCE7F5; color: var(--navy); box-shadow: 0 2px 0 #B6C9E2; }
+    .btn-dark { background: var(--navy); color: var(--gold); box-shadow: 0 3px 0 var(--navy-deep); }
+
+    /* Banner da Disputa Atual */
     .duel-banner {
-      background: linear-gradient(135deg, #0f172a, #1e293b);
+      background: linear-gradient(135deg, var(--navy-deep) 0%, var(--navy) 55%, #1E4C8F 100%);
       color: #fff;
-      border-radius: 16px;
+      border: 3px solid var(--gold);
+      border-radius: 18px;
       padding: 16px 20px;
       margin-bottom: 16px;
+      box-shadow: 0 6px 0 var(--navy-deep), 0 12px 24px rgba(11, 27, 59, 0.18);
     }
     .duel-banner-top {
       display: flex;
@@ -145,21 +197,23 @@
       margin-bottom: 12px;
     }
     .duel-badge {
-      background: #38bdf8;
-      color: #082f49;
-      padding: 4px 12px;
+      background: linear-gradient(180deg, #E23447, var(--crimson));
+      color: #fff;
+      border: 2px solid var(--gold);
+      padding: 4px 14px;
       border-radius: 999px;
-      font-weight: 900;
-      font-size: 0.85rem;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 0.9rem;
       text-transform: uppercase;
     }
     .sudden-tag {
-      background: #ef4444;
-      color: #fff;
-      padding: 4px 12px;
+      background: var(--gold);
+      color: var(--navy-deep);
+      border: 2px solid var(--crimson);
+      padding: 4px 14px;
       border-radius: 999px;
-      font-weight: 900;
-      font-size: 0.82rem;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 0.86rem;
     }
     .duel-grid {
       display: grid;
@@ -170,9 +224,9 @@
     @media (max-width: 720px) { .duel-grid { grid-template-columns: 1fr; } }
 
     .duel-team-card {
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 12px;
+      background: rgba(255, 253, 245, 0.08);
+      border: 2px solid rgba(255, 253, 245, 0.18);
+      border-radius: 14px;
       padding: 12px 14px;
       display: flex;
       align-items: center;
@@ -181,59 +235,72 @@
     }
     .duel-team-info { min-width: 0; }
     .duel-mesa-label {
-      font-size: 0.74rem;
-      font-weight: 800;
+      font-size: 0.76rem;
+      font-weight: 900;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
-    .label-a { color: #38bdf8; }
-    .label-b { color: #fbbf24; }
+    .label-a { color: var(--sky-light); }
+    .label-b { color: var(--gold); }
     .duel-school-name {
-      font-size: 1.35rem;
-      font-weight: 900;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.4rem;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .duel-sub-status { font-size: 0.78rem; color: #cbd5e1; margin-top: 3px; }
-    .duel-score-box {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-shrink: 0;
-    }
+    .duel-sub-status { font-size: 0.78rem; color: #CFE4F7; margin-top: 3px; }
+    .duel-score-box { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
     .duel-score-num {
-      font-size: 2rem;
-      font-weight: 900;
-      color: #fbbf24;
-      min-width: 34px;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 2.1rem;
+      color: var(--navy-deep);
+      background: linear-gradient(180deg, #FFE17D, var(--gold));
+      border: 2px solid var(--navy-deep);
+      border-radius: 10px;
+      min-width: 44px;
       text-align: center;
+      padding: 0 6px;
     }
     .duel-score-box button {
-      padding: 3px 9px;
-      font-size: 0.85rem;
-      background: rgba(255,255,255,0.14);
+      padding: 4px 10px;
+      font-size: 0.9rem;
+      background: rgba(255, 255, 255, 0.18);
       color: #fff;
+      box-shadow: none;
+    }
+    .vs-pill {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.25rem;
+      color: var(--navy-deep);
+      background: var(--gold);
+      padding: 6px 12px;
+      border-radius: 10px;
+      text-align: center;
     }
 
     /* Botões principais de ação */
     .btn-next-q {
       width: 100%;
-      padding: 16px;
-      font-size: 1.15rem;
-      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      padding: 15px;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.18rem;
+      background: linear-gradient(180deg, var(--sky-light) 0%, var(--sky) 65%, #1D5E9B 100%);
       color: #fff;
-      border-radius: 12px;
-      box-shadow: 0 5px 16px rgba(37, 99, 235, 0.3);
+      border: 2px solid var(--navy);
+      border-radius: 14px;
+      box-shadow: 0 5px 0 var(--navy-deep);
     }
     .btn-compute {
       width: 100%;
-      padding: 17px;
-      font-size: 1.18rem;
-      background: linear-gradient(135deg, #16a34a, #15803d);
-      color: #fff;
-      border-radius: 12px;
-      box-shadow: 0 6px 18px rgba(22, 163, 74, 0.35);
+      padding: 16px;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.2rem;
+      background: linear-gradient(180deg, #279B58 0%, var(--chalk) 100%);
+      color: var(--cream);
+      border: 3px solid var(--wood);
+      border-radius: 14px;
+      box-shadow: 0 5px 0 var(--navy-deep);
       margin-bottom: 10px;
     }
 
@@ -242,22 +309,28 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: #0f172a;
+      background: var(--navy);
       color: #fff;
+      border: 2px solid var(--gold);
       padding: 10px 14px;
-      border-radius: 10px;
+      border-radius: 12px;
       margin-bottom: 10px;
       gap: 10px;
       flex-wrap: wrap;
     }
-    .room-code-num { font-size: 1.35rem; font-weight: 900; letter-spacing: 3px; color: #fbbf24; }
+    .room-code-num {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.45rem;
+      letter-spacing: 3px;
+      color: var(--gold);
+    }
     .tablet-conn-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 8px;
       padding: 8px 10px;
-      background: #f8fafc;
+      background: #F4F8FD;
       border: 1px solid var(--border);
       border-radius: 10px;
       margin-bottom: 8px;
@@ -276,106 +349,202 @@
     }
     .ans-box {
       border: 2px solid var(--border);
-      border-radius: 10px;
+      border-radius: 12px;
       padding: 10px 12px;
-      background: #f8fafc;
+      background: #F7FAFE;
       font-size: 0.86rem;
     }
-    .ans-box.ok { border-color: var(--green); background: #f0fdf4; }
-    .ans-box.err { border-color: var(--red); background: #fef2f2; }
+    .ans-box.ok { border-color: var(--green); background: #EDFBF2; }
+    .ans-box.err { border-color: var(--crimson); background: #FEF1F2; }
     .ans-box .ans-title { font-weight: 800; margin-bottom: 4px; display: flex; justify-content: space-between; gap: 6px; }
 
     .op-timer-box {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: #0f172a;
+      background: var(--navy-deep);
       color: #fff;
+      border: 2px solid var(--sky);
       padding: 10px 16px;
       border-radius: 12px;
       margin-bottom: 12px;
     }
     .op-timer-val {
+      font-family: 'Fredoka', sans-serif;
       font-size: 1.85rem;
-      font-weight: 900;
       font-variant-numeric: tabular-nums;
-      color: #38bdf8;
+      color: var(--gold);
     }
-    .op-timer-val.danger { color: #f87171; }
+    .op-timer-val.danger { color: #FF6B6B; }
 
+    /* Blocos de dificuldade */
     .blocks-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
     .block-pill {
       padding: 8px 12px;
       border-radius: 10px;
       border: 2px solid var(--border);
       background: #fff;
-      font-weight: 700;
+      color: var(--navy);
+      font-weight: 800;
       font-size: 0.84rem;
       cursor: pointer;
     }
-    .block-pill.selected { border-color: var(--primary); background: #eff6ff; color: var(--primary); }
+    .block-pill.selected {
+      border-color: var(--navy);
+      background: #FFF7D6;
+      color: var(--navy-deep);
+      box-shadow: 0 3px 0 var(--gold-deep);
+    }
 
+    /* Prévia estilo lousa escolar + gabarito */
     .preview-box {
-      background: #f8fafc;
-      border: 1px solid var(--border);
+      background: var(--cream);
+      border: 2px solid var(--border);
+      border-left: 6px solid var(--chalk);
       border-radius: 12px;
       padding: 14px;
       margin-top: 12px;
     }
-    .preview-q { font-size: 1.1rem; font-weight: 800; margin-bottom: 10px; }
+    .preview-q {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.12rem;
+      color: var(--navy-deep);
+      margin-bottom: 10px;
+    }
     .preview-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .preview-opt {
       padding: 8px 12px;
       border-radius: 8px;
       background: #fff;
-      border: 1px solid var(--border);
-      font-weight: 600;
+      border: 2px solid var(--border);
+      font-weight: 700;
     }
-    .preview-opt.is-correct { background: #dcfce7; border-color: #16a34a; color: #14532d; }
+    .preview-opt.is-correct {
+      background: #E4F8EC;
+      border-color: var(--green);
+      color: var(--chalk-dark);
+    }
 
     /* Chaveamento */
     .bracket-wrap { overflow-x: auto; padding-bottom: 8px; }
     .bracket-grid { display: grid; grid-template-columns: repeat(5, minmax(215px, 1fr)); gap: 12px; }
-    .b-col-title { font-size: 0.78rem; text-transform: uppercase; color: var(--muted); font-weight: 800; margin-bottom: 8px; text-align: center; }
-    .m-card { background: #f8fafc; border: 1px solid var(--border); border-radius: 10px; padding: 10px; margin-bottom: 10px; }
-    .m-card.live { border: 2px solid var(--primary); background: #eff6ff; }
-    .m-head { display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: 800; color: var(--muted); margin-bottom: 6px; }
-    .m-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 4px 6px; border-radius: 6px; font-size: 0.88rem; margin-bottom: 4px; }
-    .m-row.win { background: #dcfce7; color: #166534; font-weight: 800; }
-    .m-row.pending { color: #94a3b8; font-style: italic; }
+    .b-col-title {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      color: var(--navy);
+      margin-bottom: 8px;
+      text-align: center;
+    }
+    .m-card {
+      background: #F6FAFF;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    .m-card.live {
+      border: 2px solid var(--crimson);
+      background: #FFF9E6;
+      box-shadow: 0 3px 0 var(--gold-deep);
+    }
+    .m-head {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.76rem;
+      font-weight: 900;
+      color: var(--sky);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+    .m-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      padding: 4px 6px;
+      border-radius: 6px;
+      font-size: 0.88rem;
+      margin-bottom: 4px;
+      font-weight: 700;
+    }
+    .m-row.win { background: #DEF7E8; color: var(--chalk-dark); font-weight: 900; }
+    .m-row.pending { color: var(--muted); font-style: italic; font-weight: 600; }
     .m-actions { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
     .m-actions button { padding: 5px 8px; font-size: 0.75rem; flex: 1; }
 
+    /* Config equipes */
     .teams-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; margin-bottom: 14px; }
-    .team-input-row { display: flex; align-items: center; gap: 8px; background: #f8fafc; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--border); }
-    .seed-tag { background: #0f172a; color: #fbbf24; width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.85rem; flex-shrink: 0; }
-    input[type="text"], select { width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.92rem; }
+    .team-input-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #F6FAFF;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 2px solid var(--border);
+    }
+    .seed-tag {
+      background: var(--navy);
+      color: var(--gold);
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+    input[type="text"], select {
+      width: 100%;
+      padding: 8px 10px;
+      border: 2px solid var(--border);
+      border-radius: 9px;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: var(--text);
+    }
+    input[type="text"]:focus, select:focus {
+      outline: none;
+      border-color: var(--sky);
+    }
 
     .row-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
     .shortcuts { font-size: 0.78rem; color: var(--muted); margin-top: 8px; line-height: 1.5; }
-    kbd { background: #e2e8f0; border: 1px solid #cbd5e1; border-radius: 4px; padding: 1px 6px; font-weight: 700; color: #0f172a; }
+    kbd {
+      background: #E2ECF8;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-weight: 800;
+      color: var(--navy-deep);
+    }
   </style>
 </head>
 <body>
 
   <div class="topbar">
     <div class="topbar-left">
-      <h1>🎛️ Painel do Operador</h1>
-      <button class="btn-slate" style="padding:6px 10px; font-size:0.8rem;" onclick="window.open('index.html', '_blank')">↗ Abrir Telão</button>
+      <img src="logo.png" alt="Logo" class="topbar-logo" onerror="this.style.display='none'">
+      <h1>🎛️ Desafio da Tabuada — Operador</h1>
+      <button class="btn-orange" style="padding:6px 12px; font-size:0.8rem;" onclick="window.open('index.html', '_blank')">↗ Abrir Telão</button>
     </div>
     <div class="view-switcher">
-      <span style="font-size:0.8rem; color:#94a3b8; align-self:center; margin-right:4px;">Telão:</span>
+      <span style="font-size:0.8rem; color:#CFE4F7; margin-right:4px; font-weight:700;">Telão:</span>
       <button id="vbtn-espera" onclick="setTelaoView('espera')">📢 Confronto</button>
-      <button id="vbtn-quiz" onclick="setTelaoView('quiz')">❓ Disputa / Pergunta</button>
+      <button id="vbtn-quiz" onclick="setTelaoView('quiz')">❓ Disputa</button>
       <button id="vbtn-chaveamento" onclick="setTelaoView('chaveamento')">🏆 Chaveamento</button>
-      <button id="vbtn-classificacao" onclick="setTelaoView('classificacao')">🥇 Classificação</button>
+      <button id="vbtn-classificacao" onclick="setTelaoView('classificacao')">🥇 Pódio</button>
     </div>
   </div>
 
   <div class="tabs">
     <button class="tab-btn active" onclick="openTab('live', this)">🎮 Ao Vivo (Disputa & Tablets)</button>
-    <button class="tab-btn" onclick="openTab('bracket', this)">🏆 Chaveamento (9 Equipes)</button>
-    <button class="tab-btn" onclick="openTab('config', this)">⚙️ Equipes & Perguntas</button>
+    <button class="tab-btn" onclick="openTab('bracket', this)">🏆 Chaveamento (9 Escolas)</button>
+    <button class="tab-btn" onclick="openTab('config', this)">⚙️ Escolas & Perguntas</button>
   </div>
 
   <div class="container">
@@ -383,7 +552,7 @@
     <!-- ABA 1: AO VIVO -->
     <div id="tab-live" class="tab-panel active">
 
-      <!-- BANNER DA DISPUTA ATUAL (RECONHECIDA DA TABELA) -->
+      <!-- BANNER DA DISPUTA ATUAL -->
       <div class="duel-banner">
         <div class="duel-banner-top">
           <div class="row-actions">
@@ -391,9 +560,9 @@
             <span class="sudden-tag" id="opSuddenTag" style="display:none;">⚡ MORTE SÚBITA</span>
           </div>
           <div class="row-actions">
-            <select id="activeMatchSelect" style="width:auto; font-size:0.84rem; background:#1e293b; color:#fff; border-color:#334155;" onchange="selectActiveMatch(this.value)"></select>
-            <button class="btn-slate" style="padding:6px 10px; font-size:0.78rem;" onclick="declareWinnerManual(0)" title="Encerrar disputa manualmente dando vitória ao Tablet A">🏆 Vence A</button>
-            <button class="btn-slate" style="padding:6px 10px; font-size:0.78rem;" onclick="declareWinnerManual(1)" title="Encerrar disputa manualmente dando vitória ao Tablet B">🏆 Vence B</button>
+            <select id="activeMatchSelect" style="width:auto; font-size:0.84rem; background:#0B1B3B; color:#fff; border-color:#5BB2E6;" onchange="selectActiveMatch(this.value)"></select>
+            <button class="btn-slate" style="padding:6px 10px; font-size:0.78rem;" onclick="declareWinnerManual(0)" title="Encerrar disputa dando vitória ao Tablet A">🏆 Vence A</button>
+            <button class="btn-slate" style="padding:6px 10px; font-size:0.78rem;" onclick="declareWinnerManual(1)" title="Encerrar disputa dando vitória ao Tablet B">🏆 Vence B</button>
           </div>
         </div>
 
@@ -411,7 +580,7 @@
             </div>
           </div>
 
-          <div style="text-align:center; font-weight:900; font-size:1.3rem; color:#94a3b8;">VS</div>
+          <div class="vs-pill">VS</div>
 
           <div class="duel-team-card">
             <div class="duel-team-info">
@@ -430,12 +599,12 @@
 
       <div class="grid-live">
 
-        <!-- COLUNA ESQUERDA: PERGUNTAS E PRÓXIMA PERGUNTA (3S) -->
+        <!-- COLUNA ESQUERDA: PERGUNTAS -->
         <div>
           <div class="card">
             <h2>
               <span>📚 1. Bloco de Dificuldade & Próxima Pergunta</span>
-              <div style="display:flex; gap:12px; font-size:0.8rem; font-weight:600;">
+              <div style="display:flex; gap:12px; font-size:0.8rem; font-weight:700; color:var(--muted);">
                 <label style="display:flex; align-items:center; gap:5px; cursor:pointer;">
                   <input type="checkbox" id="chkAutoRead" checked> Ler automático
                 </label>
@@ -449,7 +618,7 @@
 
             <div class="row-actions">
               <button class="btn-next-q" id="btnNextQuestion" style="flex:1;" onclick="startNextQuestionCountdown()">▶ Próxima Pergunta (Contagem 3s)</button>
-              <button class="btn-slate" style="padding:16px 12px;" onclick="resetUsedQuestions()" title="Resetar perguntas já sorteadas">🔄</button>
+              <button class="btn-slate" style="padding:15px 12px;" onclick="resetUsedQuestions()" title="Resetar perguntas já sorteadas">🔄</button>
             </div>
 
             <div class="preview-box" id="questionPreview">
@@ -464,11 +633,11 @@
 
             <div class="row-actions" style="margin-top:12px; padding-top:12px; border-top:1px solid var(--border);">
               <div style="flex:1; min-width:200px;">
-                <label style="font-size:0.78rem; color:var(--muted); font-weight:700;">Voz em Português (dica: Microsoft Edge)</label>
+                <label style="font-size:0.78rem; color:var(--muted); font-weight:800;">Voz em Português (dica: Microsoft Edge)</label>
                 <select id="voiceSelect"></select>
               </div>
               <div style="width:130px;">
-                <label style="font-size:0.78rem; color:var(--muted); font-weight:700;">Velocidade: <span id="rateLabel">1.0x</span></label>
+                <label style="font-size:0.78rem; color:var(--muted); font-weight:800;">Velocidade: <span id="rateLabel">1.0x</span></label>
                 <input type="range" id="rateSlider" min="0.75" max="1.35" step="0.05" value="1.0" style="width:100%;" oninput="document.getElementById('rateLabel').textContent = this.value + 'x'">
               </div>
             </div>
@@ -480,7 +649,7 @@
           <div class="card">
             <h2>
               <span>⚖️ 2. Respostas & Computar Disputa</span>
-              <label style="font-size:0.76rem; font-weight:600; color:var(--muted); display:flex; align-items:center; gap:5px; cursor:pointer;" title="Desmarcado: se ambas acertarem, pontua apenas a mais rápida. Marcado: ambas pontuam e empate vai para morte súbita.">
+              <label style="font-size:0.76rem; font-weight:700; color:var(--muted); display:flex; align-items:center; gap:5px; cursor:pointer;" title="Desmarcado: se ambas acertarem, pontua apenas a mais rápida. Marcado: ambas pontuam e empate vai para morte súbita.">
                 <input type="checkbox" id="chkBothScore" onchange="saveBothScoreRule()"> Ambas pontuam se acertarem
               </label>
             </h2>
@@ -492,11 +661,11 @@
 
             <div class="op-timer-box">
               <div>
-                <div style="font-size:0.72rem; color:#94a3b8;">STATUS / TEMPO</div>
+                <div style="font-size:0.72rem; color:#CFE4F7; font-weight:700;">STATUS / TEMPO</div>
                 <div class="op-timer-val" id="opTimerVal">Aguardando</div>
               </div>
               <div class="row-actions">
-                <button class="btn-slate" onclick="closeRound(false)">⏹ Parar Tempo (P)</button>
+                <button class="btn-red" onclick="closeRound(false)">⏹ Parar Tempo (P)</button>
               </div>
             </div>
 
@@ -505,7 +674,7 @@
             </button>
 
             <div class="shortcuts">
-              Fluxo rápido: <strong>1)</strong> Clique em <strong>▶ Próxima Pergunta</strong> (3s → lê → libera 15s) · <strong>2)</strong> Clique em <strong>✅ Computar Rodada</strong> (<kbd>Enter</kbd>).<br>
+              Fluxo rápido: <strong>1)</strong> <strong>▶ Próxima Pergunta</strong> (3s → lê → libera 15s) · <strong>2)</strong> <strong>✅ Computar Rodada</strong> (<kbd>Enter</kbd>).<br>
               Atalhos: <kbd>Espaço</kbd> Liberar 15s agora · <kbd>P</kbd> Parar tempo · <kbd>L</kbd> Reler · <kbd>S</kbd> Silenciar
             </div>
           </div>
@@ -517,10 +686,10 @@
             </h2>
             <div class="peer-room-bar">
               <div>
-                <div style="font-size:0.7rem; color:#94a3b8;">CÓDIGO DA SALA</div>
+                <div style="font-size:0.7rem; color:#CFE4F7; font-weight:700;">CÓDIGO DA SALA</div>
                 <div class="room-code-num" id="roomCodeDisplay">----</div>
               </div>
-              <button class="btn-slate" style="padding:6px 10px; font-size:0.78rem;" onclick="regenerateRoom()">🔄 Nova Sala</button>
+              <button class="btn-orange" style="padding:6px 10px; font-size:0.78rem;" onclick="regenerateRoom()">🔄 Nova Sala</button>
             </div>
 
             <div class="tablet-conn-row">
@@ -554,7 +723,7 @@
     <div id="tab-bracket" class="tab-panel">
       <div class="card">
         <h2>
-          <span>🏅 Chave dos Vencedores (9 Equipes)</span>
+          <span>🏅 Chave dos Vencedores (9 Escolas)</span>
           <div class="row-actions">
             <button class="btn-primary" onclick="setTelaoView('chaveamento')">📺 Mostrar Chave no Telão</button>
             <button class="btn-green" onclick="setTelaoView('classificacao')">🥇 Mostrar Pódio no Telão</button>
@@ -579,7 +748,7 @@
       <div class="card">
         <h2>🏷️ Título do Campeonato</h2>
         <div class="row-actions">
-          <input type="text" id="inputTitle" style="flex:1;" placeholder="Ex: Campeonato Municipal de Tabuada">
+          <input type="text" id="inputTitle" style="flex:1;" placeholder="Desafio da Tabuada — Mineiros - GO">
           <button class="btn-primary" onclick="saveTitle()">Salvar Título</button>
         </div>
       </div>
@@ -588,7 +757,7 @@
         <h2>
           <span>👥 Cadastro das 9 Escolas (Chaves A até I)</span>
           <div class="row-actions">
-            <button class="btn-slate" onclick="shuffleTeams()">🔀 Embaralhar Ordem</button>
+            <button class="btn-orange" onclick="shuffleTeams()">🔀 Embaralhar Ordem</button>
             <button class="btn-primary" onclick="saveTeams()">💾 Salvar Equipes</button>
           </div>
         </h2>
@@ -598,7 +767,7 @@
       <div class="card">
         <h2>📂 Banco de Perguntas e Manutenção</h2>
         <div class="row-actions" style="margin-bottom:14px;">
-          <label class="btn-slate" style="display:inline-block; padding:10px 14px; border-radius:9px; font-weight:700; cursor:pointer; font-size:0.9rem;">
+          <label class="btn-slate" style="display:inline-block; padding:9px 14px; border-radius:10px; font-weight:800; cursor:pointer; font-size:0.88rem;">
             📁 Carregar outro JSON
             <input type="file" accept=".json" style="display:none;" onchange="loadCustomJson(event)">
           </label>
@@ -634,7 +803,7 @@
     const tabletConns = { a: null, b: null };
 
     let state = {
-      title: 'Campeonato de Perguntas e Tabuada',
+      title: 'Desafio da Tabuada — Mineiros - GO',
       view: 'espera',
       teams: Bracket9.defaultTeams(),
       results: {},
@@ -644,7 +813,7 @@
       schoolConfirmed: { a: false, b: false },
       currentQuestion: null,
       currentBlock: null,
-      roundStatus: 'idle', // idle | countdown | reading | open | closed
+      roundStatus: 'idle',
       tabletAnswers: { a: null, b: null },
       lastRoundSummary: null,
       lastMatchResult: null,
@@ -693,11 +862,13 @@
         if (raw) {
           const parsed = JSON.parse(raw);
           state = { ...state, ...parsed };
+          if (!state.title || state.title === 'Campeonato de Perguntas e Tabuada') {
+            state.title = 'Desafio da Tabuada — Mineiros - GO';
+          }
           if (!Array.isArray(state.usedQuestionIds)) state.usedQuestionIds = [];
           if (!state.tabletAnswers) state.tabletAnswers = { a: null, b: null };
           if (!state.schoolConfirmed) state.schoolConfirmed = { a: false, b: false };
           if (!state.matchPoints) state.matchPoints = { a: 0, b: 0 };
-          // Se recarregou no meio de uma contagem, volta para idle
           if (state.roundStatus === 'countdown') state.roundStatus = 'idle';
         }
       } catch (e) {}
@@ -878,7 +1049,7 @@
       document.getElementById('roomCodeDisplay').textContent = roomCode;
       const statusEl = document.getElementById('hostPeerStatus');
       statusEl.textContent = '🟡 Abrindo sala...';
-      statusEl.style.color = '#d97706';
+      statusEl.style.color = '#E09900';
 
       hostPeer = new Peer('camp9-' + roomCode, {
         config: {
@@ -891,7 +1062,7 @@
 
       hostPeer.on('open', () => {
         statusEl.textContent = '🟢 Sala ativa';
-        statusEl.style.color = '#16a34a';
+        statusEl.style.color = '#1E7E46';
       });
 
       hostPeer.on('connection', (conn) => {
@@ -908,7 +1079,6 @@
             sendStateToTablet(side);
           } else if (msg.type === 'SCHOOL_READY' && (msg.side === 'a' || msg.side === 'b')) {
             state.schoolConfirmed[msg.side] = true;
-            // Se as duas escolas já entraram na mesa, pode mudar o Telão para a tela de aguardando pergunta
             if (state.schoolConfirmed.a && state.schoolConfirmed.b && state.view === 'espera') {
               state.view = 'quiz';
             }
@@ -933,7 +1103,7 @@
           setTimeout(() => initHostPeer(retryCount + 1), 600);
         } else {
           statusEl.textContent = '🔴 Erro na rede PeerJS';
-          statusEl.style.color = '#dc2626';
+          statusEl.style.color = '#C62032';
         }
       });
 
@@ -1021,7 +1191,7 @@
             <span>${Bracket9.escapeHTML(name)}</span>
             <span>${ans.order === 1 ? '🥇 1º' : '🥈 2º'} (${formatSec(ans.elapsedMs)})</span>
           </div>
-          <div style="font-weight:800; color:${ans.isCorrect ? '#166534' : '#991b1b'};">
+          <div style="font-weight:900; color:${ans.isCorrect ? '#143F27' : '#971524'};">
             Marcou ${letter} · ${ans.isCorrect ? '✅ ACERTOU' : '❌ ERROU'}
           </div>`;
       });
@@ -1039,7 +1209,7 @@
         renderBlocks();
       } catch (err) {
         document.getElementById('blocksList').innerHTML =
-          `<div style="color:var(--red); font-size:0.9rem;">Erro ao carregar <code>perguntas.json</code>.</div>`;
+          `<div style="color:var(--crimson); font-size:0.9rem;">Erro ao carregar <code>perguntas.json</code>.</div>`;
       }
     }
 
@@ -1076,7 +1246,7 @@
         const isSel = b.id === selectedBlockId;
         return `
           <button class="block-pill ${isSel ? 'selected' : ''}" onclick="selectBlock('${b.id}')">
-            <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:${b.cor || '#2563eb'}; margin-right:6px;"></span>
+            <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:${b.cor || '#2E7BBF'}; margin-right:6px;"></span>
             ${Bracket9.escapeHTML(b.nome)} (${remaining}/${total})
           </button>`;
       }).join('');
@@ -1107,7 +1277,6 @@
         return alert(`Todas as perguntas do "${bloco.nome}" já foram sorteadas! Clique em 🔄 para resetar.`);
       }
 
-      // Auto-confirma entrada das escolas caso alguma tenha esquecido de clicar no botão
       state.schoolConfirmed = { a: true, b: true };
       state.lastMatchResult = null;
       state.lastRoundSummary = null;
@@ -1243,14 +1412,12 @@
         detailsLine: `${dA}   |   ${dB}`
       };
 
-      // Limpa a pergunta atual e volta para o estado "Aguardando próxima pergunta"
       state.currentQuestion = null;
       state.tabletAnswers = { a: null, b: null };
       state.roundStatus = 'idle';
       document.getElementById('opTimerVal').textContent = 'Aguardando';
       document.getElementById('opTimerVal').className = 'op-timer-val';
 
-      // Verifica se a disputa (Melhor de 3 + Morte Súbita) encerrou
       const ptsA = state.matchPoints.a || 0;
       const ptsB = state.matchPoints.b || 0;
       const matchDecided = info && (ptsA !== ptsB) && (ptsA >= 2 || ptsB >= 2);
@@ -1276,7 +1443,6 @@
       };
       sendSfx('vitoria');
 
-      // Procura próximo jogo pronto na ordem (Jogo 1..16)
       const nextMatch = sortedMatches().find(m => {
         if (state.results[m.id] !== undefined) return false;
         const a = Bracket9.resolveSlot(m.s[0], state.teams, state.results);
@@ -1294,11 +1460,11 @@
       if (nextMatch) {
         state.activeMatchId = nextMatch.id;
         state.schoolConfirmed = { a: false, b: false };
-        state.view = 'espera'; // Telão chama o próximo confronto!
+        state.view = 'espera';
       } else {
         state.activeMatchId = null;
         state.schoolConfirmed = { a: true, b: true };
-        state.view = 'classificacao'; // Finalizou o Jogo 16 -> Pódio!
+        state.view = 'classificacao';
       }
 
       syncToTelao(true);
@@ -1313,10 +1479,10 @@
       if (!q) {
         if (state.lastRoundSummary) {
           box.innerHTML = `
-            <div style="font-weight:800; color:${state.lastRoundSummary.cancelled ? '#c2410c' : '#15803d'}; margin-bottom:4px;">
+            <div style="font-family:'Fredoka',sans-serif; font-size:1.05rem; color:${state.lastRoundSummary.cancelled ? '#C62032' : '#1E7E46'}; margin-bottom:4px;">
               ${Bracket9.escapeHTML(state.lastRoundSummary.headline)}
             </div>
-            <div style="font-size:0.88rem; color:var(--text); margin-bottom:6px;">
+            <div style="font-size:0.9rem; color:var(--text); margin-bottom:6px;">
               <strong>Gabarito:</strong> ${Bracket9.escapeHTML(state.lastRoundSummary.correctLabel)}
             </div>
             <div style="font-size:0.82rem; color:var(--muted);">
@@ -1342,7 +1508,7 @@
       }
 
       box.innerHTML = `
-        <div style="font-size:0.78rem; color:var(--muted); font-weight:700; margin-bottom:4px;">
+        <div style="font-size:0.78rem; color:var(--muted); font-weight:800; margin-bottom:4px;">
           ${Bracket9.escapeHTML(state.currentBlock?.nome || '')} · Gabarito visível só aqui
         </div>
         <div class="preview-q">${Bracket9.escapeHTML(q.pergunta)}</div>
@@ -1525,7 +1691,12 @@
       const b = Bracket9.resolveSlot(m.s[1], state.teams, state.results);
       const winName = winnerIdx === 0 ? a.name : b.name;
       if (!confirm(`Confirmar vitória de "${winName}" no ${m.label}?`)) return;
-      finishCurrentMatchAndCallNext({ id: m.id, label: m.label, teamA: a.name, teamB: b.name }, winnerIdx, winnerIdx === 0 ? 2 : 0, winnerIdx === 1 ? 2 : 0);
+      finishCurrentMatchAndCallNext(
+        { id: m.id, label: m.label, teamA: a.name, teamB: b.name },
+        winnerIdx,
+        winnerIdx === 0 ? 2 : 0,
+        winnerIdx === 1 ? 2 : 0
+      );
     }
 
     function undoMatch(matchId) {
@@ -1593,7 +1764,7 @@
       if (standings.length > 0) {
         stCard.style.display = 'block';
         document.getElementById('opStandingsList').innerHTML = standings.map(s => `
-          <div style="display:flex; justify-content:space-between; padding:8px 12px; border-bottom:1px solid var(--border); font-weight:700;">
+          <div style="display:flex; justify-content:space-between; padding:8px 12px; border-bottom:1px solid var(--border); font-weight:800;">
             <span>${s.pos}</span>
             <span>${Bracket9.escapeHTML(s.name)}</span>
           </div>`).join('');
@@ -1614,7 +1785,7 @@
     }
 
     function saveTitle() {
-      state.title = document.getElementById('inputTitle').value.trim() || 'Campeonato de Perguntas';
+      state.title = document.getElementById('inputTitle').value.trim() || 'Desafio da Tabuada — Mineiros - GO';
       syncToTelao(false);
       alert('Título atualizado!');
     }
