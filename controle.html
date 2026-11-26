@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" translate="no">
 <head>
   <meta charset="UTF-8">
+  <meta name="google" content="notranslate">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Painel do Operador — Campeonato</title>
+  <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
   <style>
     :root {
       --bg: #f1f5f9;
@@ -26,7 +28,6 @@
       padding-bottom: 40px;
     }
 
-    /* Barra superior fixa */
     .topbar {
       background: #0f172a;
       color: #fff;
@@ -59,7 +60,6 @@
       border-color: #38bdf8;
     }
 
-    /* Abas do painel */
     .tabs {
       display: flex;
       gap: 8px;
@@ -79,13 +79,13 @@
     }
     .tab-btn.active { background: #eff6ff; color: var(--primary); }
 
-    .container { max-width: 1320px; margin: 18px auto; padding: 0 18px; }
+    .container { max-width: 1340px; margin: 18px auto; padding: 0 18px; }
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
 
     .grid-live {
       display: grid;
-      grid-template-columns: 1.35fr 1fr;
+      grid-template-columns: 1.28fr 1fr;
       gap: 18px;
     }
     @media (max-width: 960px) { .grid-live { grid-template-columns: 1fr; } }
@@ -94,18 +94,19 @@
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 14px;
-      padding: 18px;
+      padding: 16px 18px;
       box-shadow: 0 1px 3px rgba(0,0,0,0.04);
       margin-bottom: 16px;
     }
     .card h2 {
-      font-size: 1rem;
+      font-size: 0.98rem;
       margin-bottom: 12px;
       color: #334155;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 8px;
+      flex-wrap: wrap;
     }
 
     button {
@@ -113,9 +114,9 @@
       cursor: pointer;
       border: none;
       border-radius: 9px;
-      padding: 10px 14px;
+      padding: 9px 14px;
       font-weight: 700;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       transition: filter 0.12s;
     }
     button:hover { filter: brightness(0.95); }
@@ -127,15 +128,68 @@
     .btn-slate { background: #e2e8f0; color: #1e293b; }
     .btn-dark { background: #0f172a; color: #fff; }
 
-    /* Botão principal do Sino / 15s */
+    /* Card dos Tablets PeerJS */
+    .peer-room-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #0f172a;
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .room-code-num {
+      font-size: 1.35rem;
+      font-weight: 900;
+      letter-spacing: 3px;
+      color: #fbbf24;
+    }
+    .tablet-conn-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 8px 10px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 8px;
+      font-size: 0.88rem;
+    }
+    .conn-dot { font-weight: 800; }
+    .conn-dot.on { color: var(--green); }
+    .conn-dot.off { color: var(--muted); }
+
+    /* Monitor de respostas dos tablets */
+    .answers-monitor {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .ans-box {
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      background: #f8fafc;
+      font-size: 0.86rem;
+    }
+    .ans-box.ok { border-color: var(--green); background: #f0fdf4; }
+    .ans-box.err { border-color: var(--red); background: #fef2f2; }
+    .ans-box .ans-title { font-weight: 800; margin-bottom: 4px; display: flex; justify-content: space-between; }
+
+    /* Botão principal de liberação / 15s */
     .btn-bell {
       width: 100%;
-      padding: 20px;
-      font-size: 1.3rem;
+      padding: 15px;
+      font-size: 1.12rem;
       background: linear-gradient(135deg, #ea580c, #dc2626);
       color: #fff;
-      border-radius: 14px;
-      box-shadow: 0 6px 18px rgba(234, 88, 12, 0.35);
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(234, 88, 12, 0.3);
       margin-bottom: 10px;
     }
     .op-timer-box {
@@ -144,12 +198,12 @@
       justify-content: space-between;
       background: #0f172a;
       color: #fff;
-      padding: 12px 18px;
+      padding: 10px 16px;
       border-radius: 12px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
     .op-timer-val {
-      font-size: 2.2rem;
+      font-size: 2rem;
       font-weight: 900;
       font-variant-numeric: tabular-nums;
       color: #38bdf8;
@@ -157,14 +211,14 @@
     .op-timer-val.danger { color: #f87171; }
 
     /* Blocos de dificuldade */
-    .blocks-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+    .blocks-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
     .block-pill {
-      padding: 9px 14px;
+      padding: 8px 12px;
       border-radius: 10px;
       border: 2px solid var(--border);
       background: #fff;
       font-weight: 700;
-      font-size: 0.88rem;
+      font-size: 0.85rem;
       cursor: pointer;
     }
     .block-pill.selected {
@@ -178,10 +232,10 @@
       background: #f8fafc;
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 16px;
+      padding: 14px;
       margin-top: 12px;
     }
-    .preview-q { font-size: 1.2rem; font-weight: 800; margin-bottom: 12px; }
+    .preview-q { font-size: 1.12rem; font-weight: 800; margin-bottom: 10px; }
     .preview-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .preview-opt {
       padding: 8px 12px;
@@ -211,7 +265,7 @@
       padding: 12px;
       text-align: center;
     }
-    .duel-name { font-weight: 800; font-size: 1rem; margin-bottom: 8px; }
+    .duel-name { font-weight: 800; font-size: 0.98rem; margin-bottom: 8px; }
     .pts-ctrl {
       display: flex;
       align-items: center;
@@ -222,7 +276,7 @@
     .pts-ctrl span { font-size: 1.5rem; font-weight: 900; min-width: 32px; }
     .pts-ctrl button { padding: 4px 12px; font-size: 1rem; }
 
-    /* Chaveamento no painel */
+    /* Chaveamento */
     .bracket-wrap { overflow-x: auto; padding-bottom: 8px; }
     .bracket-grid {
       display: grid;
@@ -307,7 +361,7 @@
 
     .row-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
     .shortcuts {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       color: var(--muted);
       margin-top: 8px;
       line-height: 1.5;
@@ -330,7 +384,7 @@
       <button class="btn-slate" style="padding:6px 10px; font-size:0.8rem;" onclick="window.open('index.html', '_blank')">↗ Abrir Telão</button>
     </div>
     <div class="view-switcher">
-      <span style="font-size:0.8rem; color:#94a3b8; align-self:center; margin-right:4px;">Projetar no Telão:</span>
+      <span style="font-size:0.8rem; color:#94a3b8; align-self:center; margin-right:4px;">Telão:</span>
       <button id="vbtn-espera" onclick="setTelaoView('espera')">📺 Espera</button>
       <button id="vbtn-quiz" onclick="setTelaoView('quiz')">❓ Pergunta</button>
       <button id="vbtn-chaveamento" onclick="setTelaoView('chaveamento')">🏆 Chaveamento</button>
@@ -339,7 +393,7 @@
   </div>
 
   <div class="tabs">
-    <button class="tab-btn active" onclick="openTab('live', this)">🎮 Ao Vivo (Perguntas & Sino)</button>
+    <button class="tab-btn active" onclick="openTab('live', this)">🎮 Ao Vivo (Perguntas & Tablets)</button>
     <button class="tab-btn" onclick="openTab('bracket', this)">🏆 Chaveamento (9 Equipes)</button>
     <button class="tab-btn" onclick="openTab('config', this)">⚙️ Equipes & Perguntas</button>
   </div>
@@ -349,19 +403,25 @@
     <!-- ABA 1: AO VIVO -->
     <div id="tab-live" class="tab-panel active">
       <div class="grid-live">
+
         <!-- COLUNA ESQUERDA: PERGUNTAS -->
         <div>
           <div class="card">
             <h2>
               <span>📚 1. Escolha o Bloco e Sorteie</span>
-              <label style="font-size:0.82rem; font-weight:600; display:flex; align-items:center; gap:6px; cursor:pointer;">
-                <input type="checkbox" id="chkAutoRead" checked> Ler automático ao sortear
-              </label>
+              <div style="display:flex; gap:12px; font-size:0.8rem; font-weight:600;">
+                <label style="display:flex; align-items:center; gap:5px; cursor:pointer;">
+                  <input type="checkbox" id="chkAutoRead" checked> Ler automático
+                </label>
+                <label style="display:flex; align-items:center; gap:5px; cursor:pointer;">
+                  <input type="checkbox" id="chkAutoUnlock" checked> Liberar tablets após leitura
+                </label>
+              </div>
             </h2>
             <div class="blocks-list" id="blocksList">Carregando perguntas.json...</div>
             <div class="row-actions">
               <button class="btn-primary" style="flex:1; padding:13px; font-size:1rem;" onclick="drawRandomQuestion()">🎲 Sortear Pergunta Aleatória</button>
-              <button class="btn-slate" onclick="resetUsedQuestions()" title="Permite sortear novamente perguntas já usadas">🔄 Resetar Sorteadas</button>
+              <button class="btn-slate" onclick="resetUsedQuestions()" title="Permite sortear novamente perguntas já usadas">🔄 Resetar</button>
             </div>
 
             <div class="preview-box" id="questionPreview">
@@ -369,49 +429,20 @@
             </div>
 
             <div class="row-actions" style="margin-top:12px;">
-              <button class="btn-dark" onclick="speakCurrent(true)">🔊 Ler Pergunta + Alternativas (L)</button>
-              <button class="btn-slate" onclick="speakCurrent(false)">🗣️ Ler Só Pergunta</button>
+              <button class="btn-dark" onclick="speakCurrent(true, true)">🔊 Ler Pergunta + Alternativas (L)</button>
+              <button class="btn-slate" onclick="speakCurrent(false, false)">🗣️ Ler Só Pergunta</button>
               <button class="btn-slate" onclick="stopSpeech()">🔇 Silenciar (S)</button>
             </div>
 
             <div class="row-actions" style="margin-top:12px; padding-top:12px; border-top:1px solid var(--border);">
               <div style="flex:1; min-width:200px;">
-                <label style="font-size:0.78rem; color:var(--muted); font-weight:700;">Voz em Português (dica: use Microsoft Edge)</label>
+                <label style="font-size:0.78rem; color:var(--muted); font-weight:700;">Voz em Português (dica: Microsoft Edge)</label>
                 <select id="voiceSelect"></select>
               </div>
               <div style="width:130px;">
                 <label style="font-size:0.78rem; color:var(--muted); font-weight:700;">Velocidade: <span id="rateLabel">1.0x</span></label>
                 <input type="range" id="rateSlider" min="0.75" max="1.35" step="0.05" value="1.0" style="width:100%;" oninput="document.getElementById('rateLabel').textContent = this.value + 'x'">
               </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- COLUNA DIREITA: SINO 15S + CONFRONTO -->
-        <div>
-          <div class="card">
-            <h2>⏱️ 2. Sino Físico & Cronômetro (15s)</h2>
-            <button class="btn-bell" onclick="triggerBell15s()">🔔 BATERAM O SINO — Iniciar 15s (Espaço)</button>
-
-            <div class="op-timer-box">
-              <div>
-                <div style="font-size:0.78rem; color:#94a3b8;">TEMPO NO TELÃO</div>
-                <div class="op-timer-val" id="opTimerVal">15s</div>
-              </div>
-              <div class="row-actions">
-                <button class="btn-slate" onclick="stopTimer(false)">⏸ Parar (P)</button>
-                <button class="btn-slate" onclick="stopTimer(true)">⟲ 15s</button>
-              </div>
-            </div>
-
-            <div class="row-actions">
-              <button class="btn-primary" style="flex:1;" onclick="revealAnswer()">👁️ Revelar Gabarito (R)</button>
-              <button class="btn-green" onclick="sendSfx('acerto')">✅ Acerto (C)</button>
-              <button class="btn-red" onclick="sendSfx('erro')">❌ Erro (E)</button>
-            </div>
-
-            <div class="shortcuts">
-              Atalhos: <kbd>Espaço</kbd> Sino 15s · <kbd>P</kbd> Parar tempo · <kbd>L</kbd> Ler · <kbd>S</kbd> Silenciar · <kbd>R</kbd> Revelar · <kbd>C</kbd> Som acerto · <kbd>E</kbd> Som erro
             </div>
           </div>
 
@@ -421,10 +452,90 @@
               <select id="activeMatchSelect" style="width:auto; font-size:0.85rem;" onchange="selectActiveMatch(this.value)"></select>
             </h2>
             <div id="activeMatchArea">
-              <div style="color:var(--muted); font-size:0.9rem;">Selecione um jogo pronto no menu acima ou na aba <strong>Chaveamento</strong>.</div>
+              <div style="color:var(--muted); font-size:0.9rem;">Selecione um jogo acima ou na aba <strong>Chaveamento</strong>.</div>
             </div>
           </div>
         </div>
+
+        <!-- COLUNA DIREITA: TABLETS + CRONÔMETRO -->
+        <div>
+          <div class="card">
+            <h2>
+              <span>📱 Conexão dos Tablets (PeerJS)</span>
+              <span id="hostPeerStatus" style="font-size:0.8rem; color:var(--muted);">Conectando...</span>
+            </h2>
+            <div class="peer-room-bar">
+              <div>
+                <div style="font-size:0.7rem; color:#94a3b8;">CÓDIGO DA SALA</div>
+                <div class="room-code-num" id="roomCodeDisplay">----</div>
+              </div>
+              <div class="row-actions">
+                <button class="btn-slate" style="padding:6px 10px; font-size:0.78rem;" onclick="regenerateRoom()">🔄 Nova Sala</button>
+              </div>
+            </div>
+
+            <div class="tablet-conn-row">
+              <div>
+                <strong>Mesa A (<span id="connTeamA">Equipe A</span>):</strong>
+                <span id="connStatusA" class="conn-dot off">⚪ Aguardando...</span>
+              </div>
+              <div class="row-actions">
+                <button class="btn-primary" style="padding:5px 10px; font-size:0.78rem;" onclick="copyTabletLink('a')">📋 Copiar Link A</button>
+                <button class="btn-slate" style="padding:5px 8px; font-size:0.78rem;" onclick="openTabletPreview('a')" title="Testar Tablet A em outra aba">↗</button>
+              </div>
+            </div>
+
+            <div class="tablet-conn-row" style="margin-bottom:0;">
+              <div>
+                <strong>Mesa B (<span id="connTeamB">Equipe B</span>):</strong>
+                <span id="connStatusB" class="conn-dot off">⚪ Aguardando...</span>
+              </div>
+              <div class="row-actions">
+                <button class="btn-orange" style="padding:5px 10px; font-size:0.78rem;" onclick="copyTabletLink('b')">📋 Copiar Link B</button>
+                <button class="btn-slate" style="padding:5px 8px; font-size:0.78rem;" onclick="openTabletPreview('b')" title="Testar Tablet B em outra aba">↗</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>⏱️ 2. Respostas dos Tablets & Cronômetro (15s)</h2>
+
+            <div class="answers-monitor" id="answersMonitor">
+              <div class="ans-box" id="ansBoxA">
+                <div class="ans-title"><span id="ansNameA">Mesa A</span><span>—</span></div>
+                <div style="color:var(--muted);">Aguardando...</div>
+              </div>
+              <div class="ans-box" id="ansBoxB">
+                <div class="ans-title"><span id="ansNameB">Mesa B</span><span>—</span></div>
+                <div style="color:var(--muted);">Aguardando...</div>
+              </div>
+            </div>
+
+            <button class="btn-bell" onclick="openRoundForTablets()">🔓 Liberar Tablets & Iniciar 15s Agora (Espaço)</button>
+
+            <div class="op-timer-box">
+              <div>
+                <div style="font-size:0.72rem; color:#94a3b8;">STATUS / TEMPO</div>
+                <div class="op-timer-val" id="opTimerVal">15s</div>
+              </div>
+              <div class="row-actions">
+                <button class="btn-slate" onclick="closeRound(false)">⏹ Encerrar (P)</button>
+                <button class="btn-slate" onclick="stopTimer(true)">⟲ 15s</button>
+              </div>
+            </div>
+
+            <div class="row-actions">
+              <button class="btn-primary" style="flex:1;" onclick="revealAnswer()">👁️ Revelar Gabarito (R)</button>
+              <button class="btn-green" onclick="sendSfx('acerto')">✅ Som Acerto (C)</button>
+              <button class="btn-red" onclick="sendSfx('erro')">❌ Som Erro (E)</button>
+            </div>
+
+            <div class="shortcuts">
+              Atalhos: <kbd>Espaço</kbd> Liberar 15s · <kbd>P</kbd> Encerrar tempo · <kbd>L</kbd> Ler · <kbd>S</kbd> Silenciar · <kbd>R</kbd> Revelar · <kbd>C</kbd> Acerto · <kbd>E</kbd> Erro
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -461,7 +572,7 @@
       <div class="card">
         <h2>🏷️ Título do Campeonato</h2>
         <div class="row-actions">
-          <input type="text" id="inputTitle" style="flex:1;" placeholder="Ex: 1º Campeonato Municipal de Tabuada">
+          <input type="text" id="inputTitle" style="flex:1;" placeholder="Ex: Campeonato Municipal de Tabuada">
           <button class="btn-primary" onclick="saveTitle()">Salvar Título</button>
         </div>
       </div>
@@ -475,20 +586,17 @@
           </div>
         </h2>
         <div class="teams-grid" id="teamsInputs"></div>
-        <p style="font-size:0.85rem; color:var(--muted);">
-          Dica: você pode editar o nome de qualquer equipe a qualquer momento. Use "Embaralhar Ordem" antes de começar o torneio para sortear os confrontos iniciais.
-        </p>
       </div>
 
       <div class="card">
         <h2>📂 Banco de Perguntas e Manutenção</h2>
         <div class="row-actions" style="margin-bottom:14px;">
           <label class="btn-slate" style="display:inline-block; padding:10px 14px; border-radius:9px; font-weight:700; cursor:pointer; font-size:0.9rem;">
-            📁 Carregar outro arquivo JSON do computador
+            📁 Carregar outro JSON do computador
             <input type="file" accept=".json" style="display:none;" onchange="loadCustomJson(event)">
           </label>
-          <button class="btn-slate" onclick="resetUsedQuestions()">🔄 Zerar Histórico de Perguntas Sorteadas</button>
-          <button class="btn-red" onclick="resetBracketResults()">🗑️ Zerar Todos os Resultados da Chave</button>
+          <button class="btn-slate" onclick="resetUsedQuestions()">🔄 Zerar Histórico de Perguntas</button>
+          <button class="btn-red" onclick="resetBracketResults()">🗑️ Zerar Resultados da Chave</button>
         </div>
         <div id="bankSummary" style="font-size:0.88rem; color:var(--muted);"></div>
       </div>
@@ -499,10 +607,20 @@
   <script src="bracket.js"></script>
   <script>
     const channel = new BroadcastChannel(Bracket9.CHANNEL_NAME);
+    const ROOM_STORAGE_KEY = 'campeonato_quiz_room_code_v1';
+    const ROUND_DURATION_SEC = 15;
+
     let questionBank = { blocos: [] };
     let selectedBlockId = null;
+
     let opTimerInterval = null;
     let opTimerTarget = null;
+    let roundOpenedAt = null;
+
+    // PeerJS (Host para os 2 tablets)
+    let roomCode = '';
+    let hostPeer = null;
+    const tabletConns = { a: null, b: null };
 
     let state = {
       title: 'Campeonato de Perguntas e Tabuada',
@@ -514,10 +632,27 @@
       currentQuestion: null,
       currentBlock: null,
       revealed: false,
+      roundStatus: 'idle', // idle | reading | open | closed
+      tabletAnswers: { a: null, b: null },
       usedQuestionIds: []
     };
 
-    // === PERSISTÊNCIA E SINCRONIZAÇÃO ===
+    // === UTILITÁRIOS ===
+    function getActiveMatchInfo() {
+      if (!state.activeMatchId) return null;
+      const m = Bracket9.matchById(state.activeMatchId);
+      if (!m) return null;
+      const a = Bracket9.resolveSlot(m.s[0], state.teams, state.results);
+      const b = Bracket9.resolveSlot(m.s[1], state.teams, state.results);
+      if (!a.decided || !b.decided) return null;
+      return { label: m.label, teamA: a.name, teamB: b.name };
+    }
+
+    function formatSec(ms) {
+      return (ms / 1000).toFixed(2).replace('.', ',') + 's';
+    }
+
+    // === PERSISTÊNCIA E SINCRONIZAÇÃO (TELÃO + TABLETS) ===
     function loadSavedState() {
       try {
         const raw = localStorage.getItem(Bracket9.STORAGE_KEY);
@@ -525,6 +660,7 @@
           const parsed = JSON.parse(raw);
           state = { ...state, ...parsed };
           if (!Array.isArray(state.usedQuestionIds)) state.usedQuestionIds = [];
+          if (!state.tabletAnswers) state.tabletAnswers = { a: null, b: null };
         }
       } catch (e) {}
     }
@@ -534,7 +670,10 @@
         localStorage.setItem(Bracket9.STORAGE_KEY, JSON.stringify(state));
       } catch (e) {}
       channel.postMessage({ type: 'STATE_UPDATE', state, resetTimer });
+      broadcastToTablets();
       updateViewButtons();
+      renderAnswersMonitor();
+      updateTabletTeamLabels();
     }
 
     function setTelaoView(viewName) {
@@ -556,6 +695,245 @@
       if (btnEl) btnEl.classList.add('active');
     }
 
+    // === PEERJS: CONEXÃO COM OS 2 TABLETS ===
+    function generateRoomCode() {
+      return String(Math.floor(1000 + Math.random() * 9000));
+    }
+
+    function getOrCreateRoomCode() {
+      let saved = localStorage.getItem(ROOM_STORAGE_KEY);
+      if (!saved || !/^\d{4}$/.test(saved)) {
+        saved = generateRoomCode();
+        localStorage.setItem(ROOM_STORAGE_KEY, saved);
+      }
+      return saved;
+    }
+
+    function regenerateRoom() {
+      if (!confirm('Gerar um novo código de sala? Os tablets precisarão abrir o novo link ou digitar o novo código.')) return;
+      roomCode = generateRoomCode();
+      localStorage.setItem(ROOM_STORAGE_KEY, roomCode);
+      initHostPeer();
+    }
+
+    function buildTabletUrl(side) {
+      const base = window.location.href.split('?')[0].replace(/controle\.html$/i, '');
+      const prefix = base.endsWith('/') ? base : base + '/';
+      return `${prefix}tablet.html?sala=${roomCode}&lado=${side.toUpperCase()}`;
+    }
+
+    function copyTabletLink(side) {
+      const url = buildTabletUrl(side);
+      navigator.clipboard.writeText(url).then(() => {
+        alert(`Link do Tablet ${side.toUpperCase()} copiado!\n\n${url}\n\nEnvie ou abra esse link no tablet da Mesa ${side.toUpperCase()}.`);
+      }).catch(() => {
+        prompt(`Copie o link do Tablet ${side.toUpperCase()}:`, url);
+      });
+    }
+
+    function openTabletPreview(side) {
+      window.open(buildTabletUrl(side), '_blank');
+    }
+
+    function updateTabletConnUI() {
+      ['a', 'b'].forEach(side => {
+        const el = document.getElementById(side === 'a' ? 'connStatusA' : 'connStatusB');
+        const online = !!(tabletConns[side] && tabletConns[side].open);
+        el.className = online ? 'conn-dot on' : 'conn-dot off';
+        el.textContent = online ? '🟢 Conectado' : '⚪ Aguardando...';
+      });
+    }
+
+    function updateTabletTeamLabels() {
+      const info = getActiveMatchInfo();
+      const nameA = info ? info.teamA : 'Mesa A';
+      const nameB = info ? info.teamB : 'Mesa B';
+      document.getElementById('connTeamA').textContent = nameA;
+      document.getElementById('connTeamB').textContent = nameB;
+      document.getElementById('ansNameA').textContent = nameA;
+      document.getElementById('ansNameB').textContent = nameB;
+    }
+
+    function sendStateToTablet(side) {
+      const conn = tabletConns[side];
+      if (!conn || !conn.open) return;
+
+      const info = getActiveMatchInfo();
+      const teamName = info ? (side === 'a' ? info.teamA : info.teamB) : (side === 'a' ? 'Mesa A' : 'Mesa B');
+
+      // Envia a pergunta SEM o gabarito enquanto não for revelada
+      let safeQuestion = null;
+      if (state.currentQuestion) {
+        safeQuestion = {
+          id: state.currentQuestion.id,
+          pergunta: state.currentQuestion.pergunta,
+          alternativas: state.currentQuestion.alternativas || null
+        };
+        if (state.revealed) {
+          safeQuestion.correta = state.currentQuestion.correta;
+          safeQuestion.resposta = state.currentQuestion.resposta;
+        }
+      }
+
+      const remainingMs = (state.roundStatus === 'open' && opTimerTarget)
+        ? Math.max(0, opTimerTarget - Date.now())
+        : 0;
+
+      conn.send({
+        type: 'SYNC_TABLET',
+        teamName,
+        matchLabel: info ? info.label : '',
+        question: safeQuestion,
+        roundStatus: state.roundStatus,
+        revealed: state.revealed,
+        myAnswer: state.tabletAnswers ? state.tabletAnswers[side] : null,
+        remainingMs,
+        durationMs: ROUND_DURATION_SEC * 1000
+      });
+    }
+
+    function broadcastToTablets() {
+      sendStateToTablet('a');
+      sendStateToTablet('b');
+    }
+
+    function handleTabletAnswer(side, msg) {
+      if (side !== 'a' && side !== 'b') return;
+      if (state.roundStatus !== 'open') return;
+      if (!state.currentQuestion || msg.questionId !== state.currentQuestion.id) return;
+      if (state.tabletAnswers[side]) return; // Já respondeu
+
+      const now = Date.now();
+      const elapsedMs = roundOpenedAt ? Math.max(10, now - roundOpenedAt) : 0;
+      const otherSide = side === 'a' ? 'b' : 'a';
+      const order = state.tabletAnswers[otherSide] ? 2 : 1;
+      const isCorrect = (msg.choiceIndex === state.currentQuestion.correta);
+
+      const ansObj = {
+        choiceIndex: msg.choiceIndex,
+        elapsedMs,
+        order,
+        isCorrect
+      };
+
+      state.tabletAnswers[side] = ansObj;
+      sendSfx('resposta');
+
+      if (tabletConns[side] && tabletConns[side].open) {
+        tabletConns[side].send({ type: 'ANSWER_ACK', answer: ansObj });
+      }
+
+      // Se os dois já responderam, para o cronômetro automaticamente
+      if (state.tabletAnswers.a && state.tabletAnswers.b) {
+        closeRound(false);
+      } else {
+        syncToTelao(false);
+      }
+    }
+
+    function initHostPeer(retryCount = 0) {
+      if (hostPeer) {
+        try { hostPeer.destroy(); } catch (e) {}
+        hostPeer = null;
+      }
+      tabletConns.a = null;
+      tabletConns.b = null;
+      updateTabletConnUI();
+
+      document.getElementById('roomCodeDisplay').textContent = roomCode;
+      const statusEl = document.getElementById('hostPeerStatus');
+      statusEl.textContent = '🟡 Abrindo sala...';
+      statusEl.style.color = '#d97706';
+
+      hostPeer = new Peer('camp9-' + roomCode, {
+        config: {
+          iceServers: [
+            { urls: 'stun:stun.l.google.com:19302' },
+            { urls: 'stun:stun1.l.google.com:19302' }
+          ]
+        }
+      });
+
+      hostPeer.on('open', () => {
+        statusEl.textContent = '🟢 Sala ativa';
+        statusEl.style.color = '#16a34a';
+      });
+
+      hostPeer.on('connection', (conn) => {
+        conn.on('data', (msg) => {
+          if (!msg || typeof msg !== 'object') return;
+          if (msg.type === 'HELLO' && (msg.side === 'a' || msg.side === 'b')) {
+            const side = msg.side;
+            if (tabletConns[side] && tabletConns[side] !== conn) {
+              try { tabletConns[side].close(); } catch (e) {}
+            }
+            tabletConns[side] = conn;
+            conn._tabletSide = side;
+            updateTabletConnUI();
+            sendStateToTablet(side);
+          } else if (msg.type === 'ANSWER') {
+            handleTabletAnswer(msg.side || conn._tabletSide, msg);
+          }
+        });
+
+        conn.on('close', () => {
+          if (conn._tabletSide && tabletConns[conn._tabletSide] === conn) {
+            tabletConns[conn._tabletSide] = null;
+            updateTabletConnUI();
+          }
+        });
+      });
+
+      hostPeer.on('error', (err) => {
+        if (err.type === 'unavailable-id' && retryCount < 1) {
+          // Código anterior ainda expirando no servidor PeerJS — tenta de novo ou gera novo
+          roomCode = generateRoomCode();
+          localStorage.setItem(ROOM_STORAGE_KEY, roomCode);
+          setTimeout(() => initHostPeer(retryCount + 1), 600);
+        } else {
+          statusEl.textContent = '🔴 Erro na rede PeerJS';
+          statusEl.style.color = '#dc2626';
+        }
+      });
+
+      hostPeer.on('disconnected', () => {
+        statusEl.textContent = '🟡 Reconectando sala...';
+        try { hostPeer.reconnect(); } catch (e) {}
+      });
+    }
+
+    function renderAnswersMonitor() {
+      const letters = ['A', 'B', 'C', 'D', 'E'];
+      const info = getActiveMatchInfo();
+
+      ['a', 'b'].forEach(side => {
+        const box = document.getElementById(side === 'a' ? 'ansBoxA' : 'ansBoxB');
+        const name = info ? (side === 'a' ? info.teamA : info.teamB) : (side === 'a' ? 'Mesa A' : 'Mesa B');
+        const ans = state.tabletAnswers ? state.tabletAnswers[side] : null;
+
+        box.className = 'ans-box';
+        if (!ans) {
+          let label = 'Aguardando...';
+          if (state.roundStatus === 'reading') label = '🔊 Travado (lendo)';
+          else if (state.roundStatus === 'open') label = '⏳ Escolhendo...';
+          else if (state.roundStatus === 'closed') label = '⏰ Não respondeu';
+          box.innerHTML = `<div class="ans-title"><span>${Bracket9.escapeHTML(name)}</span><span>—</span></div><div style="color:var(--muted);">${label}</div>`;
+          return;
+        }
+
+        box.classList.add(ans.isCorrect ? 'ok' : 'err');
+        const letter = letters[ans.choiceIndex] || '?';
+        box.innerHTML = `
+          <div class="ans-title">
+            <span>${Bracket9.escapeHTML(name)}</span>
+            <span>${ans.order === 1 ? '🥇 1º' : '🥈 2º'} (${formatSec(ans.elapsedMs)})</span>
+          </div>
+          <div style="font-weight:800; color:${ans.isCorrect ? '#166534' : '#991b1b'};">
+            Escolheu ${letter} · ${ans.isCorrect ? '✅ ACERTOU' : '❌ ERROU'}
+          </div>`;
+      });
+    }
+
     // === BANCO DE PERGUNTAS ===
     async function fetchQuestions() {
       try {
@@ -568,7 +946,7 @@
         renderBlocks();
       } catch (err) {
         document.getElementById('blocksList').innerHTML =
-          `<div style="color:var(--red); font-size:0.9rem;">Não foi possível ler <code>perguntas.json</code> automaticamente. Publique no GitHub Pages ou carregue o JSON na aba <strong>Equipes & Perguntas</strong>.</div>`;
+          `<div style="color:var(--red); font-size:0.9rem;">Erro ao ler <code>perguntas.json</code>.</div>`;
       }
     }
 
@@ -583,9 +961,9 @@
           questionBank = parsed;
           selectedBlockId = parsed.blocos[0]?.id || null;
           renderBlocks();
-          alert(`Banco carregado com sucesso! ${parsed.blocos.length} bloco(s).`);
+          alert(`Banco carregado! ${parsed.blocos.length} bloco(s).`);
         } catch (err) {
-          alert('Erro ao ler o arquivo JSON: verifique se segue a estrutura de blocos.');
+          alert('Erro ao ler JSON.');
         }
       };
       reader.readAsText(file);
@@ -613,7 +991,7 @@
       }).join('');
 
       const totalGeral = blocos.reduce((acc, b) => acc + (b.perguntas || []).length, 0);
-      summary.textContent = `Total carregado: ${totalGeral} perguntas em ${blocos.length} blocos · Já sorteadas: ${state.usedQuestionIds.length}.`;
+      summary.textContent = `Total: ${totalGeral} perguntas em ${blocos.length} blocos · Já sorteadas: ${state.usedQuestionIds.length}.`;
     }
 
     function selectBlock(id) {
@@ -627,7 +1005,7 @@
 
       const available = (bloco.perguntas || []).filter(p => !state.usedQuestionIds.includes(p.id));
       if (available.length === 0) {
-        return alert(`Todas as perguntas do "${bloco.nome}" já foram sorteadas! Clique em "Resetar Sorteadas" se quiser reutilizá-las.`);
+        return alert(`Todas as perguntas do "${bloco.nome}" já foram sorteadas!`);
       }
 
       const chosen = available[Math.floor(Math.random() * available.length)];
@@ -635,15 +1013,18 @@
       state.currentQuestion = chosen;
       state.currentBlock = { id: bloco.id, nome: bloco.nome, cor: bloco.cor };
       state.revealed = false;
+      state.roundStatus = 'reading';
+      state.tabletAnswers = { a: null, b: null };
       state.view = 'quiz';
 
       stopTimer(true);
+      document.getElementById('opTimerVal').textContent = 'Lendo...';
       syncToTelao(true);
       renderBlocks();
       renderQuestionPreview();
 
       if (document.getElementById('chkAutoRead').checked) {
-        setTimeout(() => speakCurrent(true), 250);
+        setTimeout(() => speakCurrent(true, true), 250);
       }
     }
 
@@ -670,14 +1051,14 @@
 
       box.innerHTML = `
         <div style="font-size:0.78rem; color:var(--muted); font-weight:700; margin-bottom:4px;">
-          ${Bracket9.escapeHTML(state.currentBlock?.nome || '')} · ${state.revealed ? '👁️ REVELADA NO TELÃO' : '🔒 Gabarito oculto no telão'}
+          ${Bracket9.escapeHTML(state.currentBlock?.nome || '')} · ${state.revealed ? '👁️ REVELADA' : '🔒 Gabarito oculto no telão'}
         </div>
         <div class="preview-q">${Bracket9.escapeHTML(q.pergunta)}</div>
         ${bodyHtml}`;
     }
 
     function resetUsedQuestions() {
-      if (!confirm('Resetar o histórico de perguntas já sorteadas? Todas voltarão a ficar disponíveis.')) return;
+      if (!confirm('Resetar o histórico de perguntas já sorteadas?')) return;
       state.usedQuestionIds = [];
       syncToTelao(false);
       renderBlocks();
@@ -698,12 +1079,20 @@
       return text;
     }
 
-    function speakCurrent(includeAlternatives = true) {
+    function speakCurrent(includeAlternatives = true, allowAutoRelease = false) {
       if (!state.currentQuestion) return alert('Sorteie uma pergunta primeiro.');
       const text = buildSpeechText(includeAlternatives);
       const voiceName = document.getElementById('voiceSelect').value;
       const rate = parseFloat(document.getElementById('rateSlider').value) || 1.0;
-      channel.postMessage({ type: 'SPEAK', text, voiceName, rate });
+      const autoRelease = allowAutoRelease && document.getElementById('chkAutoUnlock').checked;
+      channel.postMessage({
+        type: 'SPEAK',
+        text,
+        voiceName,
+        rate,
+        questionId: state.currentQuestion.id,
+        autoRelease
+      });
     }
 
     function stopSpeech() {
@@ -717,6 +1106,7 @@
     function revealAnswer() {
       if (!state.currentQuestion) return;
       state.revealed = true;
+      state.roundStatus = 'closed';
       stopTimer(false);
       syncToTelao(false);
       renderQuestionPreview();
@@ -741,12 +1131,24 @@
     }
     window.speechSynthesis.onvoiceschanged = () => populateVoices();
 
-    // === CRONÔMETRO 15 SEGUNDOS (SINO) ===
-    function triggerBell15s() {
+    // === LIBERAÇÃO DOS TABLETS + CRONÔMETRO 15s ===
+    function openRoundForTablets() {
+      if (!state.currentQuestion) return alert('Sorteie uma pergunta primeiro.');
       const startedAt = Date.now();
-      const duration = 15;
-      channel.postMessage({ type: 'TIMER_START', duration, startedAt });
-      startOperatorTimer(duration, startedAt);
+      roundOpenedAt = startedAt;
+      state.roundStatus = 'open';
+      state.revealed = false;
+      state.tabletAnswers = { a: null, b: null };
+
+      startOperatorTimer(ROUND_DURATION_SEC, startedAt);
+      syncToTelao(false);
+      channel.postMessage({ type: 'TIMER_START', duration: ROUND_DURATION_SEC, startedAt });
+    }
+
+    function closeRound(resetVisual = false) {
+      state.roundStatus = 'closed';
+      stopTimer(resetVisual);
+      syncToTelao(false);
     }
 
     function startOperatorTimer(duration, startedAt) {
@@ -762,6 +1164,10 @@
         if (remMs <= 0) {
           clearInterval(opTimerInterval);
           opTimerInterval = null;
+          if (state.roundStatus === 'open') {
+            state.roundStatus = 'closed';
+            syncToTelao(false);
+          }
         }
       }
       tick();
@@ -773,9 +1179,10 @@
         clearInterval(opTimerInterval);
         opTimerInterval = null;
       }
+      opTimerTarget = null;
       if (resetVisual) {
         const el = document.getElementById('opTimerVal');
-        el.textContent = '15s';
+        el.textContent = `${ROUND_DURATION_SEC}s`;
         el.className = 'op-timer-val';
       }
       channel.postMessage({ type: 'TIMER_STOP', resetVisual });
@@ -787,7 +1194,6 @@
       const area = document.getElementById('activeMatchArea');
       const matches = Bracket9.allMatches();
 
-      // Preenche seletor com jogos que já têm as 2 equipes definidas
       const readyMatches = matches.filter(m => {
         const a = Bracket9.resolveSlot(m.s[0], state.teams, state.results);
         const b = Bracket9.resolveSlot(m.s[1], state.teams, state.results);
@@ -804,7 +1210,7 @@
 
       const m = Bracket9.matchById(state.activeMatchId);
       if (!m) {
-        area.innerHTML = '<div style="color:var(--muted); font-size:0.9rem;">Nenhum confronto selecionado. Você pode sortear perguntas livremente ou escolher um jogo acima.</div>';
+        area.innerHTML = '<div style="color:var(--muted); font-size:0.9rem;">Nenhum confronto selecionado.</div>';
         return;
       }
 
@@ -832,7 +1238,7 @@
       area.innerHTML = `
         <div class="match-duel">
           <div class="duel-side">
-            <div class="duel-name">${Bracket9.escapeHTML(a.name)}</div>
+            <div class="duel-name">${Bracket9.escapeHTML(a.name)} <span style="font-size:0.75rem; color:var(--primary);">(Mesa A)</span></div>
             <div class="pts-ctrl">
               <button class="btn-slate" onclick="changePoints('a', -1)">-</button>
               <span>${state.matchPoints.a}</span>
@@ -842,7 +1248,7 @@
           </div>
           <div style="font-weight:900; color:var(--muted);">VS</div>
           <div class="duel-side">
-            <div class="duel-name">${Bracket9.escapeHTML(b.name)}</div>
+            <div class="duel-name">${Bracket9.escapeHTML(b.name)} <span style="font-size:0.75rem; color:var(--orange);">(Mesa B)</span></div>
             <div class="pts-ctrl">
               <button class="btn-slate" onclick="changePoints('b', -1)">-</button>
               <span>${state.matchPoints.b}</span>
@@ -864,11 +1270,14 @@
     function putMatchOnStage(matchId) {
       state.activeMatchId = Number(matchId);
       state.matchPoints = { a: 0, b: 0 };
+      state.currentQuestion = null;
+      state.roundStatus = 'idle';
+      state.tabletAnswers = { a: null, b: null };
       state.view = 'espera';
       syncToTelao(true);
       renderActiveMatchPanel();
       renderBracketPanel();
-      // Volta para aba Ao Vivo
+      renderQuestionPreview();
       openTab('live', document.querySelectorAll('.tab-btn')[0]);
     }
 
@@ -895,15 +1304,13 @@
       renderBracketPanel();
 
       if (matchId === 16) {
-        alert(`🏆 Campeonato Finalizado! Campeão: ${winnerName}.\nClique em "🥇 Classificação" no topo para exibir o pódio no Telão.`);
+        alert(`🏆 Campeonato Finalizado! Campeão: ${winnerName}.`);
       }
     }
 
     function undoMatch(matchId) {
       const deps = Bracket9.getDependentMatchIds(matchId).filter(id => state.results[id] !== undefined);
-      const extraMsg = deps.length > 0
-        ? `\n\nAtenção: os resultados dependentes (Jogo(s) ${deps.join(', ')}) também serão apagados.`
-        : '';
+      const extraMsg = deps.length > 0 ? `\n\nOs resultados dependentes (Jogo(s) ${deps.join(', ')}) também serão apagados.` : '';
       if (!confirm(`Desfazer o resultado do Jogo ${matchId}?${extraMsg}`)) return;
 
       delete state.results[matchId];
@@ -920,11 +1327,8 @@
         const b = Bracket9.resolveSlot(m.s[1], state.teams, state.results);
         return a.decided && b.decided;
       });
-      if (next) {
-        selectActiveMatch(next.id);
-      } else {
-        alert('Não há mais jogos pendentes na chave.');
-      }
+      if (next) selectActiveMatch(next.id);
+      else alert('Não há mais jogos pendentes na chave.');
     }
 
     function renderBracketPanel() {
@@ -944,8 +1348,8 @@
             } else if (bothReady) {
               actions = `
                 <button class="btn-dark" onclick="putMatchOnStage(${m.id})">▶ Telão</button>
-                <button class="btn-green" onclick="declareWinner(${m.id}, 0)" title="Declarar vitória de ${Bracket9.escapeHTML(a.name)}">🏆 1º</button>
-                <button class="btn-green" onclick="declareWinner(${m.id}, 1)" title="Declarar vitória de ${Bracket9.escapeHTML(b.name)}">🏆 2º</button>
+                <button class="btn-green" onclick="declareWinner(${m.id}, 0)">🏆 1º</button>
+                <button class="btn-green" onclick="declareWinner(${m.id}, 1)">🏆 2º</button>
               `;
             }
 
@@ -1009,21 +1413,19 @@
       syncToTelao(false);
       renderActiveMatchPanel();
       renderBracketPanel();
-      alert('Equipes salvas e sincronizadas com o Telão!');
+      alert('Equipes salvas!');
     }
 
     function shuffleTeams() {
       if (Object.keys(state.results).length > 0) {
-        if (!confirm('Já existem jogos registrados! Embaralhar as equipes alterará os confrontos atuais. Deseja continuar?')) return;
+        if (!confirm('Já existem jogos registrados! Continuar embaralhando?')) return;
       }
       const names = Bracket9.SEEDS.map(s => document.getElementById('team_input_' + s).value.trim() || `Equipe ${s}`);
       for (let i = names.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [names[i], names[j]] = [names[j], names[i]];
       }
-      Bracket9.SEEDS.forEach((seed, i) => {
-        state.teams[seed] = names[i];
-      });
+      Bracket9.SEEDS.forEach((seed, i) => { state.teams[seed] = names[i]; });
       renderConfigPanel();
       syncToTelao(false);
       renderActiveMatchPanel();
@@ -1031,7 +1433,7 @@
     }
 
     function resetBracketResults() {
-      if (!confirm('Apagar TODOS os resultados da chave de 9 equipes e recomeçar do Jogo 1?')) return;
+      if (!confirm('Apagar TODOS os resultados da chave de 9 equipes?')) return;
       state.results = {};
       state.activeMatchId = 1;
       state.matchPoints = { a: 0, b: 0 };
@@ -1048,6 +1450,17 @@
       } else if (msg.type === 'TELAO_READY') {
         syncToTelao(false);
         channel.postMessage({ type: 'REQUEST_VOICES' });
+      } else if (msg.type === 'SPEECH_ENDED') {
+        // Libera automaticamente os tablets e inicia os 15s quando termina a leitura
+        if (
+          msg.autoRelease &&
+          document.getElementById('chkAutoUnlock').checked &&
+          state.roundStatus === 'reading' &&
+          state.currentQuestion &&
+          msg.questionId === state.currentQuestion.id
+        ) {
+          openRoundForTablets();
+        }
       }
     };
 
@@ -1058,11 +1471,11 @@
 
       if (e.code === 'Space') {
         e.preventDefault();
-        triggerBell15s();
+        openRoundForTablets();
       } else if (e.key.toLowerCase() === 'p') {
-        stopTimer(false);
+        closeRound(false);
       } else if (e.key.toLowerCase() === 'l') {
-        speakCurrent(true);
+        speakCurrent(true, true);
       } else if (e.key.toLowerCase() === 's') {
         stopSpeech();
       } else if (e.key.toLowerCase() === 'r') {
@@ -1076,13 +1489,17 @@
 
     // === INICIALIZAÇÃO ===
     loadSavedState();
+    roomCode = getOrCreateRoomCode();
     renderConfigPanel();
     renderActiveMatchPanel();
     renderBracketPanel();
     renderQuestionPreview();
+    renderAnswersMonitor();
+    updateTabletTeamLabels();
     updateViewButtons();
     populateVoices();
     fetchQuestions();
+    initHostPeer();
     channel.postMessage({ type: 'REQUEST_VOICES' });
   </script>
 </body>
