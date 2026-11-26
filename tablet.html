@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="pt-BR" translate="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="google" content="notranslate">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Tablet da Equipe — Campeonato</title>
+  <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+  <style>
+    :root {
+      --bg: #0b1221;
+      --card: #142038;
+      --soft: #1e2f52;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --gold: #fbbf24;
+      --green: #22c55e;
+      --red: #ef4444;
+      --orange: #f97316;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: radial-gradient(circle at top, #172542 0%, var(--bg) 75%);
+      color: var(--text);
+      touch-action: manipulation;
+      overflow: hidden;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Tela de conexão manual (caso abra sem ?sala= e ?lado=) */
+    #setupScreen {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 500;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+      gap: 18px;
+    }
+    #setupScreen.active { display: flex; }
+    .setup-box {
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 20px;
+      padding: 28px;
+      width: 100%;
+      max-width: 420px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .setup-box h1 { color: var(--gold); font-size: 1.6rem; }
+    .setup-box input {
+      font-size: 2rem;
+      font-weight: 900;
+      text-align: center;
+      letter-spacing: 6px;
+      padding: 12px;
+      border-radius: 12px;
+      border: 2px solid rgba(255,255,255,0.2);
+      background: var(--bg);
+      color: #fff;
+      width: 100%;
+    }
+    .setup-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .setup-btns button {
+      padding: 16px;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .btn-lado-a { background: #38bdf8; color: #082f49; }
+    .btn-lado-b { background: #fbbf24; color: #451a03; }
+
+    /* Cabeçalho do tablet */
+    header {
+      background: rgba(10, 16, 30, 0.85);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding: 10px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .team-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+    .side-pill {
+      padding: 5px 12px;
+      border-radius: 8px;
+      font-weight: 900;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+    .side-a { background: #38bdf8; color: #082f49; }
+    .side-b { background: #fbbf24; color: #451a03; }
+    .team-name {
+      font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+      font-weight: 900;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .conn-area {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .conn-pill {
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: rgba(239,68,68,0.2);
+      color: #fca5a5;
+    }
+    .conn-pill.ok {
+      background: rgba(34,197,94,0.2);
+      color: #86efac;
+    }
+    .btn-cfg {
+      background: var(--soft);
+      color: var(--muted);
+      border: 1px solid rgba(255,255,255,0.12);
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Faixa de status e tempo */
+    .status-strip {
+      padding: 10px 18px;
+      text-align: center;
+      font-weight: 800;
+      font-size: clamp(1rem, 2.2vw, 1.3rem);
+      background: var(--card);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      flex-shrink: 0;
+    }
+    .status-strip.reading { background: #1e3a5f; color: #7dd3fc; }
+    .status-strip.open { background: #14532d; color: #86efac; }
+    .status-strip.sent { background: #312e81; color: #c7d2fe; }
+    .status-strip.closed { background: #451a03; color: #fdba74; }
+    .status-strip.win { background: #15803d; color: #ffffff; }
+    .status-strip.lose { background: #991b1b; color: #ffffff; }
+
+    .timer-line {
+      height: 8px;
+      background: rgba(255,255,255,0.08);
+      width: 100%;
+      flex-shrink: 0;
+    }
+    .timer-line-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--green);
+      transition: width 0.1s linear;
+    }
+    .timer-line-fill.warn { background: var(--orange); }
+    .timer-line-fill.danger { background: var(--red); }
+
+    /* Área principal */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 14px 18px;
+      gap: 12px;
+      min-height: 0;
+      overflow-y: auto;
+    }
+
+    .idle-box {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 14px;
+      color: var(--muted);
+    }
+    .idle-box .big-icon { font-size: 4rem; }
+    .idle-box h2 { font-size: 1.8rem; color: var(--gold); }
+
+    #quizArea {
+      display: none;
+      flex: 1;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 0;
+    }
+    #quizArea.active { display: flex; }
+
+    .q-box {
+      background: var(--card);
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 16px 20px;
+      text-align: center;
+      font-size: clamp(1.15rem, 2.6vw, 1.8rem);
+      font-weight: 800;
+      line-height: 1.3;
+      flex-shrink: 0;
+    }
+
+    .opts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      flex: 1;
+      min-height: 0;
+    }
+    @media (max-width: 560px) {
+      .opts-grid { grid-template-columns: 1fr; }
+    }
+
+    .opt-btn {
+      background: var(--soft);
+      border: 3px solid rgba(255,255,255,0.14);
+      border-radius: 16px;
+      color: var(--text);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-align: left;
+      font-family: inherit;
+      font-size: clamp(1.1rem, 2.4vw, 1.65rem);
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.1s, border-color 0.15s, background 0.15s;
+    }
+    .opt-btn:active:not(:disabled) { transform: scale(0.98); }
+    .opt-btn:disabled { cursor: default; }
+
+    .opt-letter {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      background: rgba(56, 189, 248, 0.2);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      font-weight: 900;
+      flex-shrink: 0;
+    }
+
+    .opt-btn.selected {
+      background: rgba(56, 189, 248, 0.25);
+      border-color: var(--gold);
+      box-shadow: 0 0 20px rgba(251, 191, 36, 0.35);
+    }
+    .opt-btn.selected .opt-letter {
+      background: var(--gold);
+      color: #451a03;
+    }
+
+    .opt-btn.locked-wait {
+      opacity: 0.6;
+    }
+
+    .opt-btn.reveal-correct {
+      background: rgba(34, 197, 94, 0.3);
+      border-color: var(--green);
+      opacity: 1 !important;
+    }
+    .opt-btn.reveal-correct .opt-letter {
+      background: var(--green);
+      color: #052e16;
+    }
+
+    .opt-btn.reveal-wrong {
+      background: rgba(239, 68, 68, 0.3);
+      border-color: var(--red);
+      opacity: 1 !important;
+    }
+    .opt-btn.reveal-wrong .opt-letter {
+      background: var(--red);
+      color: #fff;
+    }
+
+    .confirm-bar {
+      flex-shrink: 0;
+      padding-top: 2px;
+    }
+    #btnConfirm {
+      width: 100%;
+      padding: 18px;
+      border: none;
+      border-radius: 16px;
+      font-family: inherit;
+      font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: #052e16;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(34, 197, 94, 0.35);
+      transition: transform 0.1s, opacity 0.15s;
+    }
+    #btnConfirm:active:not(:disabled) { transform: scale(0.99); }
+    #btnConfirm:disabled {
+      background: #334155;
+      color: #94a3b8;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Tela de configuração caso o link não traga sala/lado -->
+  <div id="setupScreen">
+    <div class="setup-box">
+      <h1>📱 Conectar Tablet</h1>
+      <p style="color:var(--muted); font-size:0.95rem;">Digite o código de 4 dígitos exibido no Painel do Operador e escolha o lado desta mesa:</p>
+      <input type="text" id="inputRoom" maxlength="4" inputmode="numeric" placeholder="0000">
+      <div class="setup-btns">
+        <button class="btn-lado-a" onclick="joinFromSetup('a')">Mesa / Lado A</button>
+        <button class="btn-lado-b" onclick="joinFromSetup('b')">Mesa / Lado B</button>
+      </div>
+    </div>
+  </div>
+
+  <header>
+    <div class="team-badge">
+      <span id="sidePill" class="side-pill side-a">LADO A</span>
+      <span id="teamName" class="team-name">Conectando...</span>
+    </div>
+    <div class="conn-area">
+      <span id="connPill" class="conn-pill">🔴 Offline</span>
+      <button class="btn-cfg" onclick="openSetup()">⚙️ Sala</button>
+    </div>
+  </header>
+
+  <div id="statusStrip" class="status-strip">Aguardando conexão com o operador...</div>
+  <div class="timer-line"><div id="timerFill" class="timer-line-fill"></div></div>
+
+  <main>
+    <div id="idleBox" class="idle-box">
+      <div class="big-icon">🏆</div>
+      <h2 id="idleTitle">Aguardando a próxima pergunta</h2>
+      <p id="idleSub">Assim que o operador sortear a questão, ela vai aparecer aqui automaticamente.</p>
+    </div>
+
+    <div id="quizArea">
+      <div class="q-box" id="questionText">...</div>
+      <div class="opts-grid" id="optionsGrid"></div>
+      <div class="confirm-bar">
+        <button id="btnConfirm" onclick="confirmAnswer()" disabled>✅ CONFIRMAR RESPOSTA</button>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    let roomCode = (params.get('sala') || '').replace(/\D/g, '').slice(0, 4);
+    let side = (params.get('lado') || '').toLowerCase();
+    if (side !== 'a' && side !== 'b') side = '';
+
+    let peer = null;
+    let conn = null;
+    let reconnectTimer = null;
+    let localTimerInterval = null;
+    let localEndsAt = null;
+    let localDurationMs = 15000;
+
+    let selectedChoice = null;
+    let sending = false;
+
+    let remoteState = {
+      teamName: 'Aguardando confronto',
+      matchLabel: '',
+      question: null,
+      roundStatus: 'idle', // idle | reading | open | closed
+      revealed: false,
+      myAnswer: null
+    };
+
+    function escapeHTML(str) {
+      if (!str && str !== 0) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function updateSideHeader() {
+      const pill = document.getElementById('sidePill');
+      if (side === 'b') {
+        pill.textContent = 'LADO B';
+        pill.className = 'side-pill side-b';
+      } else {
+        pill.textContent = 'LADO A';
+        pill.className = 'side-pill side-a';
+      }
+    }
+
+    function setConnStatus(ok, label) {
+      const pill = document.getElementById('connPill');
+      pill.className = ok ? 'conn-pill ok' : 'conn-pill';
+      pill.textContent = label;
+    }
+
+    function openSetup() {
+      document.getElementById('inputRoom').value = roomCode;
+      document.getElementById('setupScreen').classList.add('active');
+    }
+
+    function joinFromSetup(chosenSide) {
+      const code = document.getElementById('inputRoom').value.replace(/\D/g, '').slice(0, 4);
+      if (code.length < 4) return alert('Informe o código de 4 dígitos da sala.');
+      roomCode = code;
+      side = chosenSide;
+      const newUrl = `${window.location.pathname}?sala=${roomCode}&lado=${side.toUpperCase()}`;
+      window.history.replaceState({}, '', newUrl);
+      document.getElementById('setupScreen').classList.remove('active');
+      updateSideHeader();
+      connectToHost();
+    }
+
+    function stopLocalTimer(clearBar = false) {
+      if (localTimerInterval) {
+        clearInterval(localTimerInterval);
+        localTimerInterval = null;
+      }
+      if (clearBar) {
+        const fill = document.getElementById('timerFill');
+        fill.style.width = '0%';
+        fill.className = 'timer-line-fill';
+      }
+    }
+
+    function startLocalTimer(remainingMs, durationMs = 15000) {
+      stopLocalTimer(false);
+      localDurationMs = durationMs;
+      localEndsAt = Date.now() + Math.max(0, remainingMs);
+      const fill = document.getElementById('timerFill');
+
+      function tick() {
+        const rem = Math.max(0, localEndsAt - Date.now());
+        const pct = Math.max(0, Math.min(100, (rem / localDurationMs) * 100));
+        const sec = Math.ceil(rem / 1000);
+        fill.style.width = pct + '%';
+        if (sec <= 5) fill.className = 'timer-line-fill danger';
+        else if (sec <= 9) fill.className = 'timer-line-fill warn';
+        else fill.className = 'timer-line-fill';
+
+        if (remoteState.roundStatus === 'open' && !remoteState.myAnswer) {
+          document.getElementById('statusStrip').textContent = `🟢 LIBERADO! Toque na resposta e aperte CONFIRMAR (${sec}s)`;
+        }
+
+        if (rem <= 0) {
+          stopLocalTimer(false);
+        }
+      }
+
+      tick();
+      localTimerInterval = setInterval(tick, 100);
+    }
+
+    function formatSec(ms) {
+      return (ms / 1000).toFixed(1).replace('.', ',') + 's';
+    }
+
+    function renderUI() {
+      const s = remoteState;
+      document.getElementById('teamName').textContent = s.teamName || (side === 'b' ? 'Equipe B' : 'Equipe A');
+
+      const idleBox = document.getElementById('idleBox');
+      const quizArea = document.getElementById('quizArea');
+      const strip = document.getElementById('statusStrip');
+      const btnConfirm = document.getElementById('btnConfirm');
+
+      if (!s.question) {
+        idleBox.style.display = 'flex';
+        quizArea.classList.remove('active');
+        strip.className = 'status-strip';
+        strip.textContent = s.matchLabel ? `⚔️ ${s.matchLabel} — Aguardando pergunta...` : 'Aguardando sorteio da pergunta...';
+        stopLocalTimer(true);
+        return;
+      }
+
+      idleBox.style.display = 'none';
+      quizArea.classList.add('active');
+      document.getElementById('questionText').textContent = s.question.pergunta;
+
+      const hasAlts = Array.isArray(s.question.alternativas) && s.question.alternativas.length > 0;
+      const grid = document.getElementById('optionsGrid');
+      const letters = ['A', 'B', 'C', 'D', 'E'];
+
+      const canInteract = s.roundStatus === 'open' && !s.myAnswer && !sending && hasAlts;
+
+      if (!hasAlts) {
+        grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:24px; color:var(--gold); font-size:1.4rem; font-weight:800;">Pergunta aberta — responda oralmente!</div>`;
+      } else {
+        grid.innerHTML = s.question.alternativas.map((alt, idx) => {
+          let cls = 'opt-btn';
+          const myChoice = s.myAnswer ? s.myAnswer.choiceIndex : selectedChoice;
+
+          if (s.revealed) {
+            if (idx === s.question.correta) {
+              cls += ' reveal-correct';
+            } else if (myChoice === idx) {
+              cls += ' reveal-wrong';
+            } else {
+              cls += ' locked-wait';
+            }
+          } else {
+            if (myChoice === idx) cls += ' selected';
+            if (!canInteract && myChoice !== idx) cls += ' locked-wait';
+          }
+
+          return `
+            <button class="${cls}" ${canInteract ? '' : 'disabled'} onclick="selectOption(${idx})">
+              <span class="opt-letter">${letters[idx] || idx + 1}</span>
+              <span>${escapeHTML(alt)}</span>
+            </button>`;
+        }).join('');
+      }
+
+      // Faixa de status superior + botão confirmar
+      if (s.revealed) {
+        stopLocalTimer(true);
+        if (s.myAnswer) {
+          if (s.myAnswer.isCorrect) {
+            strip.className = 'status-strip win';
+            strip.textContent = `🎉 ACERTOU! (${s.myAnswer.order}º a responder · ${formatSec(s.myAnswer.elapsedMs)})`;
+          } else {
+            strip.className = 'status-strip lose';
+            strip.textContent = `❌ ERROU! (${s.myAnswer.order}º a responder · ${formatSec(s.myAnswer.elapsedMs)})`;
+          }
+        } else {
+          strip.className = 'status-strip closed';
+          strip.textContent = '⏰ Sem resposta nesta rodada';
+        }
+        btnConfirm.disabled = true;
+        btnConfirm.textContent = 'Rodada encerrada';
+      } else if (s.myAnswer) {
+        strip.className = 'status-strip sent';
+        strip.textContent = `🔒 Confirmado em ${s.myAnswer.order}º lugar (${formatSec(s.myAnswer.elapsedMs)})! Aguarde o resultado...`;
+        btnConfirm.disabled = true;
+        btnConfirm.textContent = `🔒 RESPOSTA CONFIRMADA (${letters[s.myAnswer.choiceIndex]})`;
+      } else if (s.roundStatus === 'reading') {
+        stopLocalTimer(true);
+        strip.className = 'status-strip reading';
+        strip.textContent = '🔊 Ouça a leitura... Os botões serão liberados ao final!';
+        btnConfirm.disabled = true;
+        btnConfirm.textContent = '🔒 AGUARDE O FIM DA LEITURA';
+      } else if (s.roundStatus === 'open') {
+        strip.className = 'status-strip open';
+        if (!localTimerInterval) {
+          strip.textContent = '🟢 LIBERADO! Toque na resposta e aperte CONFIRMAR!';
+        }
+        btnConfirm.disabled = (selectedChoice === null || sending || !hasAlts);
+        btnConfirm.textContent = sending
+          ? '⏳ ENVIANDO...'
+          : (selectedChoice !== null ? `✅ CONFIRMAR ALTERNATIVA ${letters[selectedChoice]}` : '👆 ESCOLHA UMA ALTERNATIVA ACIMA');
+      } else {
+        stopLocalTimer(true);
+        strip.className = 'status-strip closed';
+        strip.textContent = '⏰ Tempo esgotado! Aguarde o gabarito...';
+        btnConfirm.disabled = true;
+        btnConfirm.textContent = '⏰ TEMPO ESGOTADO';
+      }
+    }
+
+    function selectOption(idx) {
+      if (remoteState.roundStatus !== 'open' || remoteState.myAnswer || sending) return;
+      selectedChoice = idx;
+      renderUI();
+    }
+
+    function confirmAnswer() {
+      if (selectedChoice === null || remoteState.roundStatus !== 'open' || remoteState.myAnswer || sending) return;
+      if (!conn || !conn.open) {
+        alert('Sem conexão com o operador. Tentando reconectar...');
+        return;
+      }
+      sending = true;
+      renderUI();
+      conn.send({
+        type: 'ANSWER',
+        side,
+        questionId: remoteState.question?.id,
+        choiceIndex: selectedChoice
+      });
+    }
+
+    function handleHostMessage(msg) {
+      if (!msg || typeof msg !== 'object') return;
+
+      if (msg.type === 'SYNC_TABLET') {
+        const prevQId = remoteState.question?.id;
+        const newQId = msg.question?.id;
+        if (prevQId !== newQId) {
+          selectedChoice = null;
+          sending = false;
+        }
+        if (msg.myAnswer) sending = false;
+
+        remoteState = {
+          teamName: msg.teamName || remoteState.teamName,
+          matchLabel: msg.matchLabel || '',
+          question: msg.question || null,
+          roundStatus: msg.roundStatus || 'idle',
+          revealed: !!msg.revealed,
+          myAnswer: msg.myAnswer || null
+        };
+
+        if (remoteState.roundStatus === 'open' && msg.remainingMs > 0) {
+          startLocalTimer(msg.remainingMs, msg.durationMs || 15000);
+        } else {
+          stopLocalTimer(remoteState.roundStatus !== 'closed');
+        }
+        renderUI();
+      } else if (msg.type === 'ANSWER_ACK') {
+        sending = false;
+        remoteState.myAnswer = msg.answer;
+        renderUI();
+      }
+    }
+
+    function connectToHost() {
+      if (!roomCode || !side) {
+        openSetup();
+        return;
+      }
+
+      if (reconnectTimer) clearInterval(reconnectTimer);
+      if (conn) { try { conn.close(); } catch (e) {} conn = null; }
+      if (peer) { try { peer.destroy(); } catch (e) {} peer = null; }
+
+      setConnStatus(false, '🟡 Conectando...');
+
+      const hostPeerId = 'camp9-' + roomCode;
+      peer = new Peer({
+        config: {
+          iceServers: [
+            { urls: 'stun:stun.l.google.com:19302' },
+            { urls: 'stun:stun1.l.google.com:19302' }
+          ]
+        }
+      });
+
+      function openConn() {
+        if (!peer || peer.destroyed || peer.disconnected) return;
+        if (conn && conn.open) return;
+
+        setConnStatus(false, '🟡 Buscando sala ' + roomCode + '...');
+        conn = peer.connect(hostPeerId, { reliable: true });
+
+        conn.on('open', () => {
+          setConnStatus(true, '🟢 Conectado');
+          conn.send({ type: 'HELLO', side });
+        });
+
+        conn.on('data', handleHostMessage);
+
+        conn.on('close', () => {
+          setConnStatus(false, '🔴 Reconectando...');
+          conn = null;
+        });
+
+        conn.on('error', () => {
+          setConnStatus(false, '🔴 Sem sinal...');
+        });
+      }
+
+      peer.on('open', () => {
+        openConn();
+        reconnectTimer = setInterval(() => {
+          if (!conn || !conn.open) openConn();
+        }, 3000);
+      });
+
+      peer.on('error', () => {
+        setConnStatus(false, '🔴 Tentando reconectar...');
+      });
+
+      peer.on('disconnected', () => {
+        setConnStatus(false, '🟡 Reconectando...');
+        try { peer.reconnect(); } catch (e) {}
+      });
+    }
+
+    // Inicialização
+    if (roomCode && side) {
+      updateSideHeader();
+      connectToHost();
+    } else {
+      openSetup();
+    }
+  </script>
+</body>
+</html>
