@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" translate="no">
 <head>
   <meta charset="UTF-8">
+  <meta name="google" content="notranslate">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Telão — Campeonato de Perguntas</title>
   <style>
@@ -65,10 +66,11 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 14px 32px;
+      padding: 10px 28px;
       background: rgba(10, 16, 30, 0.7);
       border-bottom: 1px solid rgba(255,255,255,0.08);
-      min-height: 70px;
+      min-height: 58px;
+      flex-shrink: 0;
     }
     .brand {
       display: flex;
@@ -76,20 +78,20 @@
       gap: 14px;
     }
     .brand img {
-      height: 46px;
+      height: 40px;
       width: auto;
       border-radius: 8px;
     }
     .brand-title {
-      font-size: 1.4rem;
+      font-size: 1.35rem;
       font-weight: 800;
       letter-spacing: 0.5px;
       color: var(--gold);
     }
     .audio-pill {
-      padding: 8px 18px;
+      padding: 6px 16px;
       border-radius: 999px;
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: 700;
       background: var(--bg-soft);
       color: var(--accent);
@@ -106,8 +108,9 @@
       flex: 1;
       display: flex;
       flex-direction: column;
-      padding: 20px 36px;
+      padding: 14px 28px;
       overflow: hidden;
+      min-height: 0;
     }
     .screen { display: none; flex: 1; flex-direction: column; min-height: 0; }
     .screen.active { display: flex; }
@@ -263,9 +266,7 @@
       background: var(--green);
       color: #052e16;
     }
-    .option-card.dimmed {
-      opacity: 0.35;
-    }
+    .option-card.dimmed { opacity: 0.35; }
 
     .open-answer-box {
       display: none;
@@ -322,69 +323,79 @@
       to { transform: scale(1.12); }
     }
 
-    /* === TELA 3: CHAVEAMENTO 9 EQUIPES === */
+    /* === TELA 3: CHAVEAMENTO 9 EQUIPES (SEM SOBREPOSIÇÃO) === */
     #screen-chaveamento {
-      gap: 14px;
-      justify-content: space-between;
+      gap: 10px;
+      min-height: 0;
     }
     .bracket-section {
-      background: rgba(20, 32, 56, 0.75);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 16px;
-      padding: 12px 16px;
-      flex: 1;
+      background: rgba(20, 32, 56, 0.78);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      padding: 8px 14px;
       display: flex;
       flex-direction: column;
       min-height: 0;
+      overflow: hidden;
     }
+    /* Chave dos Vencedores tem 4 linhas na Coluna 2; Repescagem tem no máximo 2 */
+    .bracket-section.winners-section { flex: 1.85; }
+    .bracket-section.losers-section { flex: 1; }
+
     .bracket-section h2 {
-      font-size: 1.15rem;
+      font-size: clamp(0.95rem, 1.3vw, 1.15rem);
       color: var(--gold);
-      margin-bottom: 10px;
+      margin-bottom: 6px;
       display: flex;
       align-items: center;
       gap: 8px;
+      flex-shrink: 0;
     }
     .bracket-cols {
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
+      grid-template-columns: repeat(5, minmax(0, 1fr));
       gap: 10px;
       flex: 1;
-      align-items: center;
+      min-height: 0;
+      align-items: stretch;
     }
     .bracket-col {
       display: flex;
       flex-direction: column;
-      justify-content: space-around;
-      gap: 8px;
+      justify-content: space-evenly;
+      gap: 6px;
       height: 100%;
+      min-height: 0;
     }
     .b-card {
       background: var(--bg-soft);
       border: 1px solid rgba(255,255,255,0.12);
       border-radius: 10px;
-      padding: 6px 10px;
-      font-size: 0.92rem;
+      padding: 5px 9px;
+      font-size: clamp(0.75rem, 1vw, 0.94rem);
+      line-height: 1.2;
+      flex-shrink: 1;
     }
     .b-card.active-match {
       border: 2px solid var(--gold);
-      box-shadow: 0 0 18px rgba(251, 191, 36, 0.35);
+      box-shadow: 0 0 14px rgba(251, 191, 36, 0.35);
       background: #233863;
     }
     .b-card.final-match {
       border-color: var(--gold);
     }
     .b-label {
-      font-size: 0.72rem;
+      font-size: clamp(0.62rem, 0.78vw, 0.72rem);
       color: var(--accent);
       font-weight: 700;
       text-transform: uppercase;
-      margin-bottom: 4px;
+      margin-bottom: 3px;
       display: flex;
       justify-content: space-between;
+      gap: 6px;
     }
     .b-team {
-      padding: 3px 6px;
+      padding: 2px 6px;
       border-radius: 5px;
       white-space: nowrap;
       overflow: hidden;
@@ -494,11 +505,11 @@
 
     <!-- TELA 3: CHAVEAMENTO -->
     <section id="screen-chaveamento" class="screen">
-      <div class="bracket-section">
+      <div class="bracket-section winners-section">
         <h2>🏅 Chave dos Vencedores</h2>
         <div class="bracket-cols" id="telaoWinners"></div>
       </div>
-      <div class="bracket-section">
+      <div class="bracket-section losers-section">
         <h2>🔄 Repescagem (Chave dos Perdedores)</h2>
         <div class="bracket-cols" id="telaoLosers"></div>
       </div>
@@ -532,7 +543,7 @@
       revealed: false
     };
 
-    // === ÁUDIO SINTETIZADO (SEM ARQUIVOS MP3) ===
+    // === ÁUDIO SINTETIZADO ===
     function ensureAudio() {
       if (!audioCtx) {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -619,7 +630,6 @@
         chosen = voices.find(v => v.name === voiceName);
       }
       if (!chosen) {
-        // Prioriza vozes neurais naturais do Edge ou Google PT-BR
         chosen = voices.find(v => /Francisca|Antonio|Thalita|Google português/i.test(v.name)) ||
                  voices.find(v => /pt-BR/i.test(v.lang)) ||
                  voices[0];
@@ -875,7 +885,6 @@
       }
     };
 
-    // Carrega estado salvo localmente se a aba for reaberta
     try {
       const saved = localStorage.getItem(Bracket9.STORAGE_KEY);
       if (saved) {
@@ -884,7 +893,6 @@
       }
     } catch (e) {}
 
-    // Botão inicial para desbloquear áudio
     document.getElementById('btnUnlock').addEventListener('click', () => {
       ensureAudio();
       playSfx('sino');
