@@ -4,20 +4,30 @@
   <meta charset="UTF-8">
   <meta name="google" content="notranslate">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Tablet da Equipe — Campeonato</title>
+  <title>Tablet — Desafio da Tabuada</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
   <style>
     :root {
-      --bg: #0b1221;
-      --card: #142038;
-      --soft: #1e2f52;
-      --text: #f8fafc;
-      --muted: #94a3b8;
-      --accent: #38bdf8;
-      --gold: #fbbf24;
-      --green: #22c55e;
-      --red: #ef4444;
-      --orange: #f97316;
+      --navy: #122B59;
+      --navy-deep: #0B1B3B;
+      --sky: #2E7BBF;
+      --sky-light: #5BB2E6;
+      --crimson: #C62032;
+      --crimson-dark: #971524;
+      --gold: #F7C948;
+      --gold-deep: #E09900;
+      --cream: #FFFDF5;
+      --chalk: #1E5A38;
+      --chalk-dark: #143F27;
+      --wood: #C47F35;
+      --green: #22C55E;
+      --orange: #F97316;
+      --purple: #9333EA;
+      --text: #FFFFFF;
+      --muted: #CFE4F7;
     }
 
     * {
@@ -30,20 +40,45 @@
 
     html, body {
       height: 100%;
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      background: radial-gradient(circle at top, #172542 0%, var(--bg) 75%);
+      font-family: 'Nunito', 'Segoe UI', system-ui, sans-serif;
+      background: radial-gradient(circle at 50% 25%, #3B93D8 0%, #1C4E8E 55%, #0E224A 100%);
       color: var(--text);
       touch-action: manipulation;
       overflow: hidden;
+      position: relative;
     }
 
     body { display: flex; flex-direction: column; }
+
+    /* Fundo animado leve para tablets */
+    #mathBgLayer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+    .math-float {
+      position: absolute;
+      bottom: -60px;
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      color: rgba(255, 248, 220, 0.11);
+      animation: floatMath linear infinite;
+      white-space: nowrap;
+    }
+    @keyframes floatMath {
+      0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+      15% { opacity: 1; }
+      85% { opacity: 1; }
+      100% { transform: translateY(-115vh) rotate(18deg); opacity: 0; }
+    }
 
     /* Tela de conexão manual */
     #setupScreen {
       position: fixed;
       inset: 0;
-      background: var(--bg);
+      background: radial-gradient(circle at top, #1C4E8E, var(--navy-deep));
       z-index: 500;
       display: none;
       flex-direction: column;
@@ -51,50 +86,55 @@
       justify-content: center;
       padding: 24px;
       text-align: center;
-      gap: 18px;
+      gap: 16px;
     }
     #setupScreen.active { display: flex; }
     .setup-box {
-      background: var(--card);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 20px;
-      padding: 28px;
+      background: rgba(18, 43, 89, 0.95);
+      border: 4px solid var(--gold);
+      border-radius: 24px;
+      padding: 26px;
       width: 100%;
       max-width: 420px;
       display: flex;
       flex-direction: column;
       gap: 14px;
+      box-shadow: 0 10px 0 var(--navy-deep);
     }
-    .setup-box h1 { color: var(--gold); font-size: 1.6rem; }
+    .setup-box img { max-height: 110px; align-self: center; }
+    .setup-box h1 { font-family: 'Fredoka', sans-serif; color: var(--gold); font-size: 1.65rem; }
     .setup-box input {
-      font-size: 2rem;
-      font-weight: 900;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 2.1rem;
       text-align: center;
       letter-spacing: 6px;
       padding: 12px;
-      border-radius: 12px;
-      border: 2px solid rgba(255,255,255,0.2);
-      background: var(--bg);
-      color: #fff;
+      border-radius: 14px;
+      border: 3px solid var(--gold);
+      background: var(--cream);
+      color: var(--navy-deep);
       width: 100%;
     }
     .setup-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .setup-btns button {
-      padding: 16px;
-      border: none;
-      border-radius: 12px;
+      padding: 15px;
+      border: 3px solid var(--navy-deep);
+      border-radius: 14px;
+      font-family: 'Fredoka', sans-serif;
       font-size: 1.1rem;
-      font-weight: 800;
       cursor: pointer;
+      box-shadow: 0 5px 0 var(--navy-deep);
     }
-    .btn-lado-a { background: #38bdf8; color: #082f49; }
-    .btn-lado-b { background: #fbbf24; color: #451a03; }
+    .btn-lado-a { background: var(--sky-light); color: var(--navy-deep); }
+    .btn-lado-b { background: var(--gold); color: var(--navy-deep); }
 
     /* Cabeçalho com Placar */
     header {
-      background: rgba(10, 16, 30, 0.9);
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      padding: 10px 16px;
+      position: relative;
+      z-index: 5;
+      background: linear-gradient(90deg, var(--navy-deep) 0%, var(--crimson) 45%, var(--navy-deep) 100%);
+      border-bottom: 4px solid var(--gold);
+      padding: 8px 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -102,108 +142,107 @@
       flex-shrink: 0;
       flex-wrap: wrap;
     }
-    .team-badge {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-width: 0;
-    }
+    .team-badge { display: flex; align-items: center; gap: 8px; min-width: 0; }
     .side-pill {
-      padding: 5px 11px;
-      border-radius: 8px;
-      font-weight: 900;
+      padding: 4px 11px;
+      border-radius: 9px;
+      font-family: 'Fredoka', sans-serif;
       font-size: 0.85rem;
+      border: 2px solid var(--navy-deep);
       flex-shrink: 0;
     }
-    .side-a { background: #38bdf8; color: #082f49; }
-    .side-b { background: #fbbf24; color: #451a03; }
+    .side-a { background: var(--sky-light); color: var(--navy-deep); }
+    .side-b { background: var(--gold); color: var(--navy-deep); }
     .team-name {
-      font-size: clamp(1rem, 2.3vw, 1.45rem);
-      font-weight: 900;
+      font-family: 'Fredoka', sans-serif;
+      font-size: clamp(1.05rem, 2.3vw, 1.45rem);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      text-shadow: 0 2px 0 var(--navy-deep);
     }
 
     .mini-scoreboard {
       display: flex;
       align-items: center;
       gap: 8px;
-      background: var(--card);
-      border: 1px solid rgba(255,255,255,0.14);
-      padding: 5px 14px;
+      background: var(--navy);
+      border: 2px solid var(--gold);
+      padding: 4px 14px;
       border-radius: 12px;
+      font-family: 'Fredoka', sans-serif;
       font-size: clamp(0.85rem, 1.8vw, 1.1rem);
-      font-weight: 800;
     }
     .mini-scoreboard .pts {
-      background: var(--soft);
-      color: var(--gold);
-      padding: 2px 10px;
+      background: var(--gold);
+      color: var(--navy-deep);
+      padding: 1px 9px;
       border-radius: 7px;
-      font-size: clamp(1rem, 2vw, 1.3rem);
+      font-size: clamp(1rem, 2vw, 1.25rem);
     }
-    .mini-scoreboard .my-side { color: var(--accent); }
+    .mini-scoreboard .my-side { color: #FFE17D; }
 
-    .conn-area {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-shrink: 0;
-    }
+    .conn-area { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
     .conn-pill {
-      font-size: 0.8rem;
-      font-weight: 700;
-      padding: 5px 10px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      padding: 4px 10px;
       border-radius: 999px;
-      background: rgba(239,68,68,0.2);
-      color: #fca5a5;
+      background: rgba(11, 27, 59, 0.7);
+      border: 2px solid rgba(255,255,255,0.2);
+      color: #FCA5A5;
     }
-    .conn-pill.ok { background: rgba(34,197,94,0.2); color: #86efac; }
+    .conn-pill.ok { color: #86EFAC; border-color: #22C55E; }
     .btn-cfg {
-      background: var(--soft);
-      color: var(--muted);
-      border: 1px solid rgba(255,255,255,0.12);
-      padding: 6px 10px;
+      background: var(--navy);
+      color: var(--gold);
+      border: 2px solid var(--gold);
+      padding: 5px 10px;
       border-radius: 8px;
-      font-size: 0.8rem;
-      font-weight: 700;
+      font-size: 0.78rem;
+      font-weight: 800;
       cursor: pointer;
     }
 
     /* Faixa de status e tempo */
     .status-strip {
-      padding: 9px 16px;
+      position: relative;
+      z-index: 4;
+      padding: 8px 16px;
       text-align: center;
-      font-weight: 800;
+      font-family: 'Fredoka', sans-serif;
       font-size: clamp(0.95rem, 2.1vw, 1.25rem);
-      background: var(--card);
-      border-bottom: 1px solid rgba(255,255,255,0.08);
+      background: rgba(18, 43, 89, 0.92);
+      border-bottom: 2px solid rgba(247, 201, 72, 0.35);
       flex-shrink: 0;
     }
-    .status-strip.reading { background: #1e3a5f; color: #7dd3fc; }
-    .status-strip.open { background: #14532d; color: #86efac; }
-    .status-strip.sent { background: #312e81; color: #c7d2fe; }
-    .status-strip.closed { background: #451a03; color: #fdba74; }
-    .status-strip.sudden { background: #7f1d1d; color: #fecaca; }
+    .status-strip.reading { background: #1B4F8A; color: #FFFDF5; }
+    .status-strip.open { background: #1E7E46; color: #FFFDF5; }
+    .status-strip.sent { background: #4C1D95; color: #EDE9FE; }
+    .status-strip.closed { background: #9A3412; color: #FFEDD5; }
+    .status-strip.sudden { background: var(--crimson); color: #FFE17D; }
 
     .timer-line {
-      height: 8px;
-      background: rgba(255,255,255,0.08);
+      position: relative;
+      z-index: 4;
+      height: 10px;
+      background: rgba(11, 27, 59, 0.75);
       width: 100%;
       flex-shrink: 0;
     }
     .timer-line-fill {
       height: 100%;
       width: 0%;
-      background: var(--green);
+      background: linear-gradient(90deg, #22C55E, var(--gold));
       transition: width 0.1s linear;
     }
-    .timer-line-fill.warn { background: var(--orange); }
-    .timer-line-fill.danger { background: var(--red); }
+    .timer-line-fill.warn { background: linear-gradient(90deg, var(--orange), var(--gold)); }
+    .timer-line-fill.danger { background: var(--crimson); }
 
     /* Área principal */
     main {
+      position: relative;
+      z-index: 2;
       flex: 1;
       display: flex;
       flex-direction: column;
@@ -213,63 +252,83 @@
       overflow-y: auto;
     }
 
-    .view-pane {
-      display: none;
-      flex: 1;
-      flex-direction: column;
-      min-height: 0;
+    .view-pane { display: none; flex: 1; flex-direction: column; min-height: 0; }
+    .view-pane.active {
+      display: flex;
+      animation: paneIn 0.38s cubic-bezier(0.22, 1, 0.36, 1);
     }
-    .view-pane.active { display: flex; }
+    @keyframes paneIn {
+      from { opacity: 0; transform: scale(0.95) translateY(12px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
 
-    /* 1. TELA DE ENTRADA DA PRÓXIMA ESCOLA (BOTÃO GIGANTE) */
+    /* 1. TELA DE ENTRADA DA PRÓXIMA ESCOLA */
     #pane-checkin {
       align-items: center;
       justify-content: center;
       text-align: center;
-      gap: 20px;
+      gap: 16px;
+    }
+    .checkin-logo {
+      max-height: 115px;
+      filter: drop-shadow(0 8px 18px rgba(11, 27, 59, 0.5));
+      animation: logoFloat 3s ease-in-out infinite;
+    }
+    @keyframes logoFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
     }
     .checkin-tag {
       display: inline-block;
-      background: rgba(56, 189, 248, 0.2);
-      color: var(--accent);
-      border: 1px solid rgba(56, 189, 248, 0.4);
-      padding: 8px 20px;
+      background: var(--crimson);
+      color: #fff;
+      border: 3px solid var(--gold);
+      padding: 6px 22px;
       border-radius: 999px;
-      font-size: 1.1rem;
-      font-weight: 800;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.05rem;
       text-transform: uppercase;
+      box-shadow: 0 4px 0 var(--navy-deep);
     }
     .checkin-hint {
-      font-size: clamp(1.1rem, 2.2vw, 1.45rem);
-      color: var(--muted);
-      max-width: 560px;
+      font-size: clamp(1rem, 2.1vw, 1.3rem);
+      color: var(--cream);
+      max-width: 540px;
+      font-weight: 800;
     }
     #btnSchoolEnter {
       width: 100%;
       max-width: 560px;
-      padding: 34px 28px;
-      border: 4px solid var(--gold);
-      border-radius: 24px;
-      background: linear-gradient(135deg, #1d4ed8, #0f172a);
-      color: #fff;
+      padding: 28px 24px;
+      border: 5px solid var(--navy-deep);
+      border-radius: 26px;
+      background: linear-gradient(180deg, #FFE17D 0%, var(--gold) 60%, var(--gold-deep) 100%);
+      color: var(--navy-deep);
       cursor: pointer;
-      box-shadow: 0 18px 45px rgba(37, 99, 235, 0.45);
+      box-shadow: 0 10px 0 var(--navy-deep), 0 18px 38px rgba(0,0,0,0.4);
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 10px;
-      transition: transform 0.12s;
+      gap: 8px;
+      transition: transform 0.1s;
     }
-    #btnSchoolEnter:active { transform: scale(0.97); }
+    #btnSchoolEnter:active {
+      transform: translateY(5px);
+      box-shadow: 0 5px 0 var(--navy-deep);
+    }
     .enter-school-name {
-      font-size: clamp(2rem, 5vw, 3.2rem);
-      font-weight: 900;
-      color: var(--gold);
+      font-family: 'Fredoka', sans-serif;
+      font-size: clamp(2rem, 5vw, 3.1rem);
+      color: var(--navy-deep);
     }
     .enter-school-sub {
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: #bae6fd;
+      font-size: 1.05rem;
+      font-weight: 900;
+      background: var(--crimson);
+      color: #fff;
+      padding: 6px 20px;
+      border-radius: 999px;
+      border: 2px solid var(--navy-deep);
     }
 
     /* 2. TELA AGUARDANDO PRÓXIMA PERGUNTA */
@@ -277,61 +336,68 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      gap: 18px;
+      gap: 16px;
     }
     .waiting-score-big {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 18px;
-      background: var(--card);
-      border: 2px solid rgba(255,255,255,0.12);
-      border-radius: 20px;
-      padding: 18px 28px;
+      gap: 16px;
+      background: rgba(18, 43, 89, 0.92);
+      border: 4px solid var(--gold);
+      border-radius: 22px;
+      padding: 16px 26px;
+      font-family: 'Fredoka', sans-serif;
       font-size: clamp(1.2rem, 2.8vw, 1.9rem);
-      font-weight: 900;
       flex-wrap: wrap;
+      box-shadow: 0 7px 0 var(--navy-deep);
     }
     .waiting-score-big .big-pts {
-      background: var(--soft);
-      color: var(--gold);
-      padding: 6px 18px;
+      background: linear-gradient(180deg, #FFE17D, var(--gold));
+      color: var(--navy-deep);
+      border: 3px solid var(--navy-deep);
+      padding: 4px 18px;
       border-radius: 12px;
-      font-size: clamp(1.8rem, 4vw, 2.8rem);
-      min-width: 58px;
+      font-size: clamp(1.8rem, 4vw, 2.7rem);
+      min-width: 56px;
     }
     .summary-card {
       width: 100%;
-      max-width: 680px;
-      border-radius: 16px;
-      padding: 16px 22px;
-      background: var(--card);
-      border: 2px solid rgba(255,255,255,0.12);
+      max-width: 660px;
+      border-radius: 18px;
+      padding: 15px 22px;
+      background: var(--chalk);
+      border: 4px solid var(--wood);
+      outline: 2px solid var(--navy-deep);
       display: none;
       flex-direction: column;
       gap: 6px;
+      box-shadow: 0 6px 0 var(--navy-deep);
     }
     .summary-card.visible { display: flex; }
-    .summary-card.win { border-color: var(--green); background: rgba(34, 197, 94, 0.16); }
-    .summary-card.lose { border-color: var(--red); background: rgba(239, 68, 68, 0.16); }
-    .summary-card.cancel { border-color: var(--orange); background: rgba(249, 115, 22, 0.16); }
-    .summary-headline { font-size: clamp(1.15rem, 2.4vw, 1.6rem); font-weight: 900; }
-    .summary-sub { font-size: clamp(0.95rem, 1.9vw, 1.15rem); color: #e2e8f0; }
+    .summary-card.win { background: linear-gradient(180deg, #1E7E46, #14532D); border-color: var(--gold); }
+    .summary-card.lose { background: linear-gradient(180deg, #B91C2E, #7F1D1D); border-color: var(--gold); }
+    .summary-card.cancel { background: linear-gradient(180deg, #C2410C, #7C2D12); border-color: var(--gold); }
+    .summary-headline { font-family: 'Fredoka', sans-serif; font-size: clamp(1.15rem, 2.4vw, 1.55rem); color: var(--gold); }
+    .summary-sub { font-size: clamp(0.95rem, 1.9vw, 1.15rem); font-weight: 800; color: #fff; }
 
     .waiting-banner {
-      font-size: clamp(1.4rem, 3vw, 2.2rem);
-      font-weight: 900;
-      color: var(--accent);
+      font-family: 'Fredoka', sans-serif;
+      font-size: clamp(1.45rem, 3vw, 2.15rem);
+      color: var(--gold);
+      text-shadow: 0 3px 0 var(--navy-deep);
     }
     .sudden-pill {
       display: none;
-      background: var(--red);
+      background: var(--crimson);
+      border: 3px solid var(--gold);
       color: #fff;
-      padding: 8px 20px;
+      padding: 8px 22px;
       border-radius: 999px;
-      font-weight: 900;
+      font-family: 'Fredoka', sans-serif;
       font-size: 1.05rem;
-      animation: pulse 0.7s infinite alternate;
+      box-shadow: 0 4px 0 var(--navy-deep);
+      animation: pulse 0.65s infinite alternate;
     }
     .sudden-pill.visible { display: inline-block; }
 
@@ -340,35 +406,48 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      gap: 16px;
+      gap: 14px;
+    }
+    .cd-orbit {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.6rem;
+      color: var(--gold);
+      letter-spacing: 14px;
     }
     .cd-label {
-      font-size: clamp(1.4rem, 3vw, 2.2rem);
-      font-weight: 800;
-      color: var(--accent);
-      text-transform: uppercase;
-      letter-spacing: 2px;
+      font-family: 'Fredoka', sans-serif;
+      font-size: clamp(1.3rem, 2.8vw, 2rem);
+      color: var(--cream);
+      background: var(--crimson);
+      border: 3px solid var(--gold);
+      padding: 8px 24px;
+      border-radius: 999px;
+      box-shadow: 0 5px 0 var(--navy-deep);
     }
     .cd-number {
-      font-size: clamp(7rem, 24vw, 13rem);
-      font-weight: 900;
+      font-family: 'Fredoka', sans-serif;
+      font-size: clamp(7.5rem, 25vw, 13.5rem);
       line-height: 1;
       color: var(--gold);
-      text-shadow: 0 0 40px rgba(251, 191, 36, 0.5);
-      animation: popIn 0.4s ease;
+      -webkit-text-stroke: 4px var(--navy-deep);
+      text-shadow: 0 10px 0 var(--navy-deep), 0 0 45px rgba(247, 201, 72, 0.55);
+      animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
-    /* 4. TELA DA PERGUNTA */
+    /* 4. TELA DA PERGUNTA (QUADRO-NEGRO + BOTÕES 3D) */
     #pane-quiz { gap: 12px; }
     .q-box {
-      background: var(--card);
-      border: 2px solid rgba(255,255,255,0.1);
-      border-radius: 16px;
+      background: radial-gradient(circle at top, #256E44, var(--chalk) 70%, var(--chalk-dark));
+      border: 5px solid var(--wood);
+      outline: 3px solid var(--navy-deep);
+      border-radius: 18px;
       padding: 15px 18px;
       text-align: center;
-      font-size: clamp(1.1rem, 2.5vw, 1.75rem);
-      font-weight: 800;
+      font-family: 'Fredoka', sans-serif;
+      font-size: clamp(1.15rem, 2.5vw, 1.75rem);
       line-height: 1.3;
+      color: var(--cream);
+      box-shadow: 0 6px 0 var(--navy-deep);
       flex-shrink: 0;
     }
 
@@ -382,64 +461,76 @@
     @media (max-width: 560px) { .opts-grid { grid-template-columns: 1fr; } }
 
     .opt-btn {
-      background: var(--soft);
-      border: 3px solid rgba(255,255,255,0.14);
-      border-radius: 16px;
-      color: var(--text);
+      background: var(--cream);
+      color: var(--navy-deep);
+      border: 4px solid var(--navy);
+      border-radius: 18px;
       padding: 14px 16px;
       display: flex;
       align-items: center;
       gap: 14px;
       text-align: left;
-      font-family: inherit;
-      font-size: clamp(1.1rem, 2.3vw, 1.6rem);
-      font-weight: 800;
+      font-family: 'Fredoka', sans-serif;
+      font-size: clamp(1.15rem, 2.4vw, 1.65rem);
       cursor: pointer;
-      transition: transform 0.1s, border-color 0.15s, background 0.15s;
+      box-shadow: 0 6px 0 var(--navy-deep);
+      transition: transform 0.1s, background 0.15s, border-color 0.15s;
     }
-    .opt-btn:active:not(:disabled) { transform: scale(0.98); }
+    .opt-btn:active:not(:disabled) {
+      transform: translateY(4px);
+      box-shadow: 0 2px 0 var(--navy-deep);
+    }
     .opt-btn:disabled { cursor: default; }
 
     .opt-letter {
-      width: 46px;
-      height: 46px;
+      width: 48px;
+      height: 48px;
       border-radius: 12px;
-      background: rgba(56, 189, 248, 0.2);
-      color: var(--accent);
+      border: 3px solid var(--navy-deep);
+      color: #fff;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.4rem;
-      font-weight: 900;
+      font-size: 1.45rem;
       flex-shrink: 0;
+      box-shadow: 0 3px 0 var(--navy-deep);
     }
+    .opt-c0 { background: var(--sky); }
+    .opt-c1 { background: var(--crimson); }
+    .opt-c2 { background: #22A055; }
+    .opt-c3 { background: var(--gold-deep); }
+    .opt-c4 { background: var(--purple); }
+
     .opt-btn.selected {
-      background: rgba(56, 189, 248, 0.25);
-      border-color: var(--gold);
-      box-shadow: 0 0 20px rgba(251, 191, 36, 0.35);
+      background: linear-gradient(180deg, #FFF3B0, var(--gold));
+      border-color: var(--crimson);
+      box-shadow: 0 6px 0 var(--navy-deep), 0 0 22px rgba(247, 201, 72, 0.65);
     }
-    .opt-btn.selected .opt-letter { background: var(--gold); color: #451a03; }
-    .opt-btn.locked-wait { opacity: 0.55; }
+    .opt-btn.locked-wait { opacity: 0.62; }
 
     .confirm-bar { flex-shrink: 0; padding-top: 2px; }
     #btnConfirm {
       width: 100%;
-      padding: 17px;
-      border: none;
-      border-radius: 16px;
-      font-family: inherit;
-      font-size: clamp(1.15rem, 2.4vw, 1.55rem);
-      font-weight: 900;
-      background: linear-gradient(135deg, #22c55e, #16a34a);
-      color: #052e16;
+      padding: 16px;
+      border: 4px solid var(--navy-deep);
+      border-radius: 18px;
+      font-family: 'Fredoka', sans-serif;
+      font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+      background: linear-gradient(180deg, #4ADE80 0%, #22C55E 55%, #16A34A 100%);
+      color: var(--navy-deep);
       cursor: pointer;
-      box-shadow: 0 8px 24px rgba(34, 197, 94, 0.35);
+      box-shadow: 0 7px 0 var(--navy-deep);
+      transition: transform 0.1s;
     }
-    #btnConfirm:active:not(:disabled) { transform: scale(0.99); }
+    #btnConfirm:active:not(:disabled) {
+      transform: translateY(4px);
+      box-shadow: 0 3px 0 var(--navy-deep);
+    }
     #btnConfirm:disabled {
-      background: #334155;
-      color: #94a3b8;
-      box-shadow: none;
+      background: #334E7B;
+      color: #B4CBE6;
+      border-color: var(--navy-deep);
+      box-shadow: 0 4px 0 var(--navy-deep);
       cursor: not-allowed;
     }
 
@@ -448,15 +539,18 @@
       to { transform: scale(1.06); }
     }
     @keyframes popIn {
-      from { transform: scale(0.6); opacity: 0.4; }
+      from { transform: scale(0.55); opacity: 0.4; }
       to { transform: scale(1); opacity: 1; }
     }
   </style>
 </head>
 <body>
 
+  <div id="mathBgLayer"></div>
+
   <div id="setupScreen">
     <div class="setup-box">
+      <img src="logo.png" alt="Desafio da Tabuada" onerror="this.style.display='none'">
       <h1>📱 Conectar Tablet</h1>
       <p style="color:var(--muted); font-size:0.95rem;">Digite o código de 4 dígitos exibido no Painel do Operador e escolha o lado desta mesa:</p>
       <input type="text" id="inputRoom" maxlength="4" inputmode="numeric" placeholder="0000">
@@ -475,7 +569,7 @@
     <div class="mini-scoreboard" id="miniScoreboard" style="display:none;">
       <span id="sbNameA">A</span>
       <span class="pts" id="sbPtsA">0</span>
-      <span style="color:var(--muted);">×</span>
+      <span style="color:var(--gold);">×</span>
       <span class="pts" id="sbPtsB">0</span>
       <span id="sbNameB">B</span>
     </div>
@@ -491,6 +585,7 @@
   <main>
     <!-- 1. BOTÃO COM O NOME DA PRÓXIMA ESCOLA -->
     <section id="pane-checkin" class="view-pane">
+      <img src="logo.png" alt="Desafio da Tabuada" class="checkin-logo" onerror="this.style.display='none'">
       <div class="checkin-tag" id="checkinMatchLabel">Próximo Confronto</div>
       <div class="checkin-hint" id="checkinHint">A próxima equipe desta mesa deve clicar no botão abaixo com o nome da sua escola para iniciar:</div>
       <button id="btnSchoolEnter" onclick="confirmSchoolEntry()">
@@ -505,7 +600,7 @@
       <div class="waiting-score-big" id="waitingScoreBig" style="display:none;">
         <span id="wsNameA">Escola A</span>
         <span class="big-pts" id="wsPtsA">0</span>
-        <span style="color:var(--muted);">×</span>
+        <span style="color:var(--gold);">×</span>
         <span class="big-pts" id="wsPtsB">0</span>
         <span id="wsNameB">Escola B</span>
       </div>
@@ -514,11 +609,12 @@
         <div class="summary-sub" id="summarySub"></div>
       </div>
       <div class="waiting-banner" id="waitingBanner">⏳ Aguardando a próxima pergunta...</div>
-      <p style="color:var(--muted); font-size:1rem;" id="waitingFoot">Fiquem prontos! Assim que o operador liberar, começa a contagem de 3 segundos.</p>
+      <p style="color:var(--cream); opacity:0.85; font-size:1rem; font-weight:700;" id="waitingFoot">Fiquem prontos! Assim que o operador liberar, começa a contagem de 3 segundos.</p>
     </section>
 
     <!-- 3. CONTAGEM REGRESSIVA DE 3 SEGUNDOS -->
     <section id="pane-countdown" class="view-pane">
+      <div class="cd-orbit">× ÷ + = ★</div>
       <div class="cd-label">Preparem-se! Próxima pergunta em...</div>
       <div class="cd-number" id="cdNumber">3</div>
     </section>
@@ -534,6 +630,19 @@
   </main>
 
   <script>
+    // Fundo leve com símbolos de tabuada
+    (function () {
+      const layer = document.getElementById('mathBgLayer');
+      const items = ['2×3=6', '×', '7×8=56', '÷', '+', '=', '★', '9×5=45', '6×8=48', '×', '★', '8×4=32'];
+      layer.innerHTML = items.map((t, i) => {
+        const left = (i * 23 + 5) % 92;
+        const dur = 16 + (i % 4) * 3;
+        const delay = -(i * 1.6);
+        const size = t.length > 2 ? 1.3 : 2.1;
+        return `<span class="math-float" style="left:${left}%; font-size:${size}rem; animation-duration:${dur}s; animation-delay:${delay}s;">${t}</span>`;
+      }).join('');
+    })();
+
     const params = new URLSearchParams(window.location.search);
     let roomCode = (params.get('sala') || '').replace(/\D/g, '').slice(0, 4);
     let side = (params.get('lado') || '').toLowerCase();
@@ -564,7 +673,7 @@
       matchPoints: { a: 0, b: 0 },
       schoolConfirmed: true,
       question: null,
-      roundStatus: 'idle', // idle | countdown | reading | open | closed
+      roundStatus: 'idle',
       myAnswer: null,
       lastRoundSummary: null,
       isSuddenDeath: false,
@@ -618,10 +727,7 @@
     }
 
     function stopLocalTimer(clearBar = false) {
-      if (localTimerInterval) {
-        clearInterval(localTimerInterval);
-        localTimerInterval = null;
-      }
+      if (localTimerInterval) { clearInterval(localTimerInterval); localTimerInterval = null; }
       if (clearBar) {
         const fill = document.getElementById('timerFill');
         fill.style.width = '0%';
@@ -655,10 +761,7 @@
     }
 
     function stopCountdown() {
-      if (cdInterval) {
-        clearInterval(cdInterval);
-        cdInterval = null;
-      }
+      if (cdInterval) { clearInterval(cdInterval); cdInterval = null; }
       lastCdNum = null;
     }
 
@@ -675,7 +778,7 @@
           el.textContent = sec;
           el.style.animation = 'none';
           void el.offsetWidth;
-          el.style.animation = 'popIn 0.35s ease';
+          el.style.animation = 'popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)';
         }
         if (rem <= 0) stopCountdown();
       }
@@ -708,7 +811,6 @@
       const s = remoteState;
       document.getElementById('teamName').textContent = s.teamName || (side === 'b' ? 'Mesa B' : 'Mesa A');
 
-      // Mini placar no cabeçalho
       const sb = document.getElementById('miniScoreboard');
       if (s.connectedOnce && !s.tournamentFinished && s.matchId) {
         sb.style.display = 'flex';
@@ -726,7 +828,6 @@
 
       const strip = document.getElementById('statusStrip');
 
-      // Campeonato finalizado
       if (s.tournamentFinished) {
         stopLocalTimer(true);
         stopCountdown();
@@ -734,14 +835,13 @@
         document.getElementById('waitingScoreBig').style.display = 'none';
         document.getElementById('waitingSuddenPill').className = 'sudden-pill';
         document.getElementById('summaryCard').className = 'summary-card';
-        document.getElementById('waitingBanner').textContent = `🏆 Campeonato Finalizado! Campeão: ${s.championName || ''}`;
-        document.getElementById('waitingFoot').textContent = 'Obrigado pela participação!';
+        document.getElementById('waitingBanner').textContent = `🏆 Desafio Finalizado! Campeão: ${s.championName || ''}`;
+        document.getElementById('waitingFoot').textContent = 'Parabéns a todos os participantes!';
         strip.className = 'status-strip open';
         strip.textContent = '🏆 Campeonato encerrado!';
         return;
       }
 
-      // 1. Contagem regressiva de 3 segundos
       if (s.roundStatus === 'countdown') {
         stopLocalTimer(true);
         showPane('countdown');
@@ -754,7 +854,6 @@
 
       stopCountdown();
 
-      // 2. Pergunta em andamento (reading / open / closed)
       if (s.question && (s.roundStatus === 'reading' || s.roundStatus === 'open' || s.roundStatus === 'closed')) {
         showPane('quiz');
         document.getElementById('questionText').textContent = s.question.pergunta;
@@ -774,7 +873,7 @@
             if (!canInteract && myChoice !== idx) cls += ' locked-wait';
             return `
               <button class="${cls}" ${canInteract ? '' : 'disabled'} onclick="selectOption(${idx})">
-                <span class="opt-letter">${letters[idx] || idx + 1}</span>
+                <span class="opt-letter opt-c${idx % 5}">${letters[idx] || idx + 1}</span>
                 <span>${escapeHTML(alt)}</span>
               </button>`;
           }).join('');
@@ -782,7 +881,7 @@
 
         if (s.myAnswer) {
           strip.className = 'status-strip sent';
-          strip.textContent = `🔒 Resposta confirmada em ${s.myAnswer.order}º lugar (${formatSec(s.myAnswer.elapsedMs)})! Aguarde o resultado...`;
+          strip.textContent = `🔒 Confirmado em ${s.myAnswer.order}º lugar (${formatSec(s.myAnswer.elapsedMs)})! Aguarde o resultado...`;
           btnConfirm.disabled = true;
           btnConfirm.textContent = `🔒 CONFIRMADO — LETRA ${letters[s.myAnswer.choiceIndex]}`;
         } else if (s.roundStatus === 'reading') {
@@ -808,7 +907,6 @@
         return;
       }
 
-      // 3. Tela de entrada da próxima escola (botão com o nome da escola)
       stopLocalTimer(true);
       if (s.connectedOnce && s.matchId && !s.schoolConfirmed) {
         showPane('checkin');
@@ -819,7 +917,6 @@
         return;
       }
 
-      // 4. Tela "Aguardando a próxima pergunta"
       showPane('waiting');
       const wsBig = document.getElementById('waitingScoreBig');
       if (s.connectedOnce && s.matchId) {
@@ -980,9 +1077,7 @@
           conn = null;
         });
 
-        conn.on('error', () => {
-          setConnStatus(false, '🔴 Sem sinal...');
-        });
+        conn.on('error', () => setConnStatus(false, '🔴 Sem sinal...'));
       }
 
       peer.on('open', () => {
