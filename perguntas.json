@@ -1,0 +1,96 @@
+{
+  "blocos": [
+    {
+      "id": "facil",
+      "nome": "Bloco 1 — Tabuada Fácil",
+      "cor": "#22c55e",
+      "perguntas": [
+        {
+          "id": "f1",
+          "pergunta": "Quanto é 6 x 7?",
+          "alternativas": ["36", "42", "48", "49"],
+          "correta": 1
+        },
+        {
+          "id": "f2",
+          "pergunta": "Quanto é 8 x 4?",
+          "alternativas": ["28", "30", "32", "36"],
+          "correta": 2
+        },
+        {
+          "id": "f3",
+          "pergunta": "Quanto é 9 x 5?",
+          "alternativas": ["40", "45", "50", "54"],
+          "correta": 1
+        },
+        {
+          "id": "f4",
+          "pergunta": "Quanto é 7 x 7?",
+          "alternativas": ["42", "47", "49", "56"],
+          "correta": 2
+        }
+      ]
+    },
+    {
+      "id": "medio",
+      "nome": "Bloco 2 — Tabuada e Operações",
+      "cor": "#f59e0b",
+      "perguntas": [
+        {
+          "id": "m1",
+          "pergunta": "Quanto é 8 x 9?",
+          "alternativas": ["64", "72", "78", "81"],
+          "correta": 1
+        },
+        {
+          "id": "m2",
+          "pergunta": "Quanto é 56 ÷ 7?",
+          "alternativas": ["6", "7", "8", "9"],
+          "correta": 2
+        },
+        {
+          "id": "m3",
+          "pergunta": "Quanto é 12 x 6?",
+          "alternativas": ["62", "68", "72", "76"],
+          "correta": 2
+        },
+        {
+          "id": "m4",
+          "pergunta": "Qual o resultado de 9 x 6 + 4?",
+          "alternativas": ["54", "58", "60", "64"],
+          "correta": 1
+        }
+      ]
+    },
+    {
+      "id": "dificil",
+      "nome": "Bloco 3 — Desafios e Conhecimentos Gerais",
+      "cor": "#ef4444",
+      "perguntas": [
+        {
+          "id": "d1",
+          "pergunta": "Quanto é 15 x 8?",
+          "alternativas": ["110", "115", "120", "125"],
+          "correta": 2
+        },
+        {
+          "id": "d2",
+          "pergunta": "Qual é o maior estado do Brasil em extensão territorial?",
+          "alternativas": ["Mato Grosso", "Pará", "Amazonas", "Bahia"],
+          "correta": 2
+        },
+        {
+          "id": "d3",
+          "pergunta": "Em uma caixa há 9 pacotes com 8 lápis cada. Quantos lápis há no total?",
+          "alternativas": ["63", "72", "78", "81"],
+          "correta": 1
+        },
+        {
+          "id": "d4",
+          "pergunta": "Quanto é 144 ÷ 12?",
+          "resposta": "12"
+        }
+      ]
+    }
+  ]
+}
