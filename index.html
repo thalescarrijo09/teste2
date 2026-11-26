@@ -4,125 +4,289 @@
   <meta charset="UTF-8">
   <meta name="google" content="notranslate">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Telão — Campeonato de Perguntas</title>
+  <title>Telão — Desafio da Tabuada | Mineiros - GO</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0b1221;
-      --bg-card: #142038;
-      --bg-soft: #1c2c4c;
-      --text: #f8fafc;
-      --muted: #94a3b8;
-      --accent: #38bdf8;
-      --gold: #fbbf24;
-      --green: #22c55e;
-      --red: #ef4444;
-      --orange: #f97316;
+      --navy: #122B59;
+      --navy-deep: #0B1B3B;
+      --sky: #2E7BBF;
+      --sky-light: #5BB2E6;
+      --crimson: #C62032;
+      --crimson-dark: #971524;
+      --gold: #F7C948;
+      --gold-deep: #E09900;
+      --cream: #FFFDF5;
+      --chalk: #1E5A38;
+      --chalk-dark: #143F27;
+      --wood: #C47F35;
+      --green: #22C55E;
+      --orange: #F97316;
+      --purple: #9333EA;
+      --text: #FFFFFF;
+      --muted: #CFE4F7;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      background: radial-gradient(circle at top, #172542 0%, var(--bg) 70%);
+      font-family: 'Nunito', 'Segoe UI', system-ui, sans-serif;
+      background: radial-gradient(circle at 50% 35%, #3B93D8 0%, #1C4E8E 52%, #0E224A 100%);
       color: var(--text);
       height: 100vh;
       overflow: hidden;
       display: flex;
       flex-direction: column;
+      position: relative;
+    }
+
+    /* === FUNDO ANIMADO DE MATEMÁTICA E TABUADA === */
+    #mathBgLayer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+    .math-float {
+      position: absolute;
+      bottom: -80px;
+      font-family: 'Fredoka', 'Nunito', sans-serif;
+      font-weight: 700;
+      color: rgba(255, 248, 220, 0.12);
+      text-shadow: 0 2px 6px rgba(11, 27, 59, 0.25);
+      animation: floatMath linear infinite;
+      white-space: nowrap;
+      user-select: none;
+    }
+    @keyframes floatMath {
+      0% { transform: translateY(0) rotate(0deg) scale(0.95); opacity: 0; }
+      12% { opacity: 1; }
+      88% { opacity: 1; }
+      100% { transform: translateY(-118vh) rotate(24deg) scale(1.08); opacity: 0; }
+    }
+
+    /* === TRANSIÇÃO ANIMADA DE TELAS (TEMÁTICA TABUADA) === */
+    #mathTransition {
+      position: fixed;
+      inset: 0;
+      z-index: 9000;
+      pointer-events: none;
+      overflow: hidden;
+      opacity: 0;
+      visibility: hidden;
+    }
+    #mathTransition.playing {
+      opacity: 1;
+      visibility: visible;
+    }
+    .mt-band {
+      position: absolute;
+      top: -20%;
+      left: -130%;
+      width: 140%;
+      height: 140%;
+      transform: skewX(-14deg);
+    }
+    .mt-band-1 {
+      background: linear-gradient(135deg, var(--navy-deep), var(--navy));
+      border-right: 12px solid var(--gold);
+    }
+    .mt-band-2 {
+      background: linear-gradient(135deg, var(--crimson), var(--crimson-dark));
+      border-right: 10px solid var(--gold);
+    }
+    #mathTransition.playing .mt-band-1 {
+      animation: wipeSweep 0.68s cubic-bezier(0.75, 0, 0.25, 1) forwards;
+    }
+    #mathTransition.playing .mt-band-2 {
+      animation: wipeSweep 0.68s cubic-bezier(0.75, 0, 0.25, 1) 0.06s forwards;
+    }
+    @keyframes wipeSweep {
+      0% { left: -145%; }
+      45% { left: -12%; }
+      55% { left: -8%; }
+      100% { left: 130%; }
+    }
+    .mt-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      opacity: 0;
+    }
+    #mathTransition.playing .mt-center {
+      animation: burstCenter 0.68s ease forwards;
+    }
+    .mt-symbols {
+      font-family: 'Fredoka', sans-serif;
+      font-size: clamp(3rem, 7vw, 5.5rem);
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: 14px;
+      text-shadow: 0 5px 0 var(--navy-deep), 0 0 28px rgba(247, 201, 72, 0.6);
+    }
+    .mt-eq {
+      font-family: 'Fredoka', sans-serif;
+      font-size: clamp(1.4rem, 2.8vw, 2.2rem);
+      background: var(--cream);
+      color: var(--navy);
+      padding: 6px 24px;
+      border-radius: 999px;
+      border: 4px solid var(--navy);
+      box-shadow: 0 6px 0 var(--navy-deep);
+    }
+    @keyframes burstCenter {
+      0% { opacity: 0; transform: scale(0.5) rotate(-8deg); }
+      35% { opacity: 1; transform: scale(1.08) rotate(2deg); }
+      65% { opacity: 1; transform: scale(1) rotate(0deg); }
+      100% { opacity: 0; transform: scale(1.25) rotate(6deg); }
     }
 
     /* Overlay inicial para liberar som e voz */
     #unlockOverlay {
       position: fixed;
       inset: 0;
-      background: rgba(11, 18, 33, 0.96);
+      background: radial-gradient(circle at center, rgba(28, 78, 142, 0.97) 0%, rgba(11, 27, 59, 0.98) 80%);
       z-index: 9999;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
-      gap: 20px;
+      gap: 18px;
       padding: 30px;
     }
-    #unlockOverlay h1 { font-size: 2.6rem; color: var(--gold); }
-    #unlockOverlay p { font-size: 1.25rem; color: var(--muted); max-width: 600px; }
-    #btnUnlock {
-      background: var(--green);
-      color: #052e16;
-      border: none;
-      padding: 20px 44px;
-      font-size: 1.5rem;
-      font-weight: 800;
-      border-radius: 16px;
-      cursor: pointer;
-      box-shadow: 0 10px 30px rgba(34, 197, 94, 0.35);
-      transition: transform 0.15s;
+    #unlockOverlay img {
+      max-height: 220px;
+      filter: drop-shadow(0 12px 28px rgba(0, 0, 0, 0.45));
+      animation: logoFloat 3s ease-in-out infinite;
     }
-    #btnUnlock:hover { transform: scale(1.04); }
+    #unlockOverlay h1 {
+      font-family: 'Fredoka', sans-serif;
+      font-size: clamp(2.1rem, 4vw, 3.1rem);
+      color: var(--gold);
+      text-shadow: 0 4px 0 var(--navy-deep);
+    }
+    #unlockOverlay p {
+      font-size: 1.2rem;
+      color: var(--muted);
+      max-width: 620px;
+    }
+    #btnUnlock {
+      background: linear-gradient(180deg, #FFE17D 0%, var(--gold) 55%, var(--gold-deep) 100%);
+      color: var(--navy-deep);
+      border: 4px solid var(--navy-deep);
+      padding: 18px 44px;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.55rem;
+      font-weight: 700;
+      border-radius: 20px;
+      cursor: pointer;
+      box-shadow: 0 8px 0 var(--navy-deep), 0 14px 30px rgba(0,0,0,0.4);
+      transition: transform 0.12s;
+    }
+    #btnUnlock:hover { transform: translateY(-2px) scale(1.03); }
+    #btnUnlock:active { transform: translateY(4px); box-shadow: 0 4px 0 var(--navy-deep); }
 
     /* Overlay da contagem regressiva de 3 segundos */
     #countdownOverlay {
       position: fixed;
       inset: 0;
-      background: rgba(11, 18, 33, 0.95);
+      background: radial-gradient(circle at center, rgba(198, 32, 50, 0.94) 0%, rgba(18, 43, 89, 0.98) 78%);
       z-index: 8000;
       display: none;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
-      gap: 18px;
+      gap: 16px;
     }
     #countdownOverlay.active { display: flex; }
+    .cd-orbit {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 2.2rem;
+      color: rgba(247, 201, 72, 0.75);
+      letter-spacing: 22px;
+      animation: pulse 0.5s infinite alternate;
+    }
     .cd-match-info {
-      font-size: 1.8rem;
-      font-weight: 800;
-      color: var(--accent);
-      text-transform: uppercase;
-      letter-spacing: 2px;
+      font-family: 'Fredoka', sans-serif;
+      font-size: clamp(1.5rem, 3vw, 2.3rem);
+      font-weight: 700;
+      color: var(--cream);
+      background: var(--navy);
+      border: 3px solid var(--gold);
+      padding: 10px 30px;
+      border-radius: 999px;
+      box-shadow: 0 6px 0 var(--navy-deep);
     }
     .cd-big-num {
+      font-family: 'Fredoka', sans-serif;
       font-size: clamp(10rem, 28vw, 18rem);
-      font-weight: 900;
+      font-weight: 700;
       line-height: 1;
       color: var(--gold);
-      text-shadow: 0 0 60px rgba(251, 191, 36, 0.55);
-      animation: popIn 0.35s ease;
+      -webkit-text-stroke: 6px var(--navy-deep);
+      text-shadow: 0 12px 0 var(--navy-deep), 0 0 60px rgba(247, 201, 72, 0.65);
+      animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
-    /* Cabeçalho fixo do telão */
+    /* Cabeçalho fixo em estilo faixa da logo */
     header {
+      position: relative;
+      z-index: 5;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 10px 28px;
-      background: rgba(10, 16, 30, 0.7);
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      min-height: 58px;
+      padding: 8px 28px;
+      background: linear-gradient(90deg, var(--navy-deep) 0%, var(--crimson) 35%, var(--crimson) 65%, var(--navy-deep) 100%);
+      border-bottom: 4px solid var(--gold);
+      box-shadow: 0 4px 16px rgba(11, 27, 59, 0.45);
+      min-height: 62px;
       flex-shrink: 0;
     }
     .brand { display: flex; align-items: center; gap: 14px; }
-    .brand img { height: 40px; width: auto; border-radius: 8px; }
-    .brand-title { font-size: 1.35rem; font-weight: 800; letter-spacing: 0.5px; color: var(--gold); }
+    .brand img {
+      height: 46px;
+      width: auto;
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.45));
+    }
+    .brand-title {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.45rem;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      color: var(--gold);
+      text-shadow: 0 2px 0 var(--navy-deep);
+    }
 
     .audio-pill {
-      padding: 6px 16px;
+      padding: 6px 18px;
       border-radius: 999px;
       font-size: 0.95rem;
-      font-weight: 700;
-      background: var(--bg-soft);
-      color: var(--accent);
+      font-weight: 900;
+      background: var(--navy);
+      border: 2px solid var(--gold);
+      color: var(--gold);
       display: none;
       align-items: center;
       gap: 8px;
+      box-shadow: 0 3px 0 var(--navy-deep);
     }
     .audio-pill.active { display: inline-flex; }
-    .audio-pill.speaking { background: rgba(56, 189, 248, 0.2); color: #7dd3fc; }
-    .audio-pill.running { background: rgba(249, 115, 22, 0.25); color: #fdba74; }
+    .audio-pill.speaking { background: var(--sky); color: #fff; border-color: #fff; }
+    .audio-pill.running { background: var(--gold); color: var(--navy-deep); border-color: var(--navy-deep); }
 
     /* Área principal */
     main {
+      position: relative;
+      z-index: 2;
       flex: 1;
       display: flex;
       flex-direction: column;
@@ -131,91 +295,119 @@
       min-height: 0;
     }
     .screen { display: none; flex: 1; flex-direction: column; min-height: 0; }
-    .screen.active { display: flex; }
+    .screen.active {
+      display: flex;
+      animation: screenEnter 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    @keyframes screenEnter {
+      from { opacity: 0; transform: scale(0.96) translateY(14px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
 
-    /* === TELA 1: ESPERA / CHAMADA DO PRÓXIMO CONFRONTO === */
+    /* === TELA 1: CHAMADA DO PRÓXIMO CONFRONTO === */
     #screen-espera {
       align-items: center;
       justify-content: center;
       text-align: center;
-      gap: 22px;
+      gap: 18px;
     }
     .last-win-banner {
       display: none;
-      background: rgba(34, 197, 94, 0.2);
-      border: 2px solid var(--green);
-      color: #86efac;
-      padding: 12px 28px;
-      border-radius: 16px;
-      font-size: 1.5rem;
-      font-weight: 900;
+      background: linear-gradient(135deg, #1E7E46, #14532D);
+      border: 3px solid var(--gold);
+      color: #FFFDF5;
+      padding: 10px 28px;
+      border-radius: 999px;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.45rem;
+      box-shadow: 0 6px 0 var(--navy-deep);
     }
-    .last-win-banner.visible { display: block; }
-    .espera-logo { max-height: 110px; border-radius: 16px; }
+    .last-win-banner.visible { display: block; animation: popIn 0.45s ease; }
+
+    .espera-logo {
+      max-height: clamp(135px, 24vh, 215px);
+      filter: drop-shadow(0 12px 26px rgba(11, 27, 59, 0.55));
+      animation: logoFloat 3.4s ease-in-out infinite;
+    }
+    @keyframes logoFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+    }
     .espera-title {
-      font-size: clamp(2rem, 4vw, 3.2rem);
-      font-weight: 900;
+      font-family: 'Fredoka', sans-serif;
+      font-size: clamp(1.9rem, 3.6vw, 2.9rem);
+      font-weight: 700;
       color: var(--gold);
+      text-shadow: 0 4px 0 var(--navy-deep), 0 8px 20px rgba(0,0,0,0.35);
     }
     .match-spotlight {
-      background: var(--bg-card);
-      border: 3px solid rgba(56, 189, 248, 0.45);
+      background: rgba(18, 43, 89, 0.9);
+      border: 4px solid var(--gold);
       border-radius: 26px;
-      padding: 28px 48px;
-      min-width: 72%;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.45);
+      padding: 22px 42px;
+      min-width: 74%;
+      box-shadow: 0 10px 0 var(--navy-deep), 0 20px 45px rgba(0,0,0,0.45);
     }
     .match-spotlight .match-tag {
       display: inline-block;
-      background: var(--accent);
-      color: #082f49;
-      font-weight: 900;
+      background: linear-gradient(180deg, #E23447, var(--crimson));
+      color: #FFFDF5;
+      border: 3px solid var(--gold);
+      font-family: 'Fredoka', sans-serif;
       font-size: 1.15rem;
-      padding: 6px 22px;
+      padding: 6px 26px;
       border-radius: 999px;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
       text-transform: uppercase;
+      box-shadow: 0 4px 0 var(--navy-deep);
     }
     .spotlight-teams {
       display: grid;
       grid-template-columns: 1fr auto 1fr;
       align-items: center;
-      gap: 28px;
+      gap: 24px;
     }
     .spot-team-box {
+      background: rgba(255, 253, 245, 0.08);
+      border: 2px solid rgba(255, 253, 245, 0.16);
+      border-radius: 18px;
+      padding: 14px 18px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
     .spot-mesa {
-      font-size: 0.95rem;
-      font-weight: 800;
-      padding: 3px 12px;
+      font-size: 0.9rem;
+      font-weight: 900;
+      padding: 3px 14px;
       border-radius: 999px;
       text-transform: uppercase;
     }
-    .mesa-a { background: rgba(56,189,248,0.2); color: #7dd3fc; }
-    .mesa-b { background: rgba(251,191,36,0.2); color: #fde047; }
-    .spot-name { font-size: clamp(2rem, 4vw, 3.1rem); font-weight: 900; }
-    .spot-ready { font-size: 1rem; font-weight: 700; color: var(--muted); }
-    .spot-ready.ok { color: #86efac; }
+    .mesa-a { background: var(--sky-light); color: var(--navy-deep); }
+    .mesa-b { background: var(--gold); color: var(--navy-deep); }
+    .spot-name {
+      font-family: 'Fredoka', sans-serif;
+      font-size: clamp(1.85rem, 3.8vw, 3rem);
+      color: #fff;
+      text-shadow: 0 3px 0 var(--navy-deep);
+    }
+    .spot-ready { font-size: 0.98rem; font-weight: 800; color: var(--muted); }
+    .spot-ready.ok { color: #86EFAC; }
     .spotlight-vs {
-      font-size: 1.8rem;
-      font-weight: 900;
-      color: var(--gold);
-      background: var(--bg-soft);
+      font-family: 'Fredoka', sans-serif;
+      font-size: 2rem;
+      color: var(--navy-deep);
+      background: linear-gradient(180deg, #FFE17D, var(--gold));
+      border: 3px solid var(--navy-deep);
       padding: 10px 20px;
-      border-radius: 14px;
+      border-radius: 16px;
+      box-shadow: 0 5px 0 var(--navy-deep);
     }
 
-    /* === TELA 2: QUIZ (MODO AGUARDANDO + MODO PERGUNTA) === */
-    #screen-quiz {
-      justify-content: space-between;
-      gap: 12px;
-    }
+    /* === TELA 2: QUIZ (AGUARDANDO + PERGUNTA ATIVA) === */
+    #screen-quiz { justify-content: space-between; gap: 12px; }
 
-    /* Sub-modo: Aguardando próxima pergunta */
     #quizWaitingView {
       display: none;
       flex: 1;
@@ -223,79 +415,100 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      gap: 22px;
+      gap: 20px;
     }
-    #quizWaitingView.active { display: flex; }
+    #quizWaitingView.active {
+      display: flex;
+      animation: screenEnter 0.4s ease;
+    }
 
     .big-scoreboard-card {
-      background: var(--bg-card);
-      border: 2px solid rgba(255,255,255,0.12);
-      border-radius: 24px;
-      padding: 24px 44px;
-      min-width: 72%;
+      background: rgba(18, 43, 89, 0.92);
+      border: 4px solid var(--gold);
+      border-radius: 26px;
+      padding: 22px 44px;
+      min-width: 74%;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 14px;
+      box-shadow: 0 10px 0 var(--navy-deep), 0 18px 40px rgba(0,0,0,0.4);
     }
     .big-sb-tag {
+      font-family: 'Fredoka', sans-serif;
       font-size: 1.15rem;
-      font-weight: 800;
-      color: var(--accent);
+      color: #fff;
+      background: var(--crimson);
+      border: 2px solid var(--gold);
+      padding: 4px 20px;
+      border-radius: 999px;
       text-transform: uppercase;
-      letter-spacing: 1px;
     }
     .big-sb-row {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 26px;
+      gap: 24px;
+      font-family: 'Fredoka', sans-serif;
       font-size: clamp(1.8rem, 3.6vw, 2.8rem);
-      font-weight: 900;
       flex-wrap: wrap;
     }
     .big-sb-pts {
-      background: var(--bg-soft);
-      color: var(--gold);
-      padding: 8px 26px;
+      background: linear-gradient(180deg, #FFE17D, var(--gold));
+      color: var(--navy-deep);
+      border: 3px solid var(--navy-deep);
+      padding: 6px 24px;
       border-radius: 16px;
       font-size: clamp(2.8rem, 5.5vw, 4.2rem);
-      min-width: 90px;
+      min-width: 88px;
+      box-shadow: 0 5px 0 var(--navy-deep);
     }
 
     .telao-sudden-badge {
       display: none;
-      background: var(--red);
+      background: linear-gradient(180deg, #EF4444, var(--crimson));
+      border: 3px solid var(--gold);
       color: #fff;
-      padding: 10px 26px;
+      padding: 10px 28px;
       border-radius: 999px;
+      font-family: 'Fredoka', sans-serif;
       font-size: 1.35rem;
-      font-weight: 900;
+      box-shadow: 0 6px 0 var(--navy-deep);
       animation: pulse 0.65s infinite alternate;
     }
     .telao-sudden-badge.visible { display: inline-block; }
 
     .round-summary-box {
       display: none;
-      width: 76%;
-      border-radius: 20px;
-      padding: 20px 30px;
-      background: var(--bg-card);
-      border: 3px solid var(--green);
+      width: 78%;
+      border-radius: 22px;
+      padding: 18px 28px;
+      background: linear-gradient(180deg, var(--chalk) 0%, var(--chalk-dark) 100%);
+      border: 5px solid var(--wood);
+      outline: 3px solid var(--navy-deep);
       flex-direction: column;
       gap: 8px;
+      box-shadow: 0 8px 0 var(--navy-deep);
     }
-    .round-summary-box.visible { display: flex; }
-    .round-summary-box.cancelled { border-color: var(--orange); background: rgba(249, 115, 22, 0.14); }
-    .rs-headline { font-size: clamp(1.5rem, 2.8vw, 2.2rem); font-weight: 900; color: #86efac; }
-    .round-summary-box.cancelled .rs-headline { color: #fdba74; }
-    .rs-correct { font-size: clamp(1.2rem, 2.2vw, 1.65rem); font-weight: 800; color: #fff; }
-    .rs-details { font-size: 1.15rem; color: var(--muted); font-weight: 600; }
+    .round-summary-box.visible { display: flex; animation: popIn 0.4s ease; }
+    .round-summary-box.cancelled {
+      background: linear-gradient(180deg, #9A3412, #7C2D12);
+      border-color: var(--gold);
+    }
+    .rs-headline {
+      font-family: 'Fredoka', sans-serif;
+      font-size: clamp(1.5rem, 2.8vw, 2.2rem);
+      color: var(--gold);
+      text-shadow: 0 2px 0 rgba(0,0,0,0.4);
+    }
+    .rs-correct { font-size: clamp(1.2rem, 2.2vw, 1.65rem); font-weight: 900; color: #fff; }
+    .rs-details { font-size: 1.12rem; color: #E2F5E9; font-weight: 700; }
 
     .waiting-next-text {
-      font-size: clamp(1.6rem, 3vw, 2.4rem);
-      font-weight: 900;
-      color: var(--accent);
+      font-family: 'Fredoka', sans-serif;
+      font-size: clamp(1.55rem, 2.9vw, 2.3rem);
+      color: var(--gold);
+      text-shadow: 0 3px 0 var(--navy-deep);
     }
 
     /* Sub-modo: Pergunta ativa */
@@ -307,7 +520,10 @@
       gap: 12px;
       min-height: 0;
     }
-    #quizActiveView.active { display: flex; }
+    #quizActiveView.active {
+      display: flex;
+      animation: screenEnter 0.4s ease;
+    }
 
     .quiz-top-bar {
       display: flex;
@@ -318,54 +534,63 @@
       flex-shrink: 0;
     }
     .block-badge {
-      padding: 8px 20px;
+      padding: 8px 22px;
       border-radius: 999px;
-      font-size: 1.1rem;
-      font-weight: 800;
-      color: #0b1221;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.15rem;
+      color: var(--navy-deep);
       background: var(--gold);
+      border: 3px solid var(--navy-deep);
+      box-shadow: 0 4px 0 var(--navy-deep);
     }
     .live-scoreboard {
       display: flex;
       align-items: center;
       gap: 14px;
-      background: var(--bg-card);
-      border: 1px solid rgba(255,255,255,0.12);
-      padding: 8px 20px;
-      border-radius: 14px;
+      background: rgba(18, 43, 89, 0.92);
+      border: 3px solid var(--gold);
+      padding: 7px 20px;
+      border-radius: 16px;
+      font-family: 'Fredoka', sans-serif;
       font-size: 1.25rem;
-      font-weight: 800;
+      box-shadow: 0 4px 0 var(--navy-deep);
     }
     .live-scoreboard .pts {
-      background: var(--bg-soft);
-      color: var(--gold);
-      padding: 3px 12px;
-      border-radius: 8px;
+      background: var(--gold);
+      color: var(--navy-deep);
+      padding: 2px 12px;
+      border-radius: 9px;
       font-size: 1.45rem;
-      min-width: 44px;
+      min-width: 42px;
       text-align: center;
     }
-    .live-scoreboard .vs-small { color: var(--muted); font-size: 0.95rem; }
+    .live-scoreboard .vs-small { color: var(--muted); font-size: 1rem; }
 
+    /* Quadro-Negro escolar da logo (2x3=6) */
     .question-box {
-      background: var(--bg-card);
-      border: 2px solid rgba(255,255,255,0.12);
-      border-radius: 20px;
-      padding: 20px 32px;
+      background: radial-gradient(circle at top, #256E44 0%, var(--chalk) 65%, var(--chalk-dark) 100%);
+      border: 6px solid var(--wood);
+      outline: 3px solid var(--navy-deep);
+      border-radius: 22px;
+      padding: 20px 34px;
       text-align: center;
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 115px;
-      box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+      min-height: 118px;
+      box-shadow: inset 0 0 24px rgba(0,0,0,0.28), 0 8px 0 var(--navy-deep), 0 14px 30px rgba(0,0,0,0.35);
       flex-shrink: 0;
     }
     .question-text {
-      font-size: clamp(1.7rem, 3.3vw, 2.85rem);
-      font-weight: 800;
+      font-family: 'Fredoka', sans-serif;
+      font-size: clamp(1.7rem, 3.2vw, 2.85rem);
+      font-weight: 700;
       line-height: 1.25;
+      color: var(--cream);
+      text-shadow: 0 3px 0 rgba(11, 27, 59, 0.45);
     }
 
+    /* Alternativas estilo cards ilustrados 3D */
     .options-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -375,29 +600,46 @@
       min-height: 0;
     }
     .option-card {
-      background: var(--bg-soft);
-      border: 3px solid rgba(255,255,255,0.12);
-      border-radius: 18px;
-      padding: 15px 22px;
+      background: var(--cream);
+      color: var(--navy-deep);
+      border: 4px solid var(--navy);
+      border-radius: 20px;
+      padding: 14px 22px;
       display: flex;
       align-items: center;
       gap: 18px;
-      font-size: clamp(1.35rem, 2.4vw, 2.15rem);
+      font-family: 'Fredoka', sans-serif;
+      font-size: clamp(1.4rem, 2.5vw, 2.2rem);
       font-weight: 700;
+      box-shadow: 0 7px 0 var(--navy-deep), 0 10px 20px rgba(0,0,0,0.25);
+      animation: optSlide 0.35s ease backwards;
+    }
+    .option-card:nth-child(2) { animation-delay: 0.05s; }
+    .option-card:nth-child(3) { animation-delay: 0.1s; }
+    .option-card:nth-child(4) { animation-delay: 0.15s; }
+    @keyframes optSlide {
+      from { opacity: 0; transform: translateY(14px) scale(0.96); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
     }
     .option-letter {
-      background: var(--accent);
-      color: #082f49;
-      width: 50px;
-      height: 50px;
-      border-radius: 12px;
+      width: 54px;
+      height: 54px;
+      border-radius: 14px;
+      border: 3px solid var(--navy-deep);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 900;
-      font-size: 1.6rem;
+      font-weight: 700;
+      font-size: 1.75rem;
       flex-shrink: 0;
+      color: #fff;
+      box-shadow: 0 3px 0 var(--navy-deep);
     }
+    .opt-c0 { background: var(--sky); }
+    .opt-c1 { background: var(--crimson); }
+    .opt-c2 { background: #22A055; }
+    .opt-c3 { background: var(--gold-deep); }
+    .opt-c4 { background: var(--purple); }
 
     /* Faixa ao vivo dos 2 tablets */
     .tablets-strip {
@@ -407,39 +649,41 @@
       flex-shrink: 0;
     }
     .tablet-card {
-      background: var(--bg-card);
-      border: 2px solid rgba(255,255,255,0.1);
+      background: rgba(18, 43, 89, 0.92);
+      border: 3px solid rgba(255, 253, 245, 0.25);
       border-radius: 16px;
       padding: 10px 18px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
+      box-shadow: 0 5px 0 var(--navy-deep);
       transition: all 0.25s ease;
     }
     .tablet-card.answered {
-      border-color: var(--accent);
-      background: rgba(56, 189, 248, 0.14);
+      border-color: var(--sky-light);
+      background: rgba(46, 123, 191, 0.45);
     }
     .tablet-card.first-place {
       border-color: var(--gold);
-      box-shadow: 0 0 18px rgba(251, 191, 36, 0.25);
+      background: rgba(198, 32, 50, 0.45);
+      box-shadow: 0 5px 0 var(--navy-deep), 0 0 22px rgba(247, 201, 72, 0.4);
     }
     .tc-team {
+      font-family: 'Fredoka', sans-serif;
       font-size: clamp(1.05rem, 1.8vw, 1.45rem);
-      font-weight: 900;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
     .tc-status {
-      font-size: clamp(0.95rem, 1.5vw, 1.25rem);
+      font-size: clamp(0.95rem, 1.5vw, 1.2rem);
       font-weight: 800;
       text-align: right;
       white-space: nowrap;
       color: var(--muted);
     }
-    .tc-status.locked { color: #fde047; }
+    .tc-status.locked { color: #FFE17D; }
     .tc-order-pill {
       display: inline-block;
       padding: 2px 10px;
@@ -448,70 +692,76 @@
       font-weight: 900;
       margin-right: 6px;
     }
-    .ord-1 { background: var(--gold); color: #451a03; }
-    .ord-2 { background: #38bdf8; color: #082f49; }
+    .ord-1 { background: var(--gold); color: var(--navy-deep); }
+    .ord-2 { background: var(--sky-light); color: var(--navy-deep); }
 
     /* Barra do cronômetro */
     .timer-bar-container {
-      background: var(--bg-card);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 16px;
-      padding: 10px 22px;
+      background: rgba(18, 43, 89, 0.94);
+      border: 3px solid var(--gold);
+      border-radius: 18px;
+      padding: 8px 22px;
       display: flex;
       align-items: center;
       gap: 20px;
       flex-shrink: 0;
+      box-shadow: 0 5px 0 var(--navy-deep);
     }
     .timer-digits {
-      font-size: 2.6rem;
-      font-weight: 900;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 2.5rem;
       font-variant-numeric: tabular-nums;
-      min-width: 120px;
+      min-width: 125px;
       text-align: center;
-      color: var(--accent);
+      color: var(--gold);
+      text-shadow: 0 2px 0 var(--navy-deep);
     }
-    .timer-digits.reading { font-size: 1.45rem; color: #7dd3fc; }
-    .timer-digits.warning { color: var(--orange); }
-    .timer-digits.danger { color: var(--red); animation: pulse 0.6s infinite alternate; }
+    .timer-digits.reading { font-size: 1.4rem; color: var(--sky-light); }
+    .timer-digits.warning { color: #FDBA74; }
+    .timer-digits.danger { color: #FF6B6B; animation: pulse 0.55s infinite alternate; }
     .timer-track {
       flex: 1;
-      height: 22px;
-      background: rgba(255,255,255,0.08);
+      height: 24px;
+      background: rgba(11, 27, 59, 0.75);
+      border: 2px solid rgba(255,255,255,0.2);
       border-radius: 999px;
       overflow: hidden;
     }
     .timer-fill {
       height: 100%;
       width: 100%;
-      background: linear-gradient(90deg, var(--green), var(--accent));
+      background: linear-gradient(90deg, #22C55E, #5BB2E6);
       border-radius: 999px;
       transition: width 0.1s linear;
     }
     .timer-fill.warning { background: linear-gradient(90deg, var(--orange), var(--gold)); }
-    .timer-fill.danger { background: var(--red); }
+    .timer-fill.danger { background: linear-gradient(90deg, var(--crimson), #EF4444); }
 
-    /* === TELA 3: CHAVEAMENTO 9 EQUIPES === */
+    /* === TELA 3: CHAVEAMENTO 9 EQUIPES (SEM SOBREPOSIÇÃO) === */
     #screen-chaveamento { gap: 10px; min-height: 0; }
     .bracket-section {
-      background: rgba(20, 32, 56, 0.78);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 14px;
+      background: rgba(18, 43, 89, 0.86);
+      border: 3px solid var(--gold);
+      border-radius: 16px;
       padding: 8px 14px;
       display: flex;
       flex-direction: column;
       min-height: 0;
       overflow: hidden;
+      box-shadow: 0 6px 0 var(--navy-deep);
     }
     .bracket-section.winners-section { flex: 1.85; }
-    .bracket-section.losers-section { flex: 1; }
+    .bracket-section.losers-section { flex: 1; border-color: var(--sky-light); }
     .bracket-section h2 {
-      font-size: clamp(0.95rem, 1.3vw, 1.15rem);
+      font-family: 'Fredoka', sans-serif;
+      font-size: clamp(0.95rem, 1.3vw, 1.18rem);
       color: var(--gold);
       margin-bottom: 6px;
       display: flex;
       align-items: center;
       gap: 8px;
       flex-shrink: 0;
+      text-shadow: 0 2px 0 var(--navy-deep);
     }
     .bracket-cols {
       display: grid;
@@ -530,8 +780,8 @@
       min-height: 0;
     }
     .b-card {
-      background: var(--bg-soft);
-      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(11, 27, 59, 0.78);
+      border: 2px solid rgba(91, 178, 230, 0.35);
       border-radius: 10px;
       padding: 5px 9px;
       font-size: clamp(0.75rem, 1vw, 0.94rem);
@@ -539,15 +789,15 @@
       flex-shrink: 1;
     }
     .b-card.active-match {
-      border: 2px solid var(--gold);
-      box-shadow: 0 0 14px rgba(251, 191, 36, 0.35);
-      background: #233863;
+      border: 3px solid var(--gold);
+      background: linear-gradient(135deg, rgba(198, 32, 50, 0.88), rgba(18, 43, 89, 0.95));
+      box-shadow: 0 0 18px rgba(247, 201, 72, 0.45);
     }
     .b-card.final-match { border-color: var(--gold); }
     .b-label {
       font-size: clamp(0.62rem, 0.78vw, 0.72rem);
-      color: var(--accent);
-      font-weight: 700;
+      color: var(--gold);
+      font-weight: 800;
       text-transform: uppercase;
       margin-bottom: 3px;
       display: flex;
@@ -560,42 +810,49 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      font-weight: 600;
+      font-weight: 700;
     }
-    .b-team.pending { color: var(--muted); font-style: italic; font-weight: 400; }
-    .b-team.win { background: rgba(34, 197, 94, 0.25); color: #86efac; font-weight: 800; }
-    .b-team.lose { opacity: 0.45; text-decoration: line-through; }
+    .b-team.pending { color: var(--muted); font-style: italic; font-weight: 400; opacity: 0.8; }
+    .b-team.win { background: rgba(34, 197, 94, 0.28); color: #86EFAC; font-weight: 900; }
+    .b-team.lose { opacity: 0.42; text-decoration: line-through; }
 
     /* === TELA 4: CLASSIFICAÇÃO / PÓDIO === */
-    #screen-classificacao { align-items: center; justify-content: center; gap: 24px; }
-    .podium-title { font-size: 2.8rem; font-weight: 900; color: var(--gold); }
+    #screen-classificacao { align-items: center; justify-content: center; gap: 18px; }
+    .podium-title {
+      font-family: 'Fredoka', sans-serif;
+      font-size: clamp(2.2rem, 4vw, 3.2rem);
+      color: var(--gold);
+      text-shadow: 0 4px 0 var(--navy-deep);
+    }
     .podium-list {
       width: 100%;
-      max-width: 820px;
+      max-width: 860px;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 14px;
+      gap: 12px;
     }
     .podium-item {
-      background: var(--bg-card);
-      border: 2px solid rgba(255,255,255,0.1);
-      border-radius: 16px;
-      padding: 16px 24px;
+      background: rgba(18, 43, 89, 0.92);
+      border: 3px solid rgba(255, 253, 245, 0.25);
+      border-radius: 18px;
+      padding: 14px 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      font-size: 1.4rem;
-      font-weight: 800;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.35rem;
+      box-shadow: 0 6px 0 var(--navy-deep);
     }
     .podium-item.pos-1 {
       grid-column: 1 / -1;
-      background: linear-gradient(135deg, rgba(251,191,36,0.28), var(--bg-card));
-      border-color: var(--gold);
-      font-size: 2.1rem;
-      padding: 22px 32px;
+      background: linear-gradient(135deg, var(--crimson) 0%, #971524 60%, var(--navy) 100%);
+      border: 4px solid var(--gold);
+      font-size: 2.2rem;
+      padding: 20px 32px;
+      box-shadow: 0 8px 0 var(--navy-deep), 0 0 32px rgba(247, 201, 72, 0.45);
     }
-    .podium-item.pos-2 { border-color: #cbd5e1; font-size: 1.65rem; }
-    .podium-item.pos-3 { border-color: #d97706; font-size: 1.65rem; }
+    .podium-item.pos-2 { border-color: #E2E8F0; font-size: 1.6rem; }
+    .podium-item.pos-3 { border-color: var(--gold-deep); font-size: 1.6rem; }
     .podium-pos { color: var(--gold); }
 
     @keyframes pulse {
@@ -610,14 +867,29 @@
 </head>
 <body>
 
+  <!-- Fundo com contas e símbolos de tabuada flutuantes -->
+  <div id="mathBgLayer"></div>
+
+  <!-- Cortina animada de transição entre telas -->
+  <div id="mathTransition">
+    <div class="mt-band mt-band-1"></div>
+    <div class="mt-band mt-band-2"></div>
+    <div class="mt-center">
+      <div class="mt-symbols">× ÷ + =</div>
+      <div class="mt-eq" id="mtEqText">7 × 8 = 56</div>
+    </div>
+  </div>
+
   <div id="unlockOverlay">
-    <h1>🏆 Telão do Campeonato</h1>
-    <p>Clique no botão abaixo para liberar o áudio (narração em Português e efeitos sonoros). Depois aperte <strong>F11</strong> para colocar em tela cheia no Datashow.</p>
+    <img src="logo.png" alt="Desafio da Tabuada" onerror="this.style.display='none'">
+    <h1>🏆 Desafio da Tabuada — Mineiros - GO</h1>
+    <p>Clique no botão abaixo para liberar o áudio (narração em Português e efeitos sonoros). Depois aperte <strong>F11</strong> para tela cheia no Datashow.</p>
     <button id="btnUnlock">🔊 Iniciar Telão e Ativar Áudio</button>
   </div>
 
   <!-- Overlay da contagem de 3 segundos -->
   <div id="countdownOverlay">
+    <div class="cd-orbit">× ÷ + = ★</div>
     <div class="cd-match-info" id="cdMatchInfo">Preparem-se! Próxima pergunta em...</div>
     <div class="cd-big-num" id="cdBigNum">3</div>
   </div>
@@ -625,7 +897,7 @@
   <header>
     <div class="brand">
       <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
-      <div class="brand-title" id="headerTitle">Campeonato de Perguntas e Tabuada</div>
+      <div class="brand-title" id="headerTitle">Desafio da Tabuada — Mineiros - GO</div>
     </div>
     <div id="audioPill" class="audio-pill">🔊 Narração</div>
   </header>
@@ -635,7 +907,7 @@
     <section id="screen-espera" class="screen active">
       <div class="last-win-banner" id="lastWinBanner"></div>
       <img src="logo.png" alt="Logo" class="espera-logo" onerror="this.style.display='none'">
-      <div class="espera-title" id="esperaTitle">Campeonato de Perguntas</div>
+      <div class="espera-title" id="esperaTitle">Desafio da Tabuada — Mineiros - GO</div>
       <div class="match-spotlight" id="esperaMatchBox" style="display:none;">
         <div class="match-tag" id="esperaMatchLabel">PRÓXIMO CONFRONTO — JOGO 1</div>
         <div class="spotlight-teams">
@@ -657,7 +929,6 @@
     <!-- TELA 2: QUIZ (AGUARDANDO + PERGUNTA ATIVA) -->
     <section id="screen-quiz" class="screen">
 
-      <!-- Sub-tela: Aguardando próxima pergunta + Placar + Resumo -->
       <div id="quizWaitingView" class="active">
         <div class="telao-sudden-badge" id="telaoSuddenBadge">⚡ MORTE SÚBITA!</div>
         <div class="big-scoreboard-card" id="bigScoreCard">
@@ -665,7 +936,7 @@
           <div class="big-sb-row">
             <span id="bigSbNameA">Escola A</span>
             <span class="big-sb-pts" id="bigSbPtsA">0</span>
-            <span style="color:var(--muted);">×</span>
+            <span style="color:var(--gold);">×</span>
             <span class="big-sb-pts" id="bigSbPtsB">0</span>
             <span id="bigSbNameB">Escola B</span>
           </div>
@@ -680,12 +951,11 @@
         <div class="waiting-next-text">⏳ Aguardando a próxima pergunta...</div>
       </div>
 
-      <!-- Sub-tela: Pergunta em andamento -->
       <div id="quizActiveView">
         <div class="quiz-top-bar">
           <div class="block-badge" id="quizBlockBadge">Bloco</div>
           <div class="live-scoreboard" id="quizScoreboard" style="display:none;">
-            <span id="quizMatchLabel" style="color:var(--accent); font-size:1rem;">Jogo 1</span>
+            <span id="quizMatchLabel" style="color:var(--sky-light); font-size:1rem;">Jogo 1</span>
             <span id="quizTeamA">Equipe A</span>
             <span class="pts" id="quizPtsA">0</span>
             <span class="vs-small">×</span>
@@ -756,8 +1026,12 @@
     let activeSpeechToken = 0;
     window._activeUtterance = null;
 
+    let lastRenderedViewKey = null;
+    let transitionSwapTimeout = null;
+    let transitionEndTimeout = null;
+
     let currentState = {
-      title: 'Campeonato de Perguntas e Tabuada',
+      title: 'Desafio da Tabuada — Mineiros - GO',
       view: 'espera',
       teams: Bracket9.defaultTeams(),
       results: {},
@@ -773,6 +1047,46 @@
       isSuddenDeath: false,
       isDecisive: false
     };
+
+    // === FUNDO ANIMADO DE TABUADA ===
+    function buildMathBackground() {
+      const layer = document.getElementById('mathBgLayer');
+      const items = [
+        '2×3=6', '7×8=56', '9×9=81', '6×7=42', '8×4=32', '5×9=45',
+        '12÷3=4', '×', '÷', '+', '−', '=', '★', '3×8=24', '4×7=28',
+        '6×8=48', '9×6=54', '×', '★', '5×5=25', '8×9=72', '÷'
+      ];
+      layer.innerHTML = items.map((txt, i) => {
+        const left = ((i * 19 + 4) % 94);
+        const dur = 14 + (i % 6) * 3;
+        const delay = -(i * 1.4);
+        const size = txt.length > 2 ? (1.4 + (i % 3) * 0.45) : (2.3 + (i % 3) * 0.7);
+        return `<span class="math-float" style="left:${left}%; font-size:${size}rem; animation-duration:${dur}s; animation-delay:${delay}s;">${txt}</span>`;
+      }).join('');
+    }
+    buildMathBackground();
+
+    // === TRANSIÇÃO ANIMADA ENTRE TELAS ===
+    const TRANSITION_EQS = ['2 × 3 = 6', '7 × 8 = 56', '6 × 7 = 42', '9 × 8 = 72', '8 × 8 = 64', '9 × 9 = 81', '5 × 7 = 35'];
+    function playMathTransition(onMidpoint) {
+      const el = document.getElementById('mathTransition');
+      const eq = document.getElementById('mtEqText');
+      if (transitionSwapTimeout) clearTimeout(transitionSwapTimeout);
+      if (transitionEndTimeout) clearTimeout(transitionEndTimeout);
+
+      eq.textContent = TRANSITION_EQS[Math.floor(Math.random() * TRANSITION_EQS.length)];
+      el.classList.remove('playing');
+      void el.offsetWidth;
+      el.classList.add('playing');
+
+      transitionSwapTimeout = setTimeout(() => {
+        if (typeof onMidpoint === 'function') onMidpoint();
+      }, 270);
+
+      transitionEndTimeout = setTimeout(() => {
+        el.classList.remove('playing');
+      }, 760);
+    }
 
     // === ÁUDIO SINTETIZADO ===
     function ensureAudio() {
@@ -829,10 +1143,7 @@
 
     // === CONTAGEM REGRESSIVA DE 3 SEGUNDOS ===
     function stopCountdownOverlay() {
-      if (cdInterval) {
-        clearInterval(cdInterval);
-        cdInterval = null;
-      }
+      if (cdInterval) { clearInterval(cdInterval); cdInterval = null; }
       lastCdSecond = null;
       document.getElementById('countdownOverlay').classList.remove('active');
     }
@@ -858,12 +1169,10 @@
           numEl.textContent = sec;
           numEl.style.animation = 'none';
           void numEl.offsetWidth;
-          numEl.style.animation = 'popIn 0.35s ease';
+          numEl.style.animation = 'popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)';
           playSfx('cd_tick');
         }
-        if (rem <= 0) {
-          stopCountdownOverlay();
-        }
+        if (rem <= 0) stopCountdownOverlay();
       }
 
       tick();
@@ -958,10 +1267,7 @@
     }
 
     function stopTimer(resetVisual = false) {
-      if (timerInterval) {
-        clearInterval(timerInterval);
-        timerInterval = null;
-      }
+      if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
       setAudioPill('', '');
       if (resetVisual) resetTimerDisplay(15);
     }
@@ -1032,10 +1338,22 @@
       return (ms / 1000).toFixed(1).replace('.', ',') + 's';
     }
 
-    function renderAll() {
+    function getVisualScreenKey(s) {
+      const view = s.view || 'espera';
+      if (view === 'quiz') {
+        const isWaiting = !s.currentQuestion || s.roundStatus === 'idle';
+        return isWaiting ? 'quiz-waiting' : 'quiz-active';
+      }
+      return view;
+    }
+
+    function renderAllNow() {
       const s = currentState;
-      document.getElementById('headerTitle').textContent = s.title || 'Campeonato de Perguntas';
-      document.getElementById('esperaTitle').textContent = s.title || 'Campeonato de Perguntas';
+      const displayTitle = (!s.title || s.title === 'Campeonato de Perguntas e Tabuada')
+        ? 'Desafio da Tabuada — Mineiros - GO' : s.title;
+
+      document.getElementById('headerTitle').textContent = displayTitle;
+      document.getElementById('esperaTitle').textContent = displayTitle;
 
       if (s.roundStatus !== 'countdown') stopCountdownOverlay();
 
@@ -1047,6 +1365,23 @@
       renderQuiz();
       renderBracket();
       renderPodium();
+    }
+
+    function renderAll() {
+      const nextKey = getVisualScreenKey(currentState);
+      const shouldAnimate =
+        lastRenderedViewKey !== null &&
+        nextKey !== lastRenderedViewKey &&
+        currentState.roundStatus !== 'countdown' &&
+        nextKey !== 'quiz-active'; // Na entrada da pergunta já teve a contagem 3-2-1!
+
+      lastRenderedViewKey = nextKey;
+
+      if (shouldAnimate) {
+        playMathTransition(renderAllNow);
+      } else {
+        renderAllNow();
+      }
     }
 
     function renderEspera() {
@@ -1130,7 +1465,6 @@
         return;
       }
 
-      // Pergunta ativa
       waitingView.classList.remove('active');
       activeView.classList.add('active');
 
@@ -1139,8 +1473,8 @@
         badge.textContent = s.isSuddenDeath
           ? `⚡ MORTE SÚBITA · ${s.currentBlock.nome}`
           : s.currentBlock.nome;
-        badge.style.background = s.isSuddenDeath ? '#ef4444' : (s.currentBlock.cor || '#fbbf24');
-        badge.style.color = s.isSuddenDeath ? '#fff' : '#0b1221';
+        badge.style.background = s.isSuddenDeath ? '#C62032' : (s.currentBlock.cor || '#F7C948');
+        badge.style.color = s.isSuddenDeath ? '#fff' : '#0B1B3B';
         badge.style.display = 'inline-block';
       } else {
         badge.style.display = 'none';
@@ -1167,7 +1501,7 @@
         grid.style.display = 'grid';
         grid.innerHTML = q.alternativas.map((alt, i) => `
           <div class="option-card">
-            <div class="option-letter">${letters[i] || i + 1}</div>
+            <div class="option-letter opt-c${i % 5}">${letters[i] || i + 1}</div>
             <div>${Bracket9.escapeHTML(alt)}</div>
           </div>`).join('');
       } else {
@@ -1175,7 +1509,6 @@
         grid.style.display = 'none';
       }
 
-      // Faixa dos 2 tablets (sem vazar a letra!)
       document.getElementById('tcTeamA').textContent = info ? info.teamA : 'Mesa A';
       document.getElementById('tcTeamB').textContent = info ? info.teamB : 'Mesa B';
       const ans = s.tabletAnswers || { a: null, b: null };
@@ -1288,7 +1621,8 @@
       const saved = localStorage.getItem(Bracket9.STORAGE_KEY);
       if (saved) {
         currentState = { ...currentState, ...JSON.parse(saved) };
-        renderAll();
+        lastRenderedViewKey = getVisualScreenKey(currentState);
+        renderAllNow();
       }
     } catch (e) {}
 
