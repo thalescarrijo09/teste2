@@ -37,12 +37,9 @@
       overflow: hidden;
     }
 
-    body {
-      display: flex;
-      flex-direction: column;
-    }
+    body { display: flex; flex-direction: column; }
 
-    /* Tela de conexão manual (caso abra sem ?sala= e ?lado=) */
+    /* Tela de conexão manual */
     #setupScreen {
       position: fixed;
       inset: 0;
@@ -93,16 +90,17 @@
     .btn-lado-a { background: #38bdf8; color: #082f49; }
     .btn-lado-b { background: #fbbf24; color: #451a03; }
 
-    /* Cabeçalho do tablet */
+    /* Cabeçalho com Placar */
     header {
-      background: rgba(10, 16, 30, 0.85);
+      background: rgba(10, 16, 30, 0.9);
       border-bottom: 1px solid rgba(255,255,255,0.1);
-      padding: 10px 18px;
+      padding: 10px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 10px;
       flex-shrink: 0;
+      flex-wrap: wrap;
     }
     .team-badge {
       display: flex;
@@ -111,21 +109,42 @@
       min-width: 0;
     }
     .side-pill {
-      padding: 5px 12px;
+      padding: 5px 11px;
       border-radius: 8px;
       font-weight: 900;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       flex-shrink: 0;
     }
     .side-a { background: #38bdf8; color: #082f49; }
     .side-b { background: #fbbf24; color: #451a03; }
     .team-name {
-      font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+      font-size: clamp(1rem, 2.3vw, 1.45rem);
       font-weight: 900;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
+
+    .mini-scoreboard {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,0.14);
+      padding: 5px 14px;
+      border-radius: 12px;
+      font-size: clamp(0.85rem, 1.8vw, 1.1rem);
+      font-weight: 800;
+    }
+    .mini-scoreboard .pts {
+      background: var(--soft);
+      color: var(--gold);
+      padding: 2px 10px;
+      border-radius: 7px;
+      font-size: clamp(1rem, 2vw, 1.3rem);
+    }
+    .mini-scoreboard .my-side { color: var(--accent); }
+
     .conn-area {
       display: flex;
       align-items: center;
@@ -133,17 +152,14 @@
       flex-shrink: 0;
     }
     .conn-pill {
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       font-weight: 700;
       padding: 5px 10px;
       border-radius: 999px;
       background: rgba(239,68,68,0.2);
       color: #fca5a5;
     }
-    .conn-pill.ok {
-      background: rgba(34,197,94,0.2);
-      color: #86efac;
-    }
+    .conn-pill.ok { background: rgba(34,197,94,0.2); color: #86efac; }
     .btn-cfg {
       background: var(--soft);
       color: var(--muted);
@@ -157,10 +173,10 @@
 
     /* Faixa de status e tempo */
     .status-strip {
-      padding: 10px 18px;
+      padding: 9px 16px;
       text-align: center;
       font-weight: 800;
-      font-size: clamp(1rem, 2.2vw, 1.3rem);
+      font-size: clamp(0.95rem, 2.1vw, 1.25rem);
       background: var(--card);
       border-bottom: 1px solid rgba(255,255,255,0.08);
       flex-shrink: 0;
@@ -169,8 +185,7 @@
     .status-strip.open { background: #14532d; color: #86efac; }
     .status-strip.sent { background: #312e81; color: #c7d2fe; }
     .status-strip.closed { background: #451a03; color: #fdba74; }
-    .status-strip.win { background: #15803d; color: #ffffff; }
-    .status-strip.lose { background: #991b1b; color: #ffffff; }
+    .status-strip.sudden { background: #7f1d1d; color: #fecaca; }
 
     .timer-line {
       height: 8px;
@@ -198,35 +213,160 @@
       overflow-y: auto;
     }
 
-    .idle-box {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      gap: 14px;
-      color: var(--muted);
-    }
-    .idle-box .big-icon { font-size: 4rem; }
-    .idle-box h2 { font-size: 1.8rem; color: var(--gold); }
-
-    #quizArea {
+    .view-pane {
       display: none;
       flex: 1;
       flex-direction: column;
-      gap: 12px;
       min-height: 0;
     }
-    #quizArea.active { display: flex; }
+    .view-pane.active { display: flex; }
 
+    /* 1. TELA DE ENTRADA DA PRÓXIMA ESCOLA (BOTÃO GIGANTE) */
+    #pane-checkin {
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 20px;
+    }
+    .checkin-tag {
+      display: inline-block;
+      background: rgba(56, 189, 248, 0.2);
+      color: var(--accent);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      padding: 8px 20px;
+      border-radius: 999px;
+      font-size: 1.1rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+    .checkin-hint {
+      font-size: clamp(1.1rem, 2.2vw, 1.45rem);
+      color: var(--muted);
+      max-width: 560px;
+    }
+    #btnSchoolEnter {
+      width: 100%;
+      max-width: 560px;
+      padding: 34px 28px;
+      border: 4px solid var(--gold);
+      border-radius: 24px;
+      background: linear-gradient(135deg, #1d4ed8, #0f172a);
+      color: #fff;
+      cursor: pointer;
+      box-shadow: 0 18px 45px rgba(37, 99, 235, 0.45);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      transition: transform 0.12s;
+    }
+    #btnSchoolEnter:active { transform: scale(0.97); }
+    .enter-school-name {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 900;
+      color: var(--gold);
+    }
+    .enter-school-sub {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #bae6fd;
+    }
+
+    /* 2. TELA AGUARDANDO PRÓXIMA PERGUNTA */
+    #pane-waiting {
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 18px;
+    }
+    .waiting-score-big {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      background: var(--card);
+      border: 2px solid rgba(255,255,255,0.12);
+      border-radius: 20px;
+      padding: 18px 28px;
+      font-size: clamp(1.2rem, 2.8vw, 1.9rem);
+      font-weight: 900;
+      flex-wrap: wrap;
+    }
+    .waiting-score-big .big-pts {
+      background: var(--soft);
+      color: var(--gold);
+      padding: 6px 18px;
+      border-radius: 12px;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      min-width: 58px;
+    }
+    .summary-card {
+      width: 100%;
+      max-width: 680px;
+      border-radius: 16px;
+      padding: 16px 22px;
+      background: var(--card);
+      border: 2px solid rgba(255,255,255,0.12);
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .summary-card.visible { display: flex; }
+    .summary-card.win { border-color: var(--green); background: rgba(34, 197, 94, 0.16); }
+    .summary-card.lose { border-color: var(--red); background: rgba(239, 68, 68, 0.16); }
+    .summary-card.cancel { border-color: var(--orange); background: rgba(249, 115, 22, 0.16); }
+    .summary-headline { font-size: clamp(1.15rem, 2.4vw, 1.6rem); font-weight: 900; }
+    .summary-sub { font-size: clamp(0.95rem, 1.9vw, 1.15rem); color: #e2e8f0; }
+
+    .waiting-banner {
+      font-size: clamp(1.4rem, 3vw, 2.2rem);
+      font-weight: 900;
+      color: var(--accent);
+    }
+    .sudden-pill {
+      display: none;
+      background: var(--red);
+      color: #fff;
+      padding: 8px 20px;
+      border-radius: 999px;
+      font-weight: 900;
+      font-size: 1.05rem;
+      animation: pulse 0.7s infinite alternate;
+    }
+    .sudden-pill.visible { display: inline-block; }
+
+    /* 3. TELA CONTAGEM REGRESSIVA 3, 2, 1 */
+    #pane-countdown {
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 16px;
+    }
+    .cd-label {
+      font-size: clamp(1.4rem, 3vw, 2.2rem);
+      font-weight: 800;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    .cd-number {
+      font-size: clamp(7rem, 24vw, 13rem);
+      font-weight: 900;
+      line-height: 1;
+      color: var(--gold);
+      text-shadow: 0 0 40px rgba(251, 191, 36, 0.5);
+      animation: popIn 0.4s ease;
+    }
+
+    /* 4. TELA DA PERGUNTA */
+    #pane-quiz { gap: 12px; }
     .q-box {
       background: var(--card);
       border: 2px solid rgba(255,255,255,0.1);
       border-radius: 16px;
-      padding: 16px 20px;
+      padding: 15px 18px;
       text-align: center;
-      font-size: clamp(1.15rem, 2.6vw, 1.8rem);
+      font-size: clamp(1.1rem, 2.5vw, 1.75rem);
       font-weight: 800;
       line-height: 1.3;
       flex-shrink: 0;
@@ -239,9 +379,7 @@
       flex: 1;
       min-height: 0;
     }
-    @media (max-width: 560px) {
-      .opts-grid { grid-template-columns: 1fr; }
-    }
+    @media (max-width: 560px) { .opts-grid { grid-template-columns: 1fr; } }
 
     .opt-btn {
       background: var(--soft);
@@ -254,7 +392,7 @@
       gap: 14px;
       text-align: left;
       font-family: inherit;
-      font-size: clamp(1.1rem, 2.4vw, 1.65rem);
+      font-size: clamp(1.1rem, 2.3vw, 1.6rem);
       font-weight: 800;
       cursor: pointer;
       transition: transform 0.1s, border-color 0.15s, background 0.15s;
@@ -275,59 +413,27 @@
       font-weight: 900;
       flex-shrink: 0;
     }
-
     .opt-btn.selected {
       background: rgba(56, 189, 248, 0.25);
       border-color: var(--gold);
       box-shadow: 0 0 20px rgba(251, 191, 36, 0.35);
     }
-    .opt-btn.selected .opt-letter {
-      background: var(--gold);
-      color: #451a03;
-    }
+    .opt-btn.selected .opt-letter { background: var(--gold); color: #451a03; }
+    .opt-btn.locked-wait { opacity: 0.55; }
 
-    .opt-btn.locked-wait {
-      opacity: 0.6;
-    }
-
-    .opt-btn.reveal-correct {
-      background: rgba(34, 197, 94, 0.3);
-      border-color: var(--green);
-      opacity: 1 !important;
-    }
-    .opt-btn.reveal-correct .opt-letter {
-      background: var(--green);
-      color: #052e16;
-    }
-
-    .opt-btn.reveal-wrong {
-      background: rgba(239, 68, 68, 0.3);
-      border-color: var(--red);
-      opacity: 1 !important;
-    }
-    .opt-btn.reveal-wrong .opt-letter {
-      background: var(--red);
-      color: #fff;
-    }
-
-    .confirm-bar {
-      flex-shrink: 0;
-      padding-top: 2px;
-    }
+    .confirm-bar { flex-shrink: 0; padding-top: 2px; }
     #btnConfirm {
       width: 100%;
-      padding: 18px;
+      padding: 17px;
       border: none;
       border-radius: 16px;
       font-family: inherit;
-      font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+      font-size: clamp(1.15rem, 2.4vw, 1.55rem);
       font-weight: 900;
-      letter-spacing: 0.5px;
       background: linear-gradient(135deg, #22c55e, #16a34a);
       color: #052e16;
       cursor: pointer;
       box-shadow: 0 8px 24px rgba(34, 197, 94, 0.35);
-      transition: transform 0.1s, opacity 0.15s;
     }
     #btnConfirm:active:not(:disabled) { transform: scale(0.99); }
     #btnConfirm:disabled {
@@ -336,11 +442,19 @@
       box-shadow: none;
       cursor: not-allowed;
     }
+
+    @keyframes pulse {
+      from { transform: scale(1); }
+      to { transform: scale(1.06); }
+    }
+    @keyframes popIn {
+      from { transform: scale(0.6); opacity: 0.4; }
+      to { transform: scale(1); opacity: 1; }
+    }
   </style>
 </head>
 <body>
 
-  <!-- Tela de configuração caso o link não traga sala/lado -->
   <div id="setupScreen">
     <div class="setup-box">
       <h1>📱 Conectar Tablet</h1>
@@ -358,6 +472,13 @@
       <span id="sidePill" class="side-pill side-a">LADO A</span>
       <span id="teamName" class="team-name">Conectando...</span>
     </div>
+    <div class="mini-scoreboard" id="miniScoreboard" style="display:none;">
+      <span id="sbNameA">A</span>
+      <span class="pts" id="sbPtsA">0</span>
+      <span style="color:var(--muted);">×</span>
+      <span class="pts" id="sbPtsB">0</span>
+      <span id="sbNameB">B</span>
+    </div>
     <div class="conn-area">
       <span id="connPill" class="conn-pill">🔴 Offline</span>
       <button class="btn-cfg" onclick="openSetup()">⚙️ Sala</button>
@@ -368,19 +489,48 @@
   <div class="timer-line"><div id="timerFill" class="timer-line-fill"></div></div>
 
   <main>
-    <div id="idleBox" class="idle-box">
-      <div class="big-icon">🏆</div>
-      <h2 id="idleTitle">Aguardando a próxima pergunta</h2>
-      <p id="idleSub">Assim que o operador sortear a questão, ela vai aparecer aqui automaticamente.</p>
-    </div>
+    <!-- 1. BOTÃO COM O NOME DA PRÓXIMA ESCOLA -->
+    <section id="pane-checkin" class="view-pane">
+      <div class="checkin-tag" id="checkinMatchLabel">Próximo Confronto</div>
+      <div class="checkin-hint" id="checkinHint">A próxima equipe desta mesa deve clicar no botão abaixo com o nome da sua escola para iniciar:</div>
+      <button id="btnSchoolEnter" onclick="confirmSchoolEntry()">
+        <span class="enter-school-name" id="enterSchoolName">Escola</span>
+        <span class="enter-school-sub">👆 TOQUE AQUI PARA ENTRAR NA DISPUTA</span>
+      </button>
+    </section>
 
-    <div id="quizArea">
+    <!-- 2. AGUARDANDO A PRÓXIMA PERGUNTA -->
+    <section id="pane-waiting" class="view-pane active">
+      <div class="sudden-pill" id="waitingSuddenPill">⚡ MORTE SÚBITA — QUEM ACERTAR PASSA À FRENTE!</div>
+      <div class="waiting-score-big" id="waitingScoreBig" style="display:none;">
+        <span id="wsNameA">Escola A</span>
+        <span class="big-pts" id="wsPtsA">0</span>
+        <span style="color:var(--muted);">×</span>
+        <span class="big-pts" id="wsPtsB">0</span>
+        <span id="wsNameB">Escola B</span>
+      </div>
+      <div class="summary-card" id="summaryCard">
+        <div class="summary-headline" id="summaryHeadline"></div>
+        <div class="summary-sub" id="summarySub"></div>
+      </div>
+      <div class="waiting-banner" id="waitingBanner">⏳ Aguardando a próxima pergunta...</div>
+      <p style="color:var(--muted); font-size:1rem;" id="waitingFoot">Fiquem prontos! Assim que o operador liberar, começa a contagem de 3 segundos.</p>
+    </section>
+
+    <!-- 3. CONTAGEM REGRESSIVA DE 3 SEGUNDOS -->
+    <section id="pane-countdown" class="view-pane">
+      <div class="cd-label">Preparem-se! Próxima pergunta em...</div>
+      <div class="cd-number" id="cdNumber">3</div>
+    </section>
+
+    <!-- 4. PERGUNTA ATIVA -->
+    <section id="pane-quiz" class="view-pane">
       <div class="q-box" id="questionText">...</div>
       <div class="opts-grid" id="optionsGrid"></div>
       <div class="confirm-bar">
         <button id="btnConfirm" onclick="confirmAnswer()" disabled>✅ CONFIRMAR RESPOSTA</button>
       </div>
-    </div>
+    </section>
   </main>
 
   <script>
@@ -392,20 +542,35 @@
     let peer = null;
     let conn = null;
     let reconnectTimer = null;
+
     let localTimerInterval = null;
     let localEndsAt = null;
     let localDurationMs = 15000;
+
+    let cdInterval = null;
+    let cdEndsAt = null;
+    let lastCdNum = null;
 
     let selectedChoice = null;
     let sending = false;
 
     let remoteState = {
-      teamName: 'Aguardando confronto',
+      connectedOnce: false,
+      matchId: null,
       matchLabel: '',
+      teamA: 'Mesa A',
+      teamB: 'Mesa B',
+      teamName: 'Conectando...',
+      matchPoints: { a: 0, b: 0 },
+      schoolConfirmed: true,
       question: null,
-      roundStatus: 'idle', // idle | reading | open | closed
-      revealed: false,
-      myAnswer: null
+      roundStatus: 'idle', // idle | countdown | reading | open | closed
+      myAnswer: null,
+      lastRoundSummary: null,
+      isSuddenDeath: false,
+      isDecisive: false,
+      tournamentFinished: false,
+      championName: null
     };
 
     function escapeHTML(str) {
@@ -482,120 +647,227 @@
         if (remoteState.roundStatus === 'open' && !remoteState.myAnswer) {
           document.getElementById('statusStrip').textContent = `🟢 LIBERADO! Toque na resposta e aperte CONFIRMAR (${sec}s)`;
         }
-
-        if (rem <= 0) {
-          stopLocalTimer(false);
-        }
+        if (rem <= 0) stopLocalTimer(false);
       }
 
       tick();
       localTimerInterval = setInterval(tick, 100);
     }
 
+    function stopCountdown() {
+      if (cdInterval) {
+        clearInterval(cdInterval);
+        cdInterval = null;
+      }
+      lastCdNum = null;
+    }
+
+    function startCountdown(remainingMs) {
+      stopCountdown();
+      cdEndsAt = Date.now() + Math.max(0, remainingMs);
+      const el = document.getElementById('cdNumber');
+
+      function tick() {
+        const rem = Math.max(0, cdEndsAt - Date.now());
+        const sec = Math.max(1, Math.ceil(rem / 1000));
+        if (sec !== lastCdNum) {
+          lastCdNum = sec;
+          el.textContent = sec;
+          el.style.animation = 'none';
+          void el.offsetWidth;
+          el.style.animation = 'popIn 0.35s ease';
+        }
+        if (rem <= 0) stopCountdown();
+      }
+
+      tick();
+      cdInterval = setInterval(tick, 80);
+    }
+
     function formatSec(ms) {
       return (ms / 1000).toFixed(1).replace('.', ',') + 's';
     }
 
+    function showPane(id) {
+      document.querySelectorAll('.view-pane').forEach(p => p.classList.remove('active'));
+      const el = document.getElementById('pane-' + id);
+      if (el) el.classList.add('active');
+    }
+
+    function confirmSchoolEntry() {
+      if (!conn || !conn.open) {
+        alert('Aguarde a conexão ficar verde para entrar.');
+        return;
+      }
+      remoteState.schoolConfirmed = true;
+      conn.send({ type: 'SCHOOL_READY', side, matchId: remoteState.matchId });
+      renderUI();
+    }
+
     function renderUI() {
       const s = remoteState;
-      document.getElementById('teamName').textContent = s.teamName || (side === 'b' ? 'Equipe B' : 'Equipe A');
+      document.getElementById('teamName').textContent = s.teamName || (side === 'b' ? 'Mesa B' : 'Mesa A');
 
-      const idleBox = document.getElementById('idleBox');
-      const quizArea = document.getElementById('quizArea');
+      // Mini placar no cabeçalho
+      const sb = document.getElementById('miniScoreboard');
+      if (s.connectedOnce && !s.tournamentFinished && s.matchId) {
+        sb.style.display = 'flex';
+        const elA = document.getElementById('sbNameA');
+        const elB = document.getElementById('sbNameB');
+        elA.textContent = s.teamA;
+        elB.textContent = s.teamB;
+        elA.className = side === 'a' ? 'my-side' : '';
+        elB.className = side === 'b' ? 'my-side' : '';
+        document.getElementById('sbPtsA').textContent = s.matchPoints?.a ?? 0;
+        document.getElementById('sbPtsB').textContent = s.matchPoints?.b ?? 0;
+      } else {
+        sb.style.display = 'none';
+      }
+
       const strip = document.getElementById('statusStrip');
-      const btnConfirm = document.getElementById('btnConfirm');
 
-      if (!s.question) {
-        idleBox.style.display = 'flex';
-        quizArea.classList.remove('active');
-        strip.className = 'status-strip';
-        strip.textContent = s.matchLabel ? `⚔️ ${s.matchLabel} — Aguardando pergunta...` : 'Aguardando sorteio da pergunta...';
+      // Campeonato finalizado
+      if (s.tournamentFinished) {
         stopLocalTimer(true);
+        stopCountdown();
+        showPane('waiting');
+        document.getElementById('waitingScoreBig').style.display = 'none';
+        document.getElementById('waitingSuddenPill').className = 'sudden-pill';
+        document.getElementById('summaryCard').className = 'summary-card';
+        document.getElementById('waitingBanner').textContent = `🏆 Campeonato Finalizado! Campeão: ${s.championName || ''}`;
+        document.getElementById('waitingFoot').textContent = 'Obrigado pela participação!';
+        strip.className = 'status-strip open';
+        strip.textContent = '🏆 Campeonato encerrado!';
         return;
       }
 
-      idleBox.style.display = 'none';
-      quizArea.classList.add('active');
-      document.getElementById('questionText').textContent = s.question.pergunta;
+      // 1. Contagem regressiva de 3 segundos
+      if (s.roundStatus === 'countdown') {
+        stopLocalTimer(true);
+        showPane('countdown');
+        strip.className = s.isSuddenDeath ? 'status-strip sudden' : 'status-strip reading';
+        strip.textContent = s.isSuddenDeath
+          ? '⚡ MORTE SÚBITA! Atenção para a pergunta...'
+          : `🎯 ${s.matchLabel || 'Disputa'} — A pergunta vai começar!`;
+        return;
+      }
 
-      const hasAlts = Array.isArray(s.question.alternativas) && s.question.alternativas.length > 0;
-      const grid = document.getElementById('optionsGrid');
-      const letters = ['A', 'B', 'C', 'D', 'E'];
+      stopCountdown();
 
-      const canInteract = s.roundStatus === 'open' && !s.myAnswer && !sending && hasAlts;
+      // 2. Pergunta em andamento (reading / open / closed)
+      if (s.question && (s.roundStatus === 'reading' || s.roundStatus === 'open' || s.roundStatus === 'closed')) {
+        showPane('quiz');
+        document.getElementById('questionText').textContent = s.question.pergunta;
+        const grid = document.getElementById('optionsGrid');
+        const btnConfirm = document.getElementById('btnConfirm');
+        const letters = ['A', 'B', 'C', 'D', 'E'];
+        const hasAlts = Array.isArray(s.question.alternativas) && s.question.alternativas.length > 0;
+        const canInteract = s.roundStatus === 'open' && !s.myAnswer && !sending && hasAlts;
 
-      if (!hasAlts) {
-        grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:24px; color:var(--gold); font-size:1.4rem; font-weight:800;">Pergunta aberta — responda oralmente!</div>`;
-      } else {
-        grid.innerHTML = s.question.alternativas.map((alt, idx) => {
-          let cls = 'opt-btn';
+        if (!hasAlts) {
+          grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:24px; color:var(--gold); font-size:1.4rem; font-weight:800;">Pergunta aberta — responda oralmente!</div>`;
+        } else {
           const myChoice = s.myAnswer ? s.myAnswer.choiceIndex : selectedChoice;
-
-          if (s.revealed) {
-            if (idx === s.question.correta) {
-              cls += ' reveal-correct';
-            } else if (myChoice === idx) {
-              cls += ' reveal-wrong';
-            } else {
-              cls += ' locked-wait';
-            }
-          } else {
+          grid.innerHTML = s.question.alternativas.map((alt, idx) => {
+            let cls = 'opt-btn';
             if (myChoice === idx) cls += ' selected';
             if (!canInteract && myChoice !== idx) cls += ' locked-wait';
-          }
+            return `
+              <button class="${cls}" ${canInteract ? '' : 'disabled'} onclick="selectOption(${idx})">
+                <span class="opt-letter">${letters[idx] || idx + 1}</span>
+                <span>${escapeHTML(alt)}</span>
+              </button>`;
+          }).join('');
+        }
 
-          return `
-            <button class="${cls}" ${canInteract ? '' : 'disabled'} onclick="selectOption(${idx})">
-              <span class="opt-letter">${letters[idx] || idx + 1}</span>
-              <span>${escapeHTML(alt)}</span>
-            </button>`;
-        }).join('');
-      }
-
-      // Faixa de status superior + botão confirmar
-      if (s.revealed) {
-        stopLocalTimer(true);
         if (s.myAnswer) {
-          if (s.myAnswer.isCorrect) {
-            strip.className = 'status-strip win';
-            strip.textContent = `🎉 ACERTOU! (${s.myAnswer.order}º a responder · ${formatSec(s.myAnswer.elapsedMs)})`;
-          } else {
-            strip.className = 'status-strip lose';
-            strip.textContent = `❌ ERROU! (${s.myAnswer.order}º a responder · ${formatSec(s.myAnswer.elapsedMs)})`;
-          }
+          strip.className = 'status-strip sent';
+          strip.textContent = `🔒 Resposta confirmada em ${s.myAnswer.order}º lugar (${formatSec(s.myAnswer.elapsedMs)})! Aguarde o resultado...`;
+          btnConfirm.disabled = true;
+          btnConfirm.textContent = `🔒 CONFIRMADO — LETRA ${letters[s.myAnswer.choiceIndex]}`;
+        } else if (s.roundStatus === 'reading') {
+          stopLocalTimer(true);
+          strip.className = 'status-strip reading';
+          strip.textContent = '🔊 Ouça a leitura... Os botões liberam ao final!';
+          btnConfirm.disabled = true;
+          btnConfirm.textContent = '🔒 AGUARDE O FIM DA LEITURA';
+        } else if (s.roundStatus === 'open') {
+          strip.className = 'status-strip open';
+          if (!localTimerInterval) strip.textContent = '🟢 LIBERADO! Escolha a alternativa e aperte CONFIRMAR!';
+          btnConfirm.disabled = (selectedChoice === null || sending || !hasAlts);
+          btnConfirm.textContent = sending
+            ? '⏳ ENVIANDO...'
+            : (selectedChoice !== null ? `✅ CONFIRMAR ALTERNATIVA ${letters[selectedChoice]}` : '👆 ESCOLHA UMA ALTERNATIVA ACIMA');
         } else {
+          stopLocalTimer(true);
           strip.className = 'status-strip closed';
-          strip.textContent = '⏰ Sem resposta nesta rodada';
+          strip.textContent = '⏰ Tempo encerrado! Aguardando computar a rodada...';
+          btnConfirm.disabled = true;
+          btnConfirm.textContent = '⏰ TEMPO ENCERRADO';
         }
-        btnConfirm.disabled = true;
-        btnConfirm.textContent = 'Rodada encerrada';
-      } else if (s.myAnswer) {
-        strip.className = 'status-strip sent';
-        strip.textContent = `🔒 Confirmado em ${s.myAnswer.order}º lugar (${formatSec(s.myAnswer.elapsedMs)})! Aguarde o resultado...`;
-        btnConfirm.disabled = true;
-        btnConfirm.textContent = `🔒 RESPOSTA CONFIRMADA (${letters[s.myAnswer.choiceIndex]})`;
-      } else if (s.roundStatus === 'reading') {
-        stopLocalTimer(true);
-        strip.className = 'status-strip reading';
-        strip.textContent = '🔊 Ouça a leitura... Os botões serão liberados ao final!';
-        btnConfirm.disabled = true;
-        btnConfirm.textContent = '🔒 AGUARDE O FIM DA LEITURA';
-      } else if (s.roundStatus === 'open') {
-        strip.className = 'status-strip open';
-        if (!localTimerInterval) {
-          strip.textContent = '🟢 LIBERADO! Toque na resposta e aperte CONFIRMAR!';
-        }
-        btnConfirm.disabled = (selectedChoice === null || sending || !hasAlts);
-        btnConfirm.textContent = sending
-          ? '⏳ ENVIANDO...'
-          : (selectedChoice !== null ? `✅ CONFIRMAR ALTERNATIVA ${letters[selectedChoice]}` : '👆 ESCOLHA UMA ALTERNATIVA ACIMA');
-      } else {
-        stopLocalTimer(true);
-        strip.className = 'status-strip closed';
-        strip.textContent = '⏰ Tempo esgotado! Aguarde o gabarito...';
-        btnConfirm.disabled = true;
-        btnConfirm.textContent = '⏰ TEMPO ESGOTADO';
+        return;
       }
+
+      // 3. Tela de entrada da próxima escola (botão com o nome da escola)
+      stopLocalTimer(true);
+      if (s.connectedOnce && s.matchId && !s.schoolConfirmed) {
+        showPane('checkin');
+        document.getElementById('checkinMatchLabel').textContent = `${s.matchLabel}: ${s.teamA} × ${s.teamB}`;
+        document.getElementById('enterSchoolName').textContent = `🏫 ${s.teamName}`;
+        strip.className = 'status-strip reading';
+        strip.textContent = `📢 Próximo confronto: ${s.teamA} × ${s.teamB}`;
+        return;
+      }
+
+      // 4. Tela "Aguardando a próxima pergunta"
+      showPane('waiting');
+      const wsBig = document.getElementById('waitingScoreBig');
+      if (s.connectedOnce && s.matchId) {
+        wsBig.style.display = 'flex';
+        document.getElementById('wsNameA').textContent = s.teamA;
+        document.getElementById('wsNameB').textContent = s.teamB;
+        document.getElementById('wsPtsA').textContent = s.matchPoints?.a ?? 0;
+        document.getElementById('wsPtsB').textContent = s.matchPoints?.b ?? 0;
+      } else {
+        wsBig.style.display = 'none';
+      }
+
+      const suddenEl = document.getElementById('waitingSuddenPill');
+      if (s.isSuddenDeath) {
+        suddenEl.textContent = '⚡ MORTE SÚBITA — QUEM ACERTAR PASSA À FRENTE!';
+        suddenEl.className = 'sudden-pill visible';
+      } else if (s.isDecisive) {
+        suddenEl.textContent = '🔥 PERGUNTA DECISIVA (1 × 1) — QUEM PONTUAR VENCE!';
+        suddenEl.className = 'sudden-pill visible';
+      } else {
+        suddenEl.className = 'sudden-pill';
+      }
+
+      const sumCard = document.getElementById('summaryCard');
+      if (s.lastRoundSummary) {
+        const sum = s.lastRoundSummary;
+        let cls = 'summary-card visible';
+        if (sum.cancelled) cls += ' cancel';
+        else if (sum.pointWinner === side || sum.pointWinner === 'both') cls += ' win';
+        else cls += ' lose';
+        sumCard.className = cls;
+        document.getElementById('summaryHeadline').textContent = sum.headline;
+        document.getElementById('summarySub').textContent = `Resposta correta: ${sum.correctLabel}`;
+      } else {
+        sumCard.className = 'summary-card';
+      }
+
+      document.getElementById('waitingBanner').textContent = s.connectedOnce
+        ? '⏳ Aguardando a próxima pergunta...'
+        : '🔌 Conectando ao painel do operador...';
+      document.getElementById('waitingFoot').textContent = s.connectedOnce
+        ? 'Assim que o operador iniciar, aparecerá a contagem de 3 segundos.'
+        : 'Verifique se o código da sala está correto.';
+
+      strip.className = s.isSuddenDeath ? 'status-strip sudden' : 'status-strip';
+      strip.textContent = s.connectedOnce
+        ? `⚔️ ${s.matchLabel || 'Disputa'} — Melhor de 3`
+        : 'Aguardando conexão com o operador...';
     }
 
     function selectOption(idx) {
@@ -626,20 +898,36 @@
       if (msg.type === 'SYNC_TABLET') {
         const prevQId = remoteState.question?.id;
         const newQId = msg.question?.id;
-        if (prevQId !== newQId) {
+        if (prevQId !== newQId || msg.roundStatus === 'idle' || msg.roundStatus === 'countdown') {
           selectedChoice = null;
           sending = false;
         }
         if (msg.myAnswer) sending = false;
 
         remoteState = {
-          teamName: msg.teamName || remoteState.teamName,
+          connectedOnce: true,
+          matchId: msg.matchId ?? null,
           matchLabel: msg.matchLabel || '',
+          teamA: msg.teamA || 'Mesa A',
+          teamB: msg.teamB || 'Mesa B',
+          teamName: msg.teamName || (side === 'b' ? 'Mesa B' : 'Mesa A'),
+          matchPoints: msg.matchPoints || { a: 0, b: 0 },
+          schoolConfirmed: !!msg.schoolConfirmed,
           question: msg.question || null,
           roundStatus: msg.roundStatus || 'idle',
-          revealed: !!msg.revealed,
-          myAnswer: msg.myAnswer || null
+          myAnswer: msg.myAnswer || null,
+          lastRoundSummary: msg.lastRoundSummary || null,
+          isSuddenDeath: !!msg.isSuddenDeath,
+          isDecisive: !!msg.isDecisive,
+          tournamentFinished: !!msg.tournamentFinished,
+          championName: msg.championName || null
         };
+
+        if (remoteState.roundStatus === 'countdown' && msg.countdownRemainingMs > 0) {
+          startCountdown(msg.countdownRemainingMs);
+        } else {
+          stopCountdown();
+        }
 
         if (remoteState.roundStatus === 'open' && msg.remainingMs > 0) {
           startLocalTimer(msg.remainingMs, msg.durationMs || 15000);
@@ -655,10 +943,7 @@
     }
 
     function connectToHost() {
-      if (!roomCode || !side) {
-        openSetup();
-        return;
-      }
+      if (!roomCode || !side) { openSetup(); return; }
 
       if (reconnectTimer) clearInterval(reconnectTimer);
       if (conn) { try { conn.close(); } catch (e) {} conn = null; }
@@ -707,17 +992,13 @@
         }, 3000);
       });
 
-      peer.on('error', () => {
-        setConnStatus(false, '🔴 Tentando reconectar...');
-      });
-
+      peer.on('error', () => setConnStatus(false, '🔴 Tentando reconectar...'));
       peer.on('disconnected', () => {
         setConnStatus(false, '🟡 Reconectando...');
         try { peer.reconnect(); } catch (e) {}
       });
     }
 
-    // Inicialização
     if (roomCode && side) {
       updateSideHeader();
       connectToHost();
